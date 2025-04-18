@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+
+    <!-- 定义日志文件的存储地址 勿在LogBack的配置中使用相对路径 -->
+    <property name="LOG_HOME" value="logs/app" /> <!-- 新增定义 LOG_HOME 属性 -->
+    <property name="INFO_PATH" value="info" />
+    <property name="ERROR_PATH" value="error" />
+    <property name="ACCESS_LOG_PATH" value="access" />
+    <!-- 定义日志上下文的名称 -->
+    <contextName>${LOG_CONTEXT_NAME}</contextName>
+
+    <!-- 日志展示规则，比如彩色日志、异常日志等 -->
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+    <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
+    <conversionRule conversionWord="wEx" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
+
+    <!-- 控制台输出 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %clr(%-5level) [%thread] %clr(%logger{36}){cyan} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!--info日志统一输出-->
+    <appender name="info" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <Prudent>true</Prudent>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志文件输出的文件名，按小时生成-->
+            <FileNamePattern>${LOG_HOME}/${INFO_PATH}/info.%d{yyyy-MM-dd-HH}.%i.log</FileNamePattern>
+            <!--日志文件保留天数-->
+            <MaxHistory>30</MaxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <!-- 除按日志记录之外，还配置了日志文件不能超过10M(默认)，若超过10M，日志文件会以索引0开始 -->
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度 %method 方法名  %L 行数 %msg：日志消息，%n是换行符-->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{56}.%method:%L - %msg%n</pattern>
+            <charset>utf-8</charset>
+        </encoder>
+        <!-- 此日志文件只记录info级别的 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!--定义error级别的输出器-->
+    <appender name="error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread]  %logger{30} - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--保存路径-->
+            <fileNamePattern>${LOG_HOME}/${ERROR_PATH}/error_%d{yyyy-MM-dd}.log</fileNamePattern>
+            <MaxHistory>30</MaxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <!--html格式日志文件输出appender-->
+    <appender name="html" class="ch.qos.logback.core.FileAppender">
+        <!--日志文件保存路径-->
+        <file>${LOG_HOME}/html/logback.html</file>
+        <Prudent>true</Prudent>
+        <!--html 消息格式配置-->
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="ch.qos.logback.classic.html.HTMLLayout">
+                <pattern>%-5level%d{yyyy-MM-dd HH:mm:ss.SSS}%c%M%L%thread%m</pattern>
+            </layout>
+        </encoder>
+    </appender>
+
+    <!--  日志输出级别 -->
+    <root level="info">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="error"/>
+        <appender-ref ref="info"/>
+        <appender-ref ref="html"/>
+    </root>
+</configuration>

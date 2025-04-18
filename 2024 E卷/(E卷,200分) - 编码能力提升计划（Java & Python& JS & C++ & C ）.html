@@ -1,0 +1,443 @@
+<html lang="zh-CN"><head><meta charset="UTF-8"><style>.nodata  main {width:1000px;margin: auto;}</style></head><body class="nodata " style=""><div class="main_father clearfix d-flex justify-content-center " style="height:100%;"> <div class="container clearfix " id="mainBox"><main><div class="blog-content-box"><div id="article_content" class="article_content clearfix">
+        <link rel="stylesheet" href="https://csdnimg.cn/release/blogv2/dist/mdeditor/css/editerView/kdoc_html_views-1a98987dfd.css">
+        <link rel="stylesheet" href="https://csdnimg.cn/release/blogv2/dist/mdeditor/css/editerView/ck_htmledit_views-704d5b9767.css">
+             
+                <div id="content_views" class="markdown_views prism-atom-one-light">
+                    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+                        <path stroke-linecap="round" d="M5,0 0,2.5 5,5z" id="raphael-marker-block" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path>
+                    </svg>
+                    <h2><a name="t0"></a><a id="OD_0"></a>最新华为OD机试</h2> 
+
+<h2><a name="t1"></a><a id="_4"></a>题目描述</h2> 
+<p>为了提升软件编码能力，小王制定了刷题计划，他选了题库中的n道题，编号从0到n-1，并计划在m天内按照题目编号顺序刷完所有的题目（注意，小王不能用多天完成同一题）。</p> 
+<p>在小王刷题计划中，小王需要用tme[i]的时间完成编号 i 的题目。</p> 
+<p>此外，小王还可以查看答案，可以省去该题的做题时间。为了真正达到刷题效果，小王每天最多直接看一次答案。</p> 
+<p>我们定义m天中做题时间最多的一天耗时为T（直接看答案的题目不计入做题总时间)。</p> 
+<p>请你帮小王求出最小的T是多少。</p> 
+<p>​</p> 
+<h2><a name="t2"></a><a id="_18"></a>输入描述</h2> 
+<p>第一行输入为<a href="https://so.csdn.net/so/search?q=time&amp;spm=1001.2101.3001.7020" target="_blank" class="hl hl-1" data-report-click="{&quot;spm&quot;:&quot;1001.2101.3001.7020&quot;,&quot;dest&quot;:&quot;https://so.csdn.net/so/search?q=time&amp;spm=1001.2101.3001.7020&quot;,&quot;extra&quot;:&quot;{\&quot;searchword\&quot;:\&quot;time\&quot;}&quot;}" data-tit="time" data-pretit="time">time</a>，time[i]的时间完成编号 i 的题目</p> 
+<p>第二行输入为m，m表示几天内完成所有题目，1 ≤ m ≤ 180</p> 
+<h2><a name="t3"></a><a id="_24"></a>输出描述</h2> 
+<p>最小耗时整数T</p> 
+<h2><a name="t4"></a><a id="1_28"></a>示例1</h2> 
+<p>输入</p> 
+<pre data-index="0" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">999,999,999
+4
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li><li style="color: rgb(153, 153, 153);">2</li></ul></pre> 
+<p>输出</p> 
+<pre data-index="1" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">0
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre> 
+<p>说明</p> 
+<blockquote> 
+ <p>在前三天中，小王每天都直接看答案，这样他可以在三天内完成所有的题目并不花任何时间</p> 
+</blockquote> 
+<h2><a name="t5"></a><a id="2_47"></a>示例2</h2> 
+<p>输入</p> 
+<pre data-index="2" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">1,2,2,3,5,4,6,7,8
+5
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li><li style="color: rgb(153, 153, 153);">2</li></ul></pre> 
+<p>输出</p> 
+<pre data-index="3" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">4
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre> 
+<p>说明</p> 
+<blockquote> 
+ <p>第一天完成前3题，第3题看答案;<br> 第二天完成第4题和第5题，第5题看答案；<br> 第三天完成第6和第7题，第7提看答案;<br> 第四天完成第8题，直接看答案:<br> 第五天完成第9题，直接看答案</p> 
+</blockquote> 
+<h2><a name="t6"></a><a id="_72"></a>解题思路</h2> 
+<h4><a name="t7"></a><a id="_74"></a>解释</h4> 
+<p>在示例2中，输入如下：</p> 
+<pre data-index="4" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">1,2,2,3,5,4,6,7,8
+5
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li><li style="color: rgb(153, 153, 153);">2</li></ul></pre> 
+<p>这意味着小王有9道题目，每道题目的完成时间分别是1, 2, 2, 3, 5, 4, 6, 7, 8，且他需要在5天内完成这些题目。目标是使得这5天中最繁忙的一天（耗时最长的一天）的耗时T尽可能小。</p> 
+<h5><a id="_85"></a>解释如何安排：</h5> 
+<ol><li> <p><strong>第一天</strong>：</p> 
+  <ul><li>完成题目0 (1分钟), 题目1 (2分钟) 和题目2 (2分钟)。</li><li>可选择题目2作为查看**的题目，因为它不是最耗时的。</li><li>实际耗时：1 + 2 = 3分钟</li></ul> </li><li> <p><strong>第二天</strong>：</p> 
+  <ul><li>完成题目3 (3分钟) 和题目4 (5分钟)。</li><li>可选择题目4作为查看**的题目，因为它是这两题中较耗时的。</li><li>实际耗时：3分钟</li></ul> </li><li> <p><strong>第三天</strong>：</p> 
+  <ul><li>完成题目5 (4分钟) 和题目6 (6分钟)。</li><li>可选择题目6作为查看**的题目，因为它是这两题中较耗时的。</li><li>实际耗时：4分钟</li></ul> </li><li> <p><strong>第四天</strong>：</p> 
+  <ul><li>只完成题目7 (7分钟)。</li><li>选择查看**的题目。</li><li>实际耗时：0分钟</li></ul> </li><li> <p><strong>第五天</strong>：</p> 
+  <ul><li>只完成题目8 (8分钟)。</li><li>选择查看**的题目。</li><li>实际耗时：0分钟</li></ul> </li></ol> 
+<h4><a name="t8"></a><a id="_114"></a>解题思路</h4> 
+<p>这个问题可以通过<strong>二分搜索</strong>和<strong>贪心策略</strong>来解决。我们要找的是最小的最大单日工作时间 T，可以通过以下步骤来寻找：</p> 
+<ol><li> <p><strong>初始化二分搜索的边界</strong>：</p> 
+  <ul><li><code>low = 0</code>（理论上的最低耗时，假设每天都能看答案）。</li><li><code>high = sum(times) - max(times)</code>（如果最耗时的题目使用了看答案的机会，剩余的总时间是理论上的最高耗时）。</li></ul> </li><li> <p><strong>二分搜索过程</strong>：</p> 
+  <ul><li>计算中点 <code>mid</code> 作为假设的最大单日工作时间。</li><li>使用贪心策略模拟小王的刷题过程，看是否可以在 m 天内完成所有题目，且每天的工作时间不超过 <code>mid</code>。</li><li>维护当前累计的工作时间 <code>currentSum</code> 和当前天数 <code>currentDay</code>。</li><li>遍历题目数组 <code>times</code>，对于每一题： 
+    <ul><li>尝试添加到当前天的工作时间。</li><li>如果加上这题的时间后超过了 <code>mid</code>，使用看答案机会（如果当天还未使用），然后尝试将这题放入下一天。</li><li>如果当天已使用看答案机会，需要新开一天，并重置当前天的时间累计和看答案机会。</li></ul> </li><li>检查在假设的最大单日工作时间 <code>mid</code> 下，是否能在 m 天内完成所有题目。</li></ul> </li><li> <p><strong>调整搜索范围</strong>：</p> 
+  <ul><li>如果可以完成，说明 <code>mid</code> 可能还不是最小的，尝试减小 <code>high</code>。</li><li>如果不可以完成，增加 <code>low</code>。</li></ul> </li><li> <p><strong>输出结果</strong>：</p> 
+  <ul><li>当 <code>low</code> 超过 <code>high</code>，循环结束，此时 <code>low</code> 将是满足条件的最小的最大单日工作时间 T。</li></ul> </li></ol> 
+<p>这个方法结合了<a href="https://so.csdn.net/so/search?q=%E4%BA%8C%E5%88%86%E6%90%9C%E7%B4%A2&amp;spm=1001.2101.3001.7020" target="_blank" class="hl hl-1" data-report-view="{&quot;spm&quot;:&quot;1001.2101.3001.7020&quot;,&quot;dest&quot;:&quot;https://so.csdn.net/so/search?q=%E4%BA%8C%E5%88%86%E6%90%9C%E7%B4%A2&amp;spm=1001.2101.3001.7020&quot;,&quot;extra&quot;:&quot;{\&quot;searchword\&quot;:\&quot;二分搜索\&quot;}&quot;}" data-report-click="{&quot;spm&quot;:&quot;1001.2101.3001.7020&quot;,&quot;dest&quot;:&quot;https://so.csdn.net/so/search?q=%E4%BA%8C%E5%88%86%E6%90%9C%E7%B4%A2&amp;spm=1001.2101.3001.7020&quot;,&quot;extra&quot;:&quot;{\&quot;searchword\&quot;:\&quot;二分搜索\&quot;}&quot;}" data-tit="二分搜索" data-pretit="二分搜索">二分搜索</a>的高效查找和贪心策略的局部最优解法，能够有效找到解决问题的最小 T 值。</p> 
+<h2><a name="t9"></a><a id="Java_141"></a>Java</h2> 
+<pre data-index="5" class="set-code-hide prettyprint"><code class="prism language-java has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;"><span class="token keyword">import</span> <span class="token namespace">java<span class="token punctuation">.</span>util<span class="token punctuation">.</span></span><span class="token class-name">Arrays</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token namespace">java<span class="token punctuation">.</span>util<span class="token punctuation">.</span></span><span class="token class-name">Scanner</span><span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Main</span> <span class="token punctuation">{<!-- --></span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+        <span class="token comment">// 创建扫描器对象，用于获取用户输入</span>
+        <span class="token class-name">Scanner</span> sc <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Scanner</span><span class="token punctuation">(</span><span class="token class-name">System</span><span class="token punctuation">.</span>in<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 读取一行输入，分割字符串并转换为整数数组，表示每项任务所需的时间</span>
+        <span class="token keyword">int</span><span class="token punctuation">[</span><span class="token punctuation">]</span> times <span class="token operator">=</span> <span class="token class-name">Arrays</span><span class="token punctuation">.</span><span class="token function">stream</span><span class="token punctuation">(</span>sc<span class="token punctuation">.</span><span class="token function">nextLine</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span><span class="token string">","</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">mapToInt</span><span class="token punctuation">(</span><span class="token class-name">Integer</span><span class="token operator">::</span><span class="token function">parseInt</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toArray</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// 读取下一行输入，转换为整数，表示最大允许的天数</span>
+        <span class="token keyword">int</span> maxDays <span class="token operator">=</span> <span class="token class-name">Integer</span><span class="token punctuation">.</span><span class="token function">parseInt</span><span class="token punctuation">(</span>sc<span class="token punctuation">.</span><span class="token function">nextLine</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 初始化总时间和最大单个时间</span>
+        <span class="token keyword">int</span> totalTime <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        <span class="token keyword">int</span> maxTime <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        <span class="token comment">// 遍历时间数组，计算总时间和最大时间</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> time <span class="token operator">:</span> times<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+            totalTime <span class="token operator">+=</span> time<span class="token punctuation">;</span>
+            maxTime <span class="token operator">=</span> <span class="token class-name">Math</span><span class="token punctuation">.</span><span class="token function">max</span><span class="token punctuation">(</span>time<span class="token punctuation">,</span> maxTime<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment">// 初始化二分搜索的范围</span>
+        <span class="token keyword">int</span> low <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        <span class="token keyword">int</span> high <span class="token operator">=</span> totalTime <span class="token operator">-</span> maxTime<span class="token punctuation">;</span>
+
+        <span class="token comment">// 使用二分搜索确定最小的可行时间限制</span>
+        <span class="token keyword">while</span> <span class="token punctuation">(</span>low <span class="token operator">&lt;=</span> high<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+            <span class="token keyword">int</span> mid <span class="token operator">=</span> <span class="token punctuation">(</span>low <span class="token operator">+</span> high<span class="token punctuation">)</span> <span class="token operator">&gt;&gt;</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token comment">// 计算中点</span>
+            <span class="token keyword">int</span> currentSum <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> <span class="token comment">// 当前段的时间总和</span>
+            <span class="token keyword">boolean</span> canAdjust <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span> <span class="token comment">// 标记是否可以调整当前任务到前一天</span>
+            <span class="token keyword">int</span> currentDay <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token comment">// 当前天数计数</span>
+            <span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> <span class="token comment">// 时间数组的索引</span>
+
+            <span class="token comment">// 遍历时间数组，试图按照每天不超过 mid 的限制来分配任务</span>
+            <span class="token keyword">while</span> <span class="token punctuation">(</span>i <span class="token operator">&lt;</span> times<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+                currentSum <span class="token operator">+=</span> times<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>currentSum <span class="token operator">&gt;</span> mid<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>canAdjust<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+                        <span class="token comment">// 如果当前和超过了 mid，尝试不计入当前任务，继续下一任务</span>
+                        currentSum <span class="token operator">-=</span> times<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+                        canAdjust <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span> <span class="token comment">// 标记当天已经进行过调整</span>
+                        i<span class="token operator">++</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{<!-- --></span>
+                        <span class="token comment">// 如果不能再调整，增加天数，重置当前和和调整标记</span>
+                        currentDay<span class="token operator">++</span><span class="token punctuation">;</span>
+                        <span class="token keyword">if</span> <span class="token punctuation">(</span>currentDay <span class="token operator">&gt;</span> maxDays<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+                            <span class="token comment">// 如果天数超过最大允许值，中断内部循环</span>
+                            <span class="token keyword">break</span><span class="token punctuation">;</span>
+                        <span class="token punctuation">}</span>
+                        currentSum <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+                        canAdjust <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{<!-- --></span>
+                    <span class="token comment">// 如果当前和未超过 mid，继续累加下一个任务</span>
+                    i<span class="token operator">++</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token comment">// 判断是否所有任务都能在 maxDays 天内完成</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>i <span class="token operator">==</span> times<span class="token punctuation">.</span>length <span class="token operator">&amp;&amp;</span> currentDay <span class="token operator">&lt;=</span> maxDays<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+                <span class="token comment">// 如果可以，尝试更小的 mid</span>
+                high <span class="token operator">=</span> mid <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{<!-- --></span>
+                <span class="token comment">// 如果不可以，尝试更大的 mid</span>
+                low <span class="token operator">=</span> mid <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment">// 输出找到的最小的满足条件的最大每日工作时间</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>low<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<div class="hljs-button {2}" data-title="复制"></div></code><div class="hide-preCode-box"><span class="hide-preCode-bt" data-report-view="{&quot;spm&quot;:&quot;1001.2101.3001.7365&quot;}"><img class="look-more-preCode contentImg-no-view" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newCodeMoreWhite.png" alt="" title=""></span></div><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li><li style="color: rgb(153, 153, 153);">2</li><li style="color: rgb(153, 153, 153);">3</li><li style="color: rgb(153, 153, 153);">4</li><li style="color: rgb(153, 153, 153);">5</li><li style="color: rgb(153, 153, 153);">6</li><li style="color: rgb(153, 153, 153);">7</li><li style="color: rgb(153, 153, 153);">8</li><li style="color: rgb(153, 153, 153);">9</li><li style="color: rgb(153, 153, 153);">10</li><li style="color: rgb(153, 153, 153);">11</li><li style="color: rgb(153, 153, 153);">12</li><li style="color: rgb(153, 153, 153);">13</li><li style="color: rgb(153, 153, 153);">14</li><li style="color: rgb(153, 153, 153);">15</li><li style="color: rgb(153, 153, 153);">16</li><li style="color: rgb(153, 153, 153);">17</li><li style="color: rgb(153, 153, 153);">18</li><li style="color: rgb(153, 153, 153);">19</li><li style="color: rgb(153, 153, 153);">20</li><li style="color: rgb(153, 153, 153);">21</li><li style="color: rgb(153, 153, 153);">22</li><li style="color: rgb(153, 153, 153);">23</li><li style="color: rgb(153, 153, 153);">24</li><li style="color: rgb(153, 153, 153);">25</li><li style="color: rgb(153, 153, 153);">26</li><li style="color: rgb(153, 153, 153);">27</li><li style="color: rgb(153, 153, 153);">28</li><li style="color: rgb(153, 153, 153);">29</li><li style="color: rgb(153, 153, 153);">30</li><li style="color: rgb(153, 153, 153);">31</li><li style="color: rgb(153, 153, 153);">32</li><li style="color: rgb(153, 153, 153);">33</li><li style="color: rgb(153, 153, 153);">34</li><li style="color: rgb(153, 153, 153);">35</li><li style="color: rgb(153, 153, 153);">36</li><li style="color: rgb(153, 153, 153);">37</li><li style="color: rgb(153, 153, 153);">38</li><li style="color: rgb(153, 153, 153);">39</li><li style="color: rgb(153, 153, 153);">40</li><li style="color: rgb(153, 153, 153);">41</li><li style="color: rgb(153, 153, 153);">42</li><li style="color: rgb(153, 153, 153);">43</li><li style="color: rgb(153, 153, 153);">44</li><li style="color: rgb(153, 153, 153);">45</li><li style="color: rgb(153, 153, 153);">46</li><li style="color: rgb(153, 153, 153);">47</li><li style="color: rgb(153, 153, 153);">48</li><li style="color: rgb(153, 153, 153);">49</li><li style="color: rgb(153, 153, 153);">50</li><li style="color: rgb(153, 153, 153);">51</li><li style="color: rgb(153, 153, 153);">52</li><li style="color: rgb(153, 153, 153);">53</li><li style="color: rgb(153, 153, 153);">54</li><li style="color: rgb(153, 153, 153);">55</li><li style="color: rgb(153, 153, 153);">56</li><li style="color: rgb(153, 153, 153);">57</li><li style="color: rgb(153, 153, 153);">58</li><li style="color: rgb(153, 153, 153);">59</li><li style="color: rgb(153, 153, 153);">60</li><li style="color: rgb(153, 153, 153);">61</li><li style="color: rgb(153, 153, 153);">62</li><li style="color: rgb(153, 153, 153);">63</li><li style="color: rgb(153, 153, 153);">64</li><li style="color: rgb(153, 153, 153);">65</li><li style="color: rgb(153, 153, 153);">66</li><li style="color: rgb(153, 153, 153);">67</li><li style="color: rgb(153, 153, 153);">68</li><li style="color: rgb(153, 153, 153);">69</li><li style="color: rgb(153, 153, 153);">70</li><li style="color: rgb(153, 153, 153);">71</li><li style="color: rgb(153, 153, 153);">72</li><li style="color: rgb(153, 153, 153);">73</li><li style="color: rgb(153, 153, 153);">74</li><li style="color: rgb(153, 153, 153);">75</li></ul></pre> 
+<h2><a name="t10"></a><a id="Python_221"></a>Python</h2> 
+<pre data-index="6" class="set-code-hide prettyprint"><code class="prism language-python has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">
+<span class="token comment"># 读取一行输入，分割字符串并转换为整数列表，表示每项任务所需的时间</span>
+times <span class="token operator">=</span> <span class="token builtin">list</span><span class="token punctuation">(</span><span class="token builtin">map</span><span class="token punctuation">(</span><span class="token builtin">int</span><span class="token punctuation">,</span> <span class="token builtin">input</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>split<span class="token punctuation">(</span><span class="token string">','</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+<span class="token comment"># 读取并转换为整数，表示最大允许的天数</span>
+max_days <span class="token operator">=</span> <span class="token builtin">int</span><span class="token punctuation">(</span><span class="token builtin">input</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+
+<span class="token comment"># 初始化总时间和最大单个时间</span>
+total_time <span class="token operator">=</span> <span class="token builtin">sum</span><span class="token punctuation">(</span>times<span class="token punctuation">)</span>
+max_time <span class="token operator">=</span> <span class="token builtin">max</span><span class="token punctuation">(</span>times<span class="token punctuation">)</span>
+
+<span class="token comment"># 初始化二分搜索的范围</span>
+low <span class="token operator">=</span> <span class="token number">0</span>
+high <span class="token operator">=</span> total_time <span class="token operator">-</span> max_time
+
+<span class="token comment"># 使用二分搜索确定最小的可行时间限制</span>
+<span class="token keyword">while</span> low <span class="token operator">&lt;=</span> high<span class="token punctuation">:</span>
+    mid <span class="token operator">=</span> <span class="token punctuation">(</span>low <span class="token operator">+</span> high<span class="token punctuation">)</span> <span class="token operator">&gt;&gt;</span> <span class="token number">1</span>  <span class="token comment"># 计算中点</span>
+    current_sum <span class="token operator">=</span> <span class="token number">0</span>  <span class="token comment"># 当前段的时间总和</span>
+    can_adjust <span class="token operator">=</span> <span class="token boolean">True</span>  <span class="token comment"># 标记是否可以调整当前任务到前一天</span>
+    current_day <span class="token operator">=</span> <span class="token number">1</span>  <span class="token comment"># 当前天数计数</span>
+    i <span class="token operator">=</span> <span class="token number">0</span>  <span class="token comment"># 时间数组的索引</span>
+
+    <span class="token comment"># 遍历时间数组，试图按照每天不超过 mid 的限制来分配任务</span>
+    <span class="token keyword">while</span> i <span class="token operator">&lt;</span> <span class="token builtin">len</span><span class="token punctuation">(</span>times<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        current_sum <span class="token operator">+=</span> times<span class="token punctuation">[</span>i<span class="token punctuation">]</span>
+
+        <span class="token keyword">if</span> current_sum <span class="token operator">&gt;</span> mid<span class="token punctuation">:</span>
+            <span class="token keyword">if</span> can_adjust<span class="token punctuation">:</span>
+                <span class="token comment"># 如果当前和超过了 mid，尝试不计入当前任务，继续下一任务</span>
+                current_sum <span class="token operator">-=</span> times<span class="token punctuation">[</span>i<span class="token punctuation">]</span>
+                can_adjust <span class="token operator">=</span> <span class="token boolean">False</span>  <span class="token comment"># 标记当天已经进行过调整</span>
+                i <span class="token operator">+=</span> <span class="token number">1</span>
+            <span class="token keyword">else</span><span class="token punctuation">:</span>
+                <span class="token comment"># 如果不能再调整，增加天数，重置当前和和调整标记</span>
+                current_day <span class="token operator">+=</span> <span class="token number">1</span>
+                <span class="token keyword">if</span> current_day <span class="token operator">&gt;</span> max_days<span class="token punctuation">:</span>
+                    <span class="token comment"># 如果天数超过最大允许值，中断内部循环</span>
+                    <span class="token keyword">break</span>
+                current_sum <span class="token operator">=</span> <span class="token number">0</span>
+                can_adjust <span class="token operator">=</span> <span class="token boolean">True</span>
+        <span class="token keyword">else</span><span class="token punctuation">:</span>
+            <span class="token comment"># 如果当前和未超过 mid，继续累加下一个任务</span>
+            i <span class="token operator">+=</span> <span class="token number">1</span>
+
+    <span class="token comment"># 判断是否所有任务都能在 max_days 天内完成</span>
+    <span class="token keyword">if</span> i <span class="token operator">==</span> <span class="token builtin">len</span><span class="token punctuation">(</span>times<span class="token punctuation">)</span> <span class="token keyword">and</span> current_day <span class="token operator">&lt;=</span> max_days<span class="token punctuation">:</span>
+        <span class="token comment"># 如果可以，尝试更小的 mid</span>
+        high <span class="token operator">=</span> mid <span class="token operator">-</span> <span class="token number">1</span>
+    <span class="token keyword">else</span><span class="token punctuation">:</span>
+        <span class="token comment"># 如果不可以，尝试更大的 mid</span>
+        low <span class="token operator">=</span> mid <span class="token operator">+</span> <span class="token number">1</span>
+
+<span class="token comment"># 输出找到的最小的满足条件的最大每日工作时间</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>low<span class="token punctuation">)</span>
+
+ 
+<div class="hljs-button {2}" data-title="复制"></div></code><div class="hide-preCode-box"><span class="hide-preCode-bt" data-report-view="{&quot;spm&quot;:&quot;1001.2101.3001.7365&quot;}"><img class="look-more-preCode contentImg-no-view" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newCodeMoreWhite.png" alt="" title=""></span></div><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li><li style="color: rgb(153, 153, 153);">2</li><li style="color: rgb(153, 153, 153);">3</li><li style="color: rgb(153, 153, 153);">4</li><li style="color: rgb(153, 153, 153);">5</li><li style="color: rgb(153, 153, 153);">6</li><li style="color: rgb(153, 153, 153);">7</li><li style="color: rgb(153, 153, 153);">8</li><li style="color: rgb(153, 153, 153);">9</li><li style="color: rgb(153, 153, 153);">10</li><li style="color: rgb(153, 153, 153);">11</li><li style="color: rgb(153, 153, 153);">12</li><li style="color: rgb(153, 153, 153);">13</li><li style="color: rgb(153, 153, 153);">14</li><li style="color: rgb(153, 153, 153);">15</li><li style="color: rgb(153, 153, 153);">16</li><li style="color: rgb(153, 153, 153);">17</li><li style="color: rgb(153, 153, 153);">18</li><li style="color: rgb(153, 153, 153);">19</li><li style="color: rgb(153, 153, 153);">20</li><li style="color: rgb(153, 153, 153);">21</li><li style="color: rgb(153, 153, 153);">22</li><li style="color: rgb(153, 153, 153);">23</li><li style="color: rgb(153, 153, 153);">24</li><li style="color: rgb(153, 153, 153);">25</li><li style="color: rgb(153, 153, 153);">26</li><li style="color: rgb(153, 153, 153);">27</li><li style="color: rgb(153, 153, 153);">28</li><li style="color: rgb(153, 153, 153);">29</li><li style="color: rgb(153, 153, 153);">30</li><li style="color: rgb(153, 153, 153);">31</li><li style="color: rgb(153, 153, 153);">32</li><li style="color: rgb(153, 153, 153);">33</li><li style="color: rgb(153, 153, 153);">34</li><li style="color: rgb(153, 153, 153);">35</li><li style="color: rgb(153, 153, 153);">36</li><li style="color: rgb(153, 153, 153);">37</li><li style="color: rgb(153, 153, 153);">38</li><li style="color: rgb(153, 153, 153);">39</li><li style="color: rgb(153, 153, 153);">40</li><li style="color: rgb(153, 153, 153);">41</li><li style="color: rgb(153, 153, 153);">42</li><li style="color: rgb(153, 153, 153);">43</li><li style="color: rgb(153, 153, 153);">44</li><li style="color: rgb(153, 153, 153);">45</li><li style="color: rgb(153, 153, 153);">46</li><li style="color: rgb(153, 153, 153);">47</li><li style="color: rgb(153, 153, 153);">48</li><li style="color: rgb(153, 153, 153);">49</li><li style="color: rgb(153, 153, 153);">50</li><li style="color: rgb(153, 153, 153);">51</li><li style="color: rgb(153, 153, 153);">52</li><li style="color: rgb(153, 153, 153);">53</li><li style="color: rgb(153, 153, 153);">54</li><li style="color: rgb(153, 153, 153);">55</li><li style="color: rgb(153, 153, 153);">56</li><li style="color: rgb(153, 153, 153);">57</li><li style="color: rgb(153, 153, 153);">58</li></ul></pre> 
+<h2><a name="t11"></a><a id="JavaScript_283"></a><span class="words-blog hl-git-1" data-report-view="{&quot;spm&quot;:&quot;1001.2101.3001.10283&quot;,&quot;extra&quot;:&quot;{\&quot;words\&quot;:\&quot;JavaScript\&quot;}&quot;}" data-tit="JavaScript" data-pretit="javascript">JavaScript</span></h2> 
+<pre data-index="7" class="set-code-hide prettyprint"><code class="prism language-js has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">
+<span class="token keyword">const</span> readline <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'readline'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> rl <span class="token operator">=</span> readline<span class="token punctuation">.</span><span class="token function">createInterface</span><span class="token punctuation">(</span><span class="token punctuation">{<!-- --></span>
+    input<span class="token operator">:</span> process<span class="token punctuation">.</span>stdin<span class="token punctuation">,</span>
+    output<span class="token operator">:</span> process<span class="token punctuation">.</span>stdout
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+rl<span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'line'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token parameter">inputTimes</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{<!-- --></span>
+    <span class="token keyword">let</span> times <span class="token operator">=</span> inputTimes<span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span><span class="token string">','</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span>Number<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// 将输入字符串按逗号分割并转为整数数组</span>
+ 
+
+    rl<span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'line'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token parameter">inputMaxDays</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{<!-- --></span>
+        <span class="token keyword">let</span> maxDays <span class="token operator">=</span> <span class="token function">parseInt</span><span class="token punctuation">(</span>inputMaxDays<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// 将输入的最大天数转换为整数</span>
+ 
+
+        <span class="token comment">// 初始化总时间和最大单个时间</span>
+        <span class="token keyword">let</span> totalTime <span class="token operator">=</span> times<span class="token punctuation">.</span><span class="token function">reduce</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">a<span class="token punctuation">,</span> b</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> a <span class="token operator">+</span> b<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// 计算所有任务的总时间</span>
+        <span class="token keyword">let</span> maxTime <span class="token operator">=</span> Math<span class="token punctuation">.</span><span class="token function">max</span><span class="token punctuation">(</span><span class="token operator">...</span>times<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// 计算任务所需的最大时间</span>
+
+        <span class="token comment">// 初始化二分搜索的范围</span>
+        <span class="token keyword">let</span> low <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        <span class="token keyword">let</span> high <span class="token operator">=</span> totalTime <span class="token operator">-</span> maxTime<span class="token punctuation">;</span>
+
+        <span class="token comment">// 二分搜索，找到最小的最大日耗时</span>
+        <span class="token keyword">while</span> <span class="token punctuation">(</span>low <span class="token operator">&lt;=</span> high<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+            <span class="token keyword">let</span> mid <span class="token operator">=</span> Math<span class="token punctuation">.</span><span class="token function">floor</span><span class="token punctuation">(</span><span class="token punctuation">(</span>low <span class="token operator">+</span> high<span class="token punctuation">)</span> <span class="token operator">/</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// 计算中点</span>
+            <span class="token keyword">let</span> currentSum <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>  <span class="token comment">// 当前时间段的总和</span>
+            <span class="token keyword">let</span> canAdjust <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>  <span class="token comment">// 是否可以调整任务到前一天</span>
+            <span class="token keyword">let</span> currentDay <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>  <span class="token comment">// 当前使用的天数计数</span>
+            <span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>  <span class="token comment">// 数组索引</span>
+
+            <span class="token comment">// 分配任务，确保每天不超过 mid 的限制</span>
+            <span class="token keyword">while</span> <span class="token punctuation">(</span>i <span class="token operator">&lt;</span> times<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+                currentSum <span class="token operator">+=</span> times<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>currentSum <span class="token operator">&gt;</span> mid<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>canAdjust<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+                        <span class="token comment">// 如果超过了 mid，尝试不计入当前任务</span>
+                        currentSum <span class="token operator">-=</span> times<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+                        canAdjust <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>  <span class="token comment">// 当天已进行过调整</span>
+                        i<span class="token operator">++</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{<!-- --></span>
+                        <span class="token comment">// 需要增加天数</span>
+                        currentDay<span class="token operator">++</span><span class="token punctuation">;</span>
+                        <span class="token keyword">if</span> <span class="token punctuation">(</span>currentDay <span class="token operator">&gt;</span> maxDays<span class="token punctuation">)</span> <span class="token keyword">break</span><span class="token punctuation">;</span>  <span class="token comment">// 天数超出最大允许值时退出</span>
+                        currentSum <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+                        canAdjust <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>  <span class="token comment">// 重置调整标记</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{<!-- --></span>
+                    i<span class="token operator">++</span><span class="token punctuation">;</span>  <span class="token comment">// 继续累加下一个任务</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token comment">// 判断是否可以在 maxDays 天内完成</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>i <span class="token operator">==</span> times<span class="token punctuation">.</span>length <span class="token operator">&amp;&amp;</span> currentDay <span class="token operator">&lt;=</span> maxDays<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+                high <span class="token operator">=</span> mid <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span>  <span class="token comment">// 可以完成，尝试更小的 mid</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{<!-- --></span>
+                low <span class="token operator">=</span> mid <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span>  <span class="token comment">// 不能完成，尝试更大的 mid</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment">// 输出找到的最小最大日耗时</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>low<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        rl<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+
+<div class="hljs-button {2}" data-title="复制"></div></code><div class="hide-preCode-box"><span class="hide-preCode-bt" data-report-view="{&quot;spm&quot;:&quot;1001.2101.3001.7365&quot;}"><img class="look-more-preCode contentImg-no-view" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newCodeMoreWhite.png" alt="" title=""></span></div><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li><li style="color: rgb(153, 153, 153);">2</li><li style="color: rgb(153, 153, 153);">3</li><li style="color: rgb(153, 153, 153);">4</li><li style="color: rgb(153, 153, 153);">5</li><li style="color: rgb(153, 153, 153);">6</li><li style="color: rgb(153, 153, 153);">7</li><li style="color: rgb(153, 153, 153);">8</li><li style="color: rgb(153, 153, 153);">9</li><li style="color: rgb(153, 153, 153);">10</li><li style="color: rgb(153, 153, 153);">11</li><li style="color: rgb(153, 153, 153);">12</li><li style="color: rgb(153, 153, 153);">13</li><li style="color: rgb(153, 153, 153);">14</li><li style="color: rgb(153, 153, 153);">15</li><li style="color: rgb(153, 153, 153);">16</li><li style="color: rgb(153, 153, 153);">17</li><li style="color: rgb(153, 153, 153);">18</li><li style="color: rgb(153, 153, 153);">19</li><li style="color: rgb(153, 153, 153);">20</li><li style="color: rgb(153, 153, 153);">21</li><li style="color: rgb(153, 153, 153);">22</li><li style="color: rgb(153, 153, 153);">23</li><li style="color: rgb(153, 153, 153);">24</li><li style="color: rgb(153, 153, 153);">25</li><li style="color: rgb(153, 153, 153);">26</li><li style="color: rgb(153, 153, 153);">27</li><li style="color: rgb(153, 153, 153);">28</li><li style="color: rgb(153, 153, 153);">29</li><li style="color: rgb(153, 153, 153);">30</li><li style="color: rgb(153, 153, 153);">31</li><li style="color: rgb(153, 153, 153);">32</li><li style="color: rgb(153, 153, 153);">33</li><li style="color: rgb(153, 153, 153);">34</li><li style="color: rgb(153, 153, 153);">35</li><li style="color: rgb(153, 153, 153);">36</li><li style="color: rgb(153, 153, 153);">37</li><li style="color: rgb(153, 153, 153);">38</li><li style="color: rgb(153, 153, 153);">39</li><li style="color: rgb(153, 153, 153);">40</li><li style="color: rgb(153, 153, 153);">41</li><li style="color: rgb(153, 153, 153);">42</li><li style="color: rgb(153, 153, 153);">43</li><li style="color: rgb(153, 153, 153);">44</li><li style="color: rgb(153, 153, 153);">45</li><li style="color: rgb(153, 153, 153);">46</li><li style="color: rgb(153, 153, 153);">47</li><li style="color: rgb(153, 153, 153);">48</li><li style="color: rgb(153, 153, 153);">49</li><li style="color: rgb(153, 153, 153);">50</li><li style="color: rgb(153, 153, 153);">51</li><li style="color: rgb(153, 153, 153);">52</li><li style="color: rgb(153, 153, 153);">53</li><li style="color: rgb(153, 153, 153);">54</li><li style="color: rgb(153, 153, 153);">55</li><li style="color: rgb(153, 153, 153);">56</li><li style="color: rgb(153, 153, 153);">57</li><li style="color: rgb(153, 153, 153);">58</li><li style="color: rgb(153, 153, 153);">59</li><li style="color: rgb(153, 153, 153);">60</li><li style="color: rgb(153, 153, 153);">61</li><li style="color: rgb(153, 153, 153);">62</li><li style="color: rgb(153, 153, 153);">63</li><li style="color: rgb(153, 153, 153);">64</li><li style="color: rgb(153, 153, 153);">65</li><li style="color: rgb(153, 153, 153);">66</li><li style="color: rgb(153, 153, 153);">67</li><li style="color: rgb(153, 153, 153);">68</li><li style="color: rgb(153, 153, 153);">69</li></ul></pre> 
+<h2><a name="t12"></a><a id="C_358"></a>C++</h2> 
+<pre data-index="8" class="set-code-hide prettyprint"><code class="prism language-c has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;iostream&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;vector&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;sstream&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;algorithm&gt;</span></span>
+
+using namespace std<span class="token punctuation">;</span>
+
+<span class="token comment">// 主函数</span>
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+    string input<span class="token punctuation">;</span>
+    
+    <span class="token comment">// 读取第一行输入，表示任务时间列表</span>
+     
+    <span class="token function">getline</span><span class="token punctuation">(</span>cin<span class="token punctuation">,</span> input<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    stringstream <span class="token function">ss</span><span class="token punctuation">(</span>input<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    string temp<span class="token punctuation">;</span>
+    vector<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">&gt;</span> times<span class="token punctuation">;</span>
+
+    <span class="token comment">// 将输入字符串按逗号分割并转换为整数列表</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token function">getline</span><span class="token punctuation">(</span>ss<span class="token punctuation">,</span> temp<span class="token punctuation">,</span> <span class="token string">','</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+        times<span class="token punctuation">.</span><span class="token function">push_back</span><span class="token punctuation">(</span><span class="token function">stoi</span><span class="token punctuation">(</span>temp<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+   
+    <span class="token keyword">int</span> max_days<span class="token punctuation">;</span>
+    cin <span class="token operator">&gt;&gt;</span> max_days<span class="token punctuation">;</span>  <span class="token comment">// 读取最大天数</span>
+  
+
+    <span class="token comment">// 计算总时间和最大单个任务时间</span>
+    <span class="token keyword">int</span> total_time <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span> max_time <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> time <span class="token operator">:</span> times<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+        total_time <span class="token operator">+=</span> time<span class="token punctuation">;</span>
+        max_time <span class="token operator">=</span> <span class="token function">max</span><span class="token punctuation">(</span>max_time<span class="token punctuation">,</span> time<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">// 初始化二分搜索的范围</span>
+    <span class="token keyword">int</span> low <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span> high <span class="token operator">=</span> total_time <span class="token operator">-</span> max_time<span class="token punctuation">;</span>
+
+    <span class="token comment">// 二分搜索确定最小的可行时间</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span>low <span class="token operator">&lt;=</span> high<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+        <span class="token keyword">int</span> mid <span class="token operator">=</span> <span class="token punctuation">(</span>low <span class="token operator">+</span> high<span class="token punctuation">)</span> <span class="token operator">/</span> <span class="token number">2</span><span class="token punctuation">;</span>  <span class="token comment">// 计算中间值</span>
+        <span class="token keyword">int</span> current_sum <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>  <span class="token comment">// 当前段的时间和</span>
+        bool can_adjust <span class="token operator">=</span> true<span class="token punctuation">;</span>  <span class="token comment">// 是否可以调整任务到前一天</span>
+        <span class="token keyword">int</span> current_day <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>  <span class="token comment">// 当前天数</span>
+        <span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>  <span class="token comment">// 任务索引</span>
+
+        <span class="token comment">// 遍历任务时间数组</span>
+        <span class="token keyword">while</span> <span class="token punctuation">(</span>i <span class="token operator">&lt;</span> times<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+            current_sum <span class="token operator">+=</span> times<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>current_sum <span class="token operator">&gt;</span> mid<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>can_adjust<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+                    <span class="token comment">// 超出 mid 时尝试调整</span>
+                    current_sum <span class="token operator">-=</span> times<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+                    can_adjust <span class="token operator">=</span> false<span class="token punctuation">;</span>  <span class="token comment">// 当天已调整</span>
+                    i<span class="token operator">++</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{<!-- --></span>
+                    <span class="token comment">// 增加一天</span>
+                    current_day<span class="token operator">++</span><span class="token punctuation">;</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>current_day <span class="token operator">&gt;</span> max_days<span class="token punctuation">)</span> <span class="token keyword">break</span><span class="token punctuation">;</span>  <span class="token comment">// 如果超出天数限制则退出</span>
+                    current_sum <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+                    can_adjust <span class="token operator">=</span> true<span class="token punctuation">;</span>  <span class="token comment">// 重置调整标志</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{<!-- --></span>
+                i<span class="token operator">++</span><span class="token punctuation">;</span>  <span class="token comment">// 未超出限制则继续</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment">// 判断是否可以在 max_days 内完成任务</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>i <span class="token operator">==</span> times<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> current_day <span class="token operator">&lt;=</span> max_days<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+            high <span class="token operator">=</span> mid <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span>  <span class="token comment">// 尝试更小的 mid</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{<!-- --></span>
+            low <span class="token operator">=</span> mid <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span>  <span class="token comment">// 尝试更大的 mid</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">// 输出最小最大日耗时</span>
+    cout <span class="token operator">&lt;&lt;</span> low <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<div class="hljs-button {2}" data-title="复制"></div></code><div class="hide-preCode-box"><span class="hide-preCode-bt" data-report-view="{&quot;spm&quot;:&quot;1001.2101.3001.7365&quot;}"><img class="look-more-preCode contentImg-no-view" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newCodeMoreWhite.png" alt="" title=""></span></div><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li><li style="color: rgb(153, 153, 153);">2</li><li style="color: rgb(153, 153, 153);">3</li><li style="color: rgb(153, 153, 153);">4</li><li style="color: rgb(153, 153, 153);">5</li><li style="color: rgb(153, 153, 153);">6</li><li style="color: rgb(153, 153, 153);">7</li><li style="color: rgb(153, 153, 153);">8</li><li style="color: rgb(153, 153, 153);">9</li><li style="color: rgb(153, 153, 153);">10</li><li style="color: rgb(153, 153, 153);">11</li><li style="color: rgb(153, 153, 153);">12</li><li style="color: rgb(153, 153, 153);">13</li><li style="color: rgb(153, 153, 153);">14</li><li style="color: rgb(153, 153, 153);">15</li><li style="color: rgb(153, 153, 153);">16</li><li style="color: rgb(153, 153, 153);">17</li><li style="color: rgb(153, 153, 153);">18</li><li style="color: rgb(153, 153, 153);">19</li><li style="color: rgb(153, 153, 153);">20</li><li style="color: rgb(153, 153, 153);">21</li><li style="color: rgb(153, 153, 153);">22</li><li style="color: rgb(153, 153, 153);">23</li><li style="color: rgb(153, 153, 153);">24</li><li style="color: rgb(153, 153, 153);">25</li><li style="color: rgb(153, 153, 153);">26</li><li style="color: rgb(153, 153, 153);">27</li><li style="color: rgb(153, 153, 153);">28</li><li style="color: rgb(153, 153, 153);">29</li><li style="color: rgb(153, 153, 153);">30</li><li style="color: rgb(153, 153, 153);">31</li><li style="color: rgb(153, 153, 153);">32</li><li style="color: rgb(153, 153, 153);">33</li><li style="color: rgb(153, 153, 153);">34</li><li style="color: rgb(153, 153, 153);">35</li><li style="color: rgb(153, 153, 153);">36</li><li style="color: rgb(153, 153, 153);">37</li><li style="color: rgb(153, 153, 153);">38</li><li style="color: rgb(153, 153, 153);">39</li><li style="color: rgb(153, 153, 153);">40</li><li style="color: rgb(153, 153, 153);">41</li><li style="color: rgb(153, 153, 153);">42</li><li style="color: rgb(153, 153, 153);">43</li><li style="color: rgb(153, 153, 153);">44</li><li style="color: rgb(153, 153, 153);">45</li><li style="color: rgb(153, 153, 153);">46</li><li style="color: rgb(153, 153, 153);">47</li><li style="color: rgb(153, 153, 153);">48</li><li style="color: rgb(153, 153, 153);">49</li><li style="color: rgb(153, 153, 153);">50</li><li style="color: rgb(153, 153, 153);">51</li><li style="color: rgb(153, 153, 153);">52</li><li style="color: rgb(153, 153, 153);">53</li><li style="color: rgb(153, 153, 153);">54</li><li style="color: rgb(153, 153, 153);">55</li><li style="color: rgb(153, 153, 153);">56</li><li style="color: rgb(153, 153, 153);">57</li><li style="color: rgb(153, 153, 153);">58</li><li style="color: rgb(153, 153, 153);">59</li><li style="color: rgb(153, 153, 153);">60</li><li style="color: rgb(153, 153, 153);">61</li><li style="color: rgb(153, 153, 153);">62</li><li style="color: rgb(153, 153, 153);">63</li><li style="color: rgb(153, 153, 153);">64</li><li style="color: rgb(153, 153, 153);">65</li><li style="color: rgb(153, 153, 153);">66</li><li style="color: rgb(153, 153, 153);">67</li><li style="color: rgb(153, 153, 153);">68</li><li style="color: rgb(153, 153, 153);">69</li><li style="color: rgb(153, 153, 153);">70</li><li style="color: rgb(153, 153, 153);">71</li><li style="color: rgb(153, 153, 153);">72</li><li style="color: rgb(153, 153, 153);">73</li><li style="color: rgb(153, 153, 153);">74</li><li style="color: rgb(153, 153, 153);">75</li><li style="color: rgb(153, 153, 153);">76</li><li style="color: rgb(153, 153, 153);">77</li><li style="color: rgb(153, 153, 153);">78</li><li style="color: rgb(153, 153, 153);">79</li><li style="color: rgb(153, 153, 153);">80</li><li style="color: rgb(153, 153, 153);">81</li></ul></pre> 
+<h2><a name="t13"></a><a id="C_444"></a>C语言</h2> 
+<pre data-index="9" class="set-code-hide prettyprint"><code class="prism language-c has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;stdio.h&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;stdlib.h&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;string.h&gt;</span></span>
+
+<span class="token comment">// 辅助函数，将输入字符串分割为整数数组</span>
+<span class="token keyword">void</span> <span class="token function">split</span><span class="token punctuation">(</span><span class="token keyword">char</span> <span class="token operator">*</span>input<span class="token punctuation">,</span> <span class="token keyword">int</span> <span class="token operator">*</span>times<span class="token punctuation">,</span> <span class="token keyword">int</span> <span class="token operator">*</span>len<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+    <span class="token keyword">char</span> <span class="token operator">*</span>token <span class="token operator">=</span> <span class="token function">strtok</span><span class="token punctuation">(</span>input<span class="token punctuation">,</span> <span class="token string">","</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span>token <span class="token operator">!=</span> <span class="token constant">NULL</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+        times<span class="token punctuation">[</span><span class="token punctuation">(</span><span class="token operator">*</span>len<span class="token punctuation">)</span><span class="token operator">++</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">atoi</span><span class="token punctuation">(</span>token<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// 将字符串转换为整数并存储</span>
+        token <span class="token operator">=</span> <span class="token function">strtok</span><span class="token punctuation">(</span><span class="token constant">NULL</span><span class="token punctuation">,</span> <span class="token string">","</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+    <span class="token keyword">char</span> input<span class="token punctuation">[</span><span class="token number">1000</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token keyword">int</span> times<span class="token punctuation">[</span><span class="token number">100</span><span class="token punctuation">]</span><span class="token punctuation">,</span> len <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// 读取第一行输入，表示任务时间列表</span>
+ 
+    <span class="token function">fgets</span><span class="token punctuation">(</span>input<span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>input<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token constant">stdin</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    input<span class="token punctuation">[</span><span class="token function">strlen</span><span class="token punctuation">(</span>input<span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">'\0'</span><span class="token punctuation">;</span>  <span class="token comment">// 去掉换行符</span>
+    <span class="token function">split</span><span class="token punctuation">(</span>input<span class="token punctuation">,</span> times<span class="token punctuation">,</span> <span class="token operator">&amp;</span>len<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// 将输入的字符串分割为整数数组</span>
+
+    <span class="token comment">// 读取第二行输入，表示最大允许天数</span>
+    <span class="token keyword">int</span> max_days<span class="token punctuation">;</span>
+    
+    <span class="token function">scanf</span><span class="token punctuation">(</span><span class="token string">"%d"</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>max_days<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// 初始化总时间和最大单个时间</span>
+    <span class="token keyword">int</span> total_time <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span> max_time <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> len<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+        total_time <span class="token operator">+=</span> times<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>times<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">&gt;</span> max_time<span class="token punctuation">)</span> max_time <span class="token operator">=</span> times<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>  <span class="token comment">// 计算最大任务时间</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">// 初始化二分搜索的范围</span>
+    <span class="token keyword">int</span> low <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span> high <span class="token operator">=</span> total_time <span class="token operator">-</span> max_time<span class="token punctuation">;</span>
+
+    <span class="token comment">// 二分搜索，找到最小的最大日耗时</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span>low <span class="token operator">&lt;=</span> high<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+        <span class="token keyword">int</span> mid <span class="token operator">=</span> <span class="token punctuation">(</span>low <span class="token operator">+</span> high<span class="token punctuation">)</span> <span class="token operator">/</span> <span class="token number">2</span><span class="token punctuation">;</span>
+        <span class="token keyword">int</span> current_sum <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span> current_day <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">,</span> can_adjust <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+        <span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 遍历任务时间数组，进行分配</span>
+        <span class="token keyword">while</span> <span class="token punctuation">(</span>i <span class="token operator">&lt;</span> len<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+            current_sum <span class="token operator">+=</span> times<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>current_sum <span class="token operator">&gt;</span> mid<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>can_adjust<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+                    current_sum <span class="token operator">-=</span> times<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+                    can_adjust <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+                    i<span class="token operator">++</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{<!-- --></span>
+                    current_day<span class="token operator">++</span><span class="token punctuation">;</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>current_day <span class="token operator">&gt;</span> max_days<span class="token punctuation">)</span> <span class="token keyword">break</span><span class="token punctuation">;</span>
+                    current_sum <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+                    can_adjust <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{<!-- --></span>
+                i<span class="token operator">++</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment">// 判断是否可以在 max_days 内完成任务</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>i <span class="token operator">==</span> len <span class="token operator">&amp;&amp;</span> current_day <span class="token operator">&lt;=</span> max_days<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+            high <span class="token operator">=</span> mid <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{<!-- --></span>
+            low <span class="token operator">=</span> mid <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">// 输出最小最大日耗时</span>
+    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"%d\n"</span><span class="token punctuation">,</span> low<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<div class="hljs-button {2}" data-title="复制"></div></code><div class="hide-preCode-box"><span class="hide-preCode-bt" data-report-view="{&quot;spm&quot;:&quot;1001.2101.3001.7365&quot;}"><img class="look-more-preCode contentImg-no-view" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newCodeMoreWhite.png" alt="" title=""></span></div><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li><li style="color: rgb(153, 153, 153);">2</li><li style="color: rgb(153, 153, 153);">3</li><li style="color: rgb(153, 153, 153);">4</li><li style="color: rgb(153, 153, 153);">5</li><li style="color: rgb(153, 153, 153);">6</li><li style="color: rgb(153, 153, 153);">7</li><li style="color: rgb(153, 153, 153);">8</li><li style="color: rgb(153, 153, 153);">9</li><li style="color: rgb(153, 153, 153);">10</li><li style="color: rgb(153, 153, 153);">11</li><li style="color: rgb(153, 153, 153);">12</li><li style="color: rgb(153, 153, 153);">13</li><li style="color: rgb(153, 153, 153);">14</li><li style="color: rgb(153, 153, 153);">15</li><li style="color: rgb(153, 153, 153);">16</li><li style="color: rgb(153, 153, 153);">17</li><li style="color: rgb(153, 153, 153);">18</li><li style="color: rgb(153, 153, 153);">19</li><li style="color: rgb(153, 153, 153);">20</li><li style="color: rgb(153, 153, 153);">21</li><li style="color: rgb(153, 153, 153);">22</li><li style="color: rgb(153, 153, 153);">23</li><li style="color: rgb(153, 153, 153);">24</li><li style="color: rgb(153, 153, 153);">25</li><li style="color: rgb(153, 153, 153);">26</li><li style="color: rgb(153, 153, 153);">27</li><li style="color: rgb(153, 153, 153);">28</li><li style="color: rgb(153, 153, 153);">29</li><li style="color: rgb(153, 153, 153);">30</li><li style="color: rgb(153, 153, 153);">31</li><li style="color: rgb(153, 153, 153);">32</li><li style="color: rgb(153, 153, 153);">33</li><li style="color: rgb(153, 153, 153);">34</li><li style="color: rgb(153, 153, 153);">35</li><li style="color: rgb(153, 153, 153);">36</li><li style="color: rgb(153, 153, 153);">37</li><li style="color: rgb(153, 153, 153);">38</li><li style="color: rgb(153, 153, 153);">39</li><li style="color: rgb(153, 153, 153);">40</li><li style="color: rgb(153, 153, 153);">41</li><li style="color: rgb(153, 153, 153);">42</li><li style="color: rgb(153, 153, 153);">43</li><li style="color: rgb(153, 153, 153);">44</li><li style="color: rgb(153, 153, 153);">45</li><li style="color: rgb(153, 153, 153);">46</li><li style="color: rgb(153, 153, 153);">47</li><li style="color: rgb(153, 153, 153);">48</li><li style="color: rgb(153, 153, 153);">49</li><li style="color: rgb(153, 153, 153);">50</li><li style="color: rgb(153, 153, 153);">51</li><li style="color: rgb(153, 153, 153);">52</li><li style="color: rgb(153, 153, 153);">53</li><li style="color: rgb(153, 153, 153);">54</li><li style="color: rgb(153, 153, 153);">55</li><li style="color: rgb(153, 153, 153);">56</li><li style="color: rgb(153, 153, 153);">57</li><li style="color: rgb(153, 153, 153);">58</li><li style="color: rgb(153, 153, 153);">59</li><li style="color: rgb(153, 153, 153);">60</li><li style="color: rgb(153, 153, 153);">61</li><li style="color: rgb(153, 153, 153);">62</li><li style="color: rgb(153, 153, 153);">63</li><li style="color: rgb(153, 153, 153);">64</li><li style="color: rgb(153, 153, 153);">65</li><li style="color: rgb(153, 153, 153);">66</li><li style="color: rgb(153, 153, 153);">67</li><li style="color: rgb(153, 153, 153);">68</li><li style="color: rgb(153, 153, 153);">69</li><li style="color: rgb(153, 153, 153);">70</li><li style="color: rgb(153, 153, 153);">71</li><li style="color: rgb(153, 153, 153);">72</li><li style="color: rgb(153, 153, 153);">73</li><li style="color: rgb(153, 153, 153);">74</li><li style="color: rgb(153, 153, 153);">75</li><li style="color: rgb(153, 153, 153);">76</li></ul></pre> 
+
+                </div><div data-report-view="{&quot;mod&quot;:&quot;1585297308_001&quot;,&quot;spm&quot;:&quot;1001.2101.3001.6548&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/banxia_frontend/article/details/142923730&quot;,&quot;extend1&quot;:&quot;pc&quot;,&quot;ab&quot;:&quot;new&quot;}"><div></div></div>
+                <link href="https://csdnimg.cn/release/blogv2/dist/mdeditor/css/editerView/markdown_views-f23dff6052.css" rel="stylesheet">
+                <link href="https://csdnimg.cn/release/blogv2/dist/mdeditor/css/style-e504d6a974.css" rel="stylesheet">
+        </div></html>

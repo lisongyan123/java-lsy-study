@@ -1,0 +1,407 @@
+<html lang="zh-CN"><head><meta charset="UTF-8"><style>.nodata  main {width:1000px;margin: auto;}</style></head><body class="nodata " style=""><div class="main_father clearfix d-flex justify-content-center " style="height:100%;"> <div class="container clearfix " id="mainBox"><main><div class="blog-content-box"><div id="article_content" class="article_content clearfix">
+        <link rel="stylesheet" href="https://csdnimg.cn/release/blogv2/dist/mdeditor/css/editerView/kdoc_html_views-1a98987dfd.css">
+        <link rel="stylesheet" href="https://csdnimg.cn/release/blogv2/dist/mdeditor/css/editerView/ck_htmledit_views-704d5b9767.css">
+             
+                <div id="content_views" class="markdown_views prism-atom-one-light">
+                    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+                        <path stroke-linecap="round" d="M5,0 0,2.5 5,5z" id="raphael-marker-block" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path>
+                    </svg>
+                    <h2><a name="t0"></a><a id="OD_0"></a>最新华为OD机试</h2> 
+
+<h2><a name="t1"></a><a id="_4"></a>题目描述</h2> 
+<p>在第一人称<a href="https://so.csdn.net/so/search?q=%E5%B0%84%E5%87%BB%E6%B8%B8%E6%88%8F&amp;spm=1001.2101.3001.7020" target="_blank" class="hl hl-1" data-report-click="{&quot;spm&quot;:&quot;1001.2101.3001.7020&quot;,&quot;dest&quot;:&quot;https://so.csdn.net/so/search?q=%E5%B0%84%E5%87%BB%E6%B8%B8%E6%88%8F&amp;spm=1001.2101.3001.7020&quot;,&quot;extra&quot;:&quot;{\&quot;searchword\&quot;:\&quot;射击游戏\&quot;}&quot;}" data-tit="射击游戏" data-pretit="射击游戏">射击游戏</a>中，玩家通过键盘的A、S、D、W四个按键控制游戏人物分别向左、向后、向右、向前进行移动，从而完成走位。</p> 
+<p>假设玩家每按动一次键盘，游戏任务会向某个方向移动一步，如果玩家在操作一定次数的键盘并且各个方向的步数相同时，此时游戏任务必定会回到原点，则称此次走位为完美走位。</p> 
+<p>现给定玩家的走位（例如：<code>ASDA</code>），请通过更换其中一段连续走位的方式使得原走位能够变成一个完美走位。其中待更换的连续走位可以是相同长度的任何走位。</p> 
+<p>请返回待更换的连续走位的最小可能长度。</p> 
+<p>如果原走位本身是一个完美走位，则返回0。</p> 
+<p>​</p> 
+<h2><a name="t2"></a><a id="_19"></a>输入描述</h2> 
+<p>输入为由键盘字母表示的走位s，例如：<code>ASDA</code></p> 
+<p>说明：</p> 
+<p>​ 1、走位长度 1 ≤ s.length ≤ 100000（也就是长度不一定是偶数）<br> ​ 2、s.length 是 4 的倍数<br> ​ 3、s中只含有’A’, ‘S’, ‘D’, ‘W’ 四种字符</p> 
+<h2><a name="t3"></a><a id="_29"></a>输出描述</h2> 
+<p>输出为待更换的连续走位的最小可能长度。</p> 
+<h2><a name="t4"></a><a id="1_33"></a>示例1</h2> 
+<p>输入</p> 
+<pre data-index="0" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">WASDAASD
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre> 
+<p>输出</p> 
+<pre data-index="1" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">1
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre> 
+<p>说明</p> 
+<blockquote> 
+ <p>将第二个A替换为W，即可得到完美走位</p> 
+</blockquote> 
+<h2><a name="t5"></a><a id="2_51"></a>示例2</h2> 
+<p>输入</p> 
+<pre data-index="2" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">AAAA
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre> 
+<p>输出</p> 
+<pre data-index="3" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">3
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre> 
+<p>说明</p> 
+<blockquote> 
+ <p>将其中三个连续的A替换为WSD，即可得到完美走位</p> 
+</blockquote> 
+<h2><a name="t6"></a><a id="__71"></a>解题思路## 分析</h2> 
+<p>完美走位是上下左右的次数一样的。如果不一样，我们需要在给定的走位中，找到一个<strong>连续的字串</strong>，替换走位，是的走位完美。</p> 
+<p>题目要求，保持W,A,S,D字母个数平衡，即相等，如果不相等，可以从字符串中选取一段连续子串替换，来让字符串平衡。</p> 
+<p>比如：<code>WWWWAAAASSSS</code></p> 
+<p><a href="https://so.csdn.net/so/search?q=%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%95%BF%E5%BA%A6&amp;spm=1001.2101.3001.7020" target="_blank" class="hl hl-1" data-report-view="{&quot;spm&quot;:&quot;1001.2101.3001.7020&quot;,&quot;dest&quot;:&quot;https://so.csdn.net/so/search?q=%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%95%BF%E5%BA%A6&amp;spm=1001.2101.3001.7020&quot;,&quot;extra&quot;:&quot;{\&quot;searchword\&quot;:\&quot;字符串长度\&quot;}&quot;}" data-report-click="{&quot;spm&quot;:&quot;1001.2101.3001.7020&quot;,&quot;dest&quot;:&quot;https://so.csdn.net/so/search?q=%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%95%BF%E5%BA%A6&amp;spm=1001.2101.3001.7020&quot;,&quot;extra&quot;:&quot;{\&quot;searchword\&quot;:\&quot;字符串长度\&quot;}&quot;}" data-tit="字符串长度" data-pretit="字符串长度">字符串长度</a>12，W,A,S,D平衡的话，则每个字母个数应该是3个，而现在W,A,S各有4个，也就是说各超了1个。</p> 
+<p>因此我们应该从字符串中，<strong>选取一段包含1个W，1个A，1个S的子串</strong>，来替换为D。</p> 
+<p><code>WWWWAAAASSSS</code></p> 
+<p>而符合这种要求的子串可能很多，我们需要找出其中最短的，即<code>**WAAAAS**</code>。</p> 
+<h3><a name="t7"></a><a id="_87"></a>代码思路</h3> 
+<ol><li> <p>首先，我们需要统计输入字符串中每个字符的出现次数。这可以通过遍历字符串并使用一个哈希表（字典）来实现。</p> </li><li> <p>然后，我们需要确定正整数序列的起始值。我们可以通过计算字符串长度除以序列长度来得到每个正整数的平均长度。然后，我们可以从10的（平均长度-1）次方开始，作为起始值。</p> </li><li> <p>接下来，我们需要使用滑动窗口的方法来寻找还原后的连续正整数序列。我们可以初始化两个指针，分别表示滑动窗口的左边界和右边界。同时，我们需要一个临时哈希表（字典）来存储当前滑动窗口内的字符出现次数。</p> </li><li> <p>在滑动窗口的过程中，我们需要不断更新左右边界的字符出现次数，并检查当前滑动窗口内的字符出现次数是否与输入字符串的字符出现次数匹配。如果匹配，说明我们找到了一个可能的连续正整数序列，此时我们可以更新结果变量。</p> </li><li> <p>当右边界超过字符串长度时，滑动窗口的过程结束。此时，结果变量中存储的就是还原后的连续正整数序列中的最小数字。</p> </li></ol> 
+<h2><a name="t8"></a><a id="Java_99"></a>Java</h2> 
+<pre data-index="4" class="set-code-hide prettyprint"><code class="prism language-java has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;"><span class="token keyword">import</span> <span class="token namespace">java<span class="token punctuation">.</span>util<span class="token punctuation">.</span></span><span class="token class-name">HashMap</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token namespace">java<span class="token punctuation">.</span>util<span class="token punctuation">.</span></span><span class="token class-name">Scanner</span><span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Main</span> <span class="token punctuation">{<!-- --></span>
+
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">int</span> <span class="token function">minReplacementLength</span><span class="token punctuation">(</span><span class="token class-name">String</span> inputStr<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+        <span class="token comment">// 初始化方向键计数字典</span>
+        <span class="token class-name">HashMap</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Character</span><span class="token punctuation">,</span> <span class="token class-name">Integer</span><span class="token punctuation">&gt;</span></span> directionCount <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HashMap</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        directionCount<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">'W'</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        directionCount<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">'A'</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        directionCount<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">'S'</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        directionCount<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span><span class="token string">'D'</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 统计输入字符串中每个方向键的出现次数</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">char</span> c <span class="token operator">:</span> inputStr<span class="token punctuation">.</span><span class="token function">toCharArray</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+            directionCount<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>c<span class="token punctuation">,</span> directionCount<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>c<span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment">// 初始化左右指针和结果变量</span>
+        <span class="token keyword">int</span> left <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        <span class="token keyword">int</span> right <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        <span class="token keyword">int</span> minLength <span class="token operator">=</span> inputStr<span class="token punctuation">.</span><span class="token function">length</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 更新右指针对应的方向键计数</span>
+        directionCount<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>inputStr<span class="token punctuation">.</span><span class="token function">charAt</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">,</span> directionCount<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>inputStr<span class="token punctuation">.</span><span class="token function">charAt</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+            <span class="token comment">// 计算当前最大方向键计数</span>
+            <span class="token keyword">int</span> maxCount <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> count <span class="token operator">:</span> directionCount<span class="token punctuation">.</span><span class="token function">values</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+                maxCount <span class="token operator">=</span> <span class="token class-name">Math</span><span class="token punctuation">.</span><span class="token function">max</span><span class="token punctuation">(</span>maxCount<span class="token punctuation">,</span> count<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token comment">// 计算当前窗口长度和可替换的字符数</span>
+            <span class="token keyword">int</span> windowLength <span class="token operator">=</span> right <span class="token operator">-</span> left <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span>
+            <span class="token keyword">int</span> replaceableChars <span class="token operator">=</span> windowLength<span class="token punctuation">;</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> count <span class="token operator">:</span> directionCount<span class="token punctuation">.</span><span class="token function">values</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+                replaceableChars <span class="token operator">-=</span> maxCount <span class="token operator">-</span> count<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token comment">// 如果可替换字符数大于等于0且能被4整除，则更新结果变量</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>replaceableChars <span class="token operator">&gt;=</span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span> replaceableChars <span class="token operator">%</span> <span class="token number">4</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+                minLength <span class="token operator">=</span> <span class="token class-name">Math</span><span class="token punctuation">.</span><span class="token function">min</span><span class="token punctuation">(</span>minLength<span class="token punctuation">,</span> windowLength<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                <span class="token comment">// 更新左指针并检查是否越界</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>left <span class="token operator">&lt;</span> inputStr<span class="token punctuation">.</span><span class="token function">length</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+                    directionCount<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>inputStr<span class="token punctuation">.</span><span class="token function">charAt</span><span class="token punctuation">(</span>left<span class="token punctuation">)</span><span class="token punctuation">,</span> directionCount<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>inputStr<span class="token punctuation">.</span><span class="token function">charAt</span><span class="token punctuation">(</span>left<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    left<span class="token operator">++</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{<!-- --></span>
+                    <span class="token keyword">break</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{<!-- --></span>
+                <span class="token comment">// 更新右指针并检查是否越界</span>
+                right<span class="token operator">++</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>right <span class="token operator">&gt;=</span> inputStr<span class="token punctuation">.</span><span class="token function">length</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+                    <span class="token keyword">break</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+                directionCount<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>inputStr<span class="token punctuation">.</span><span class="token function">charAt</span><span class="token punctuation">(</span>right<span class="token punctuation">)</span><span class="token punctuation">,</span> directionCount<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>inputStr<span class="token punctuation">.</span><span class="token function">charAt</span><span class="token punctuation">(</span>right<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">return</span> minLength<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+        <span class="token class-name">Scanner</span> scanner <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Scanner</span><span class="token punctuation">(</span><span class="token class-name">System</span><span class="token punctuation">.</span>in<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">String</span> inputStr <span class="token operator">=</span> scanner<span class="token punctuation">.</span><span class="token function">nextLine</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token function">minReplacementLength</span><span class="token punctuation">(</span>inputStr<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+
+
+<div class="hljs-button {2}" data-title="复制"></div></code><div class="hide-preCode-box"><span class="hide-preCode-bt" data-report-view="{&quot;spm&quot;:&quot;1001.2101.3001.7365&quot;}"><img class="look-more-preCode contentImg-no-view" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newCodeMoreWhite.png" alt="" title=""></span></div><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li><li style="color: rgb(153, 153, 153);">2</li><li style="color: rgb(153, 153, 153);">3</li><li style="color: rgb(153, 153, 153);">4</li><li style="color: rgb(153, 153, 153);">5</li><li style="color: rgb(153, 153, 153);">6</li><li style="color: rgb(153, 153, 153);">7</li><li style="color: rgb(153, 153, 153);">8</li><li style="color: rgb(153, 153, 153);">9</li><li style="color: rgb(153, 153, 153);">10</li><li style="color: rgb(153, 153, 153);">11</li><li style="color: rgb(153, 153, 153);">12</li><li style="color: rgb(153, 153, 153);">13</li><li style="color: rgb(153, 153, 153);">14</li><li style="color: rgb(153, 153, 153);">15</li><li style="color: rgb(153, 153, 153);">16</li><li style="color: rgb(153, 153, 153);">17</li><li style="color: rgb(153, 153, 153);">18</li><li style="color: rgb(153, 153, 153);">19</li><li style="color: rgb(153, 153, 153);">20</li><li style="color: rgb(153, 153, 153);">21</li><li style="color: rgb(153, 153, 153);">22</li><li style="color: rgb(153, 153, 153);">23</li><li style="color: rgb(153, 153, 153);">24</li><li style="color: rgb(153, 153, 153);">25</li><li style="color: rgb(153, 153, 153);">26</li><li style="color: rgb(153, 153, 153);">27</li><li style="color: rgb(153, 153, 153);">28</li><li style="color: rgb(153, 153, 153);">29</li><li style="color: rgb(153, 153, 153);">30</li><li style="color: rgb(153, 153, 153);">31</li><li style="color: rgb(153, 153, 153);">32</li><li style="color: rgb(153, 153, 153);">33</li><li style="color: rgb(153, 153, 153);">34</li><li style="color: rgb(153, 153, 153);">35</li><li style="color: rgb(153, 153, 153);">36</li><li style="color: rgb(153, 153, 153);">37</li><li style="color: rgb(153, 153, 153);">38</li><li style="color: rgb(153, 153, 153);">39</li><li style="color: rgb(153, 153, 153);">40</li><li style="color: rgb(153, 153, 153);">41</li><li style="color: rgb(153, 153, 153);">42</li><li style="color: rgb(153, 153, 153);">43</li><li style="color: rgb(153, 153, 153);">44</li><li style="color: rgb(153, 153, 153);">45</li><li style="color: rgb(153, 153, 153);">46</li><li style="color: rgb(153, 153, 153);">47</li><li style="color: rgb(153, 153, 153);">48</li><li style="color: rgb(153, 153, 153);">49</li><li style="color: rgb(153, 153, 153);">50</li><li style="color: rgb(153, 153, 153);">51</li><li style="color: rgb(153, 153, 153);">52</li><li style="color: rgb(153, 153, 153);">53</li><li style="color: rgb(153, 153, 153);">54</li><li style="color: rgb(153, 153, 153);">55</li><li style="color: rgb(153, 153, 153);">56</li><li style="color: rgb(153, 153, 153);">57</li><li style="color: rgb(153, 153, 153);">58</li><li style="color: rgb(153, 153, 153);">59</li><li style="color: rgb(153, 153, 153);">60</li><li style="color: rgb(153, 153, 153);">61</li><li style="color: rgb(153, 153, 153);">62</li><li style="color: rgb(153, 153, 153);">63</li><li style="color: rgb(153, 153, 153);">64</li><li style="color: rgb(153, 153, 153);">65</li><li style="color: rgb(153, 153, 153);">66</li><li style="color: rgb(153, 153, 153);">67</li><li style="color: rgb(153, 153, 153);">68</li><li style="color: rgb(153, 153, 153);">69</li><li style="color: rgb(153, 153, 153);">70</li><li style="color: rgb(153, 153, 153);">71</li><li style="color: rgb(153, 153, 153);">72</li><li style="color: rgb(153, 153, 153);">73</li></ul></pre> 
+<h2><a name="t9"></a><a id="Python_177"></a>Python</h2> 
+<pre data-index="5" class="set-code-hide prettyprint"><code class="prism language-python has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;"><span class="token keyword">def</span> <span class="token function">min_replacement_length</span><span class="token punctuation">(</span>input_str<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token comment"># 初始化方向键计数字典</span>
+    direction_count <span class="token operator">=</span> <span class="token punctuation">{<!-- --></span><span class="token string">'W'</span><span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token string">'A'</span><span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token string">'S'</span><span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token string">'D'</span><span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">}</span>
+
+    <span class="token comment"># 统计输入字符串中每个方向键的出现次数</span>
+    <span class="token keyword">for</span> char <span class="token keyword">in</span> input_str<span class="token punctuation">:</span>
+        direction_count<span class="token punctuation">[</span>char<span class="token punctuation">]</span> <span class="token operator">+=</span> <span class="token number">1</span>
+
+    <span class="token comment"># 初始化左右指针和结果变量</span>
+    left <span class="token operator">=</span> <span class="token number">0</span>
+    right <span class="token operator">=</span> <span class="token number">0</span>
+    min_length <span class="token operator">=</span> <span class="token builtin">len</span><span class="token punctuation">(</span>input_str<span class="token punctuation">)</span>
+
+    <span class="token comment"># 更新右指针对应的方向键计数</span>
+    direction_count<span class="token punctuation">[</span>input_str<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">]</span> <span class="token operator">-=</span> <span class="token number">1</span>
+
+    <span class="token keyword">while</span> <span class="token boolean">True</span><span class="token punctuation">:</span>
+        <span class="token comment"># 计算当前最大方向键计数</span>
+        max_count <span class="token operator">=</span> <span class="token builtin">max</span><span class="token punctuation">(</span>direction_count<span class="token punctuation">.</span>values<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+        <span class="token comment"># 计算当前窗口长度和可替换的字符数</span>
+        window_length <span class="token operator">=</span> right <span class="token operator">-</span> left <span class="token operator">+</span> <span class="token number">1</span>
+        replaceable_chars <span class="token operator">=</span> window_length <span class="token operator">-</span> <span class="token builtin">sum</span><span class="token punctuation">(</span>max_count <span class="token operator">-</span> count <span class="token keyword">for</span> count <span class="token keyword">in</span> direction_count<span class="token punctuation">.</span>values<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+        <span class="token comment"># 如果可替换字符数大于等于0且能被4整除，则更新结果变量</span>
+        <span class="token keyword">if</span> replaceable_chars <span class="token operator">&gt;=</span> <span class="token number">0</span> <span class="token keyword">and</span> replaceable_chars <span class="token operator">%</span> <span class="token number">4</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">:</span>
+            min_length <span class="token operator">=</span> <span class="token builtin">min</span><span class="token punctuation">(</span>min_length<span class="token punctuation">,</span> window_length<span class="token punctuation">)</span>
+
+            <span class="token comment"># 更新左指针并检查是否越界</span>
+            <span class="token keyword">if</span> left <span class="token operator">&lt;</span> <span class="token builtin">len</span><span class="token punctuation">(</span>input_str<span class="token punctuation">)</span><span class="token punctuation">:</span>
+                direction_count<span class="token punctuation">[</span>input_str<span class="token punctuation">[</span>left<span class="token punctuation">]</span><span class="token punctuation">]</span> <span class="token operator">+=</span> <span class="token number">1</span>
+                left <span class="token operator">+=</span> <span class="token number">1</span>
+            <span class="token keyword">else</span><span class="token punctuation">:</span>
+                <span class="token keyword">break</span>
+        <span class="token keyword">else</span><span class="token punctuation">:</span>
+            <span class="token comment"># 更新右指针并检查是否越界</span>
+            right <span class="token operator">+=</span> <span class="token number">1</span>
+            <span class="token keyword">if</span> right <span class="token operator">&gt;=</span> <span class="token builtin">len</span><span class="token punctuation">(</span>input_str<span class="token punctuation">)</span><span class="token punctuation">:</span>
+                <span class="token keyword">break</span>
+            direction_count<span class="token punctuation">[</span>input_str<span class="token punctuation">[</span>right<span class="token punctuation">]</span><span class="token punctuation">]</span> <span class="token operator">-=</span> <span class="token number">1</span>
+
+    <span class="token keyword">return</span> min_length
+
+
+<span class="token keyword">if</span> __name__ <span class="token operator">==</span> <span class="token string">"__main__"</span><span class="token punctuation">:</span>
+    input_str <span class="token operator">=</span> <span class="token builtin">input</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span>min_replacement_length<span class="token punctuation">(</span>input_str<span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+
+<div class="hljs-button {2}" data-title="复制"></div></code><div class="hide-preCode-box"><span class="hide-preCode-bt" data-report-view="{&quot;spm&quot;:&quot;1001.2101.3001.7365&quot;}"><img class="look-more-preCode contentImg-no-view" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newCodeMoreWhite.png" alt="" title=""></span></div><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li><li style="color: rgb(153, 153, 153);">2</li><li style="color: rgb(153, 153, 153);">3</li><li style="color: rgb(153, 153, 153);">4</li><li style="color: rgb(153, 153, 153);">5</li><li style="color: rgb(153, 153, 153);">6</li><li style="color: rgb(153, 153, 153);">7</li><li style="color: rgb(153, 153, 153);">8</li><li style="color: rgb(153, 153, 153);">9</li><li style="color: rgb(153, 153, 153);">10</li><li style="color: rgb(153, 153, 153);">11</li><li style="color: rgb(153, 153, 153);">12</li><li style="color: rgb(153, 153, 153);">13</li><li style="color: rgb(153, 153, 153);">14</li><li style="color: rgb(153, 153, 153);">15</li><li style="color: rgb(153, 153, 153);">16</li><li style="color: rgb(153, 153, 153);">17</li><li style="color: rgb(153, 153, 153);">18</li><li style="color: rgb(153, 153, 153);">19</li><li style="color: rgb(153, 153, 153);">20</li><li style="color: rgb(153, 153, 153);">21</li><li style="color: rgb(153, 153, 153);">22</li><li style="color: rgb(153, 153, 153);">23</li><li style="color: rgb(153, 153, 153);">24</li><li style="color: rgb(153, 153, 153);">25</li><li style="color: rgb(153, 153, 153);">26</li><li style="color: rgb(153, 153, 153);">27</li><li style="color: rgb(153, 153, 153);">28</li><li style="color: rgb(153, 153, 153);">29</li><li style="color: rgb(153, 153, 153);">30</li><li style="color: rgb(153, 153, 153);">31</li><li style="color: rgb(153, 153, 153);">32</li><li style="color: rgb(153, 153, 153);">33</li><li style="color: rgb(153, 153, 153);">34</li><li style="color: rgb(153, 153, 153);">35</li><li style="color: rgb(153, 153, 153);">36</li><li style="color: rgb(153, 153, 153);">37</li><li style="color: rgb(153, 153, 153);">38</li><li style="color: rgb(153, 153, 153);">39</li><li style="color: rgb(153, 153, 153);">40</li><li style="color: rgb(153, 153, 153);">41</li><li style="color: rgb(153, 153, 153);">42</li><li style="color: rgb(153, 153, 153);">43</li><li style="color: rgb(153, 153, 153);">44</li><li style="color: rgb(153, 153, 153);">45</li><li style="color: rgb(153, 153, 153);">46</li><li style="color: rgb(153, 153, 153);">47</li><li style="color: rgb(153, 153, 153);">48</li><li style="color: rgb(153, 153, 153);">49</li></ul></pre> 
+<h2><a name="t10"></a><a id="JavaScript_230"></a><span class="words-blog hl-git-1" data-report-view="{&quot;spm&quot;:&quot;1001.2101.3001.10283&quot;,&quot;extra&quot;:&quot;{\&quot;words\&quot;:\&quot;JavaScript\&quot;}&quot;}" data-tit="JavaScript" data-pretit="javascript">JavaScript</span></h2> 
+<pre data-index="6" class="set-code-hide prettyprint"><code class="prism language-js has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;"><span class="token keyword">function</span> <span class="token function">minReplacementLength</span><span class="token punctuation">(</span><span class="token parameter">inputStr</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+    <span class="token comment">// 初始化方向键计数字典</span>
+    <span class="token keyword">const</span> directionCount <span class="token operator">=</span> <span class="token punctuation">{<!-- --></span> <span class="token constant">W</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token constant">A</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token constant">S</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token constant">D</span><span class="token operator">:</span> <span class="token number">0</span> <span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// 统计输入字符串中每个方向键的出现次数</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">const</span> c <span class="token keyword">of</span> inputStr<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+        directionCount<span class="token punctuation">[</span>c<span class="token punctuation">]</span><span class="token operator">++</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">// 初始化左右指针和结果变量</span>
+    <span class="token keyword">let</span> left <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token keyword">let</span> right <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token keyword">let</span> minLength <span class="token operator">=</span> inputStr<span class="token punctuation">.</span>length<span class="token punctuation">;</span>
+
+    <span class="token comment">// 更新右指针对应的方向键计数</span>
+    directionCount<span class="token punctuation">[</span>inputStr<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token operator">--</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+        <span class="token comment">// 计算当前最大方向键计数</span>
+        <span class="token keyword">const</span> maxCount <span class="token operator">=</span> Math<span class="token punctuation">.</span><span class="token function">max</span><span class="token punctuation">(</span><span class="token operator">...</span>Object<span class="token punctuation">.</span><span class="token function">values</span><span class="token punctuation">(</span>directionCount<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 计算当前窗口长度和可替换的字符数</span>
+        <span class="token keyword">const</span> windowLength <span class="token operator">=</span> right <span class="token operator">-</span> left <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span>
+        <span class="token keyword">let</span> replaceableChars <span class="token operator">=</span> windowLength<span class="token punctuation">;</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">const</span> count <span class="token keyword">of</span> Object<span class="token punctuation">.</span><span class="token function">values</span><span class="token punctuation">(</span>directionCount<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+            replaceableChars <span class="token operator">-=</span> maxCount <span class="token operator">-</span> count<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment">// 如果可替换字符数大于等于0且能被4整除，则更新结果变量</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>replaceableChars <span class="token operator">&gt;=</span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span> replaceableChars <span class="token operator">%</span> <span class="token number">4</span> <span class="token operator">===</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+            minLength <span class="token operator">=</span> Math<span class="token punctuation">.</span><span class="token function">min</span><span class="token punctuation">(</span>minLength<span class="token punctuation">,</span> windowLength<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token comment">// 更新左指针并检查是否越界</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>left <span class="token operator">&lt;</span> inputStr<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+                directionCount<span class="token punctuation">[</span>inputStr<span class="token punctuation">[</span>left<span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token operator">++</span><span class="token punctuation">;</span>
+                left<span class="token operator">++</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{<!-- --></span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{<!-- --></span>
+            <span class="token comment">// 更新右指针并检查是否越界</span>
+            right<span class="token operator">++</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>right <span class="token operator">&gt;=</span> inputStr<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            directionCount<span class="token punctuation">[</span>inputStr<span class="token punctuation">[</span>right<span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token operator">--</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">return</span> minLength<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">const</span> readline <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'readline'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">createInterface</span><span class="token punctuation">(</span><span class="token punctuation">{<!-- --></span>
+    input<span class="token operator">:</span> process<span class="token punctuation">.</span>stdin<span class="token punctuation">,</span>
+    output<span class="token operator">:</span> process<span class="token punctuation">.</span>stdout
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+readline<span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'line'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token parameter">inputStr</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{<!-- --></span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token function">minReplacementLength</span><span class="token punctuation">(</span>inputStr<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    readline<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+
+<div class="hljs-button {2}" data-title="复制"></div></code><div class="hide-preCode-box"><span class="hide-preCode-bt" data-report-view="{&quot;spm&quot;:&quot;1001.2101.3001.7365&quot;}"><img class="look-more-preCode contentImg-no-view" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newCodeMoreWhite.png" alt="" title=""></span></div><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li><li style="color: rgb(153, 153, 153);">2</li><li style="color: rgb(153, 153, 153);">3</li><li style="color: rgb(153, 153, 153);">4</li><li style="color: rgb(153, 153, 153);">5</li><li style="color: rgb(153, 153, 153);">6</li><li style="color: rgb(153, 153, 153);">7</li><li style="color: rgb(153, 153, 153);">8</li><li style="color: rgb(153, 153, 153);">9</li><li style="color: rgb(153, 153, 153);">10</li><li style="color: rgb(153, 153, 153);">11</li><li style="color: rgb(153, 153, 153);">12</li><li style="color: rgb(153, 153, 153);">13</li><li style="color: rgb(153, 153, 153);">14</li><li style="color: rgb(153, 153, 153);">15</li><li style="color: rgb(153, 153, 153);">16</li><li style="color: rgb(153, 153, 153);">17</li><li style="color: rgb(153, 153, 153);">18</li><li style="color: rgb(153, 153, 153);">19</li><li style="color: rgb(153, 153, 153);">20</li><li style="color: rgb(153, 153, 153);">21</li><li style="color: rgb(153, 153, 153);">22</li><li style="color: rgb(153, 153, 153);">23</li><li style="color: rgb(153, 153, 153);">24</li><li style="color: rgb(153, 153, 153);">25</li><li style="color: rgb(153, 153, 153);">26</li><li style="color: rgb(153, 153, 153);">27</li><li style="color: rgb(153, 153, 153);">28</li><li style="color: rgb(153, 153, 153);">29</li><li style="color: rgb(153, 153, 153);">30</li><li style="color: rgb(153, 153, 153);">31</li><li style="color: rgb(153, 153, 153);">32</li><li style="color: rgb(153, 153, 153);">33</li><li style="color: rgb(153, 153, 153);">34</li><li style="color: rgb(153, 153, 153);">35</li><li style="color: rgb(153, 153, 153);">36</li><li style="color: rgb(153, 153, 153);">37</li><li style="color: rgb(153, 153, 153);">38</li><li style="color: rgb(153, 153, 153);">39</li><li style="color: rgb(153, 153, 153);">40</li><li style="color: rgb(153, 153, 153);">41</li><li style="color: rgb(153, 153, 153);">42</li><li style="color: rgb(153, 153, 153);">43</li><li style="color: rgb(153, 153, 153);">44</li><li style="color: rgb(153, 153, 153);">45</li><li style="color: rgb(153, 153, 153);">46</li><li style="color: rgb(153, 153, 153);">47</li><li style="color: rgb(153, 153, 153);">48</li><li style="color: rgb(153, 153, 153);">49</li><li style="color: rgb(153, 153, 153);">50</li><li style="color: rgb(153, 153, 153);">51</li><li style="color: rgb(153, 153, 153);">52</li><li style="color: rgb(153, 153, 153);">53</li><li style="color: rgb(153, 153, 153);">54</li><li style="color: rgb(153, 153, 153);">55</li><li style="color: rgb(153, 153, 153);">56</li><li style="color: rgb(153, 153, 153);">57</li><li style="color: rgb(153, 153, 153);">58</li><li style="color: rgb(153, 153, 153);">59</li><li style="color: rgb(153, 153, 153);">60</li><li style="color: rgb(153, 153, 153);">61</li><li style="color: rgb(153, 153, 153);">62</li><li style="color: rgb(153, 153, 153);">63</li></ul></pre> 
+<h2><a name="t11"></a><a id="C_299"></a>C++</h2> 
+<pre data-index="7" class="set-code-hide prettyprint"><code class="prism language-c has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;iostream&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;string&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;unordered_map&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;algorithm&gt;</span></span>
+
+using namespace std<span class="token punctuation">;</span>
+<span class="token keyword">int</span> <span class="token function">min_replacement_length</span><span class="token punctuation">(</span><span class="token keyword">const</span> string <span class="token operator">&amp;</span>input_str<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+    <span class="token comment">// 初始化方向键计数字典</span>
+    unordered_map<span class="token operator">&lt;</span><span class="token keyword">char</span><span class="token punctuation">,</span> <span class="token keyword">int</span><span class="token operator">&gt;</span> direction_count <span class="token operator">=</span> <span class="token punctuation">{<!-- --></span><span class="token punctuation">{<!-- --></span><span class="token string">'W'</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">{<!-- --></span><span class="token string">'A'</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">{<!-- --></span><span class="token string">'S'</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">{<!-- --></span><span class="token string">'D'</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// 统计输入字符串中每个方向键的出现次数</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">char</span> c <span class="token operator">:</span> input_str<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+        direction_count<span class="token punctuation">[</span>c<span class="token punctuation">]</span><span class="token operator">++</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">// 初始化左右指针和结果变量</span>
+    <span class="token keyword">int</span> left <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token keyword">int</span> right <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token keyword">int</span> min_length <span class="token operator">=</span> input_str<span class="token punctuation">.</span><span class="token function">length</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// 更新右指针对应的方向键计数</span>
+    direction_count<span class="token punctuation">[</span>input_str<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token operator">--</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">while</span> <span class="token punctuation">(</span>true<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+        <span class="token comment">// 计算当前最大方向键计数</span>
+        <span class="token keyword">int</span> max_count <span class="token operator">=</span> <span class="token function">max</span><span class="token punctuation">(</span><span class="token punctuation">{<!-- --></span>direction_count<span class="token punctuation">[</span><span class="token string">'W'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> direction_count<span class="token punctuation">[</span><span class="token string">'A'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> direction_count<span class="token punctuation">[</span><span class="token string">'S'</span><span class="token punctuation">]</span><span class="token punctuation">,</span> direction_count<span class="token punctuation">[</span><span class="token string">'D'</span><span class="token punctuation">]</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 计算当前窗口长度和可替换的字符数</span>
+        <span class="token keyword">int</span> window_length <span class="token operator">=</span> right <span class="token operator">-</span> left <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span>
+        <span class="token keyword">int</span> replaceable_chars <span class="token operator">=</span> window_length<span class="token punctuation">;</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">const</span> <span class="token keyword">auto</span> <span class="token operator">&amp;</span>kv <span class="token operator">:</span> direction_count<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+            replaceable_chars <span class="token operator">-=</span> max_count <span class="token operator">-</span> kv<span class="token punctuation">.</span>second<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment">// 如果可替换字符数大于等于0且能被4整除，则更新结果变量</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>replaceable_chars <span class="token operator">&gt;=</span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span> replaceable_chars <span class="token operator">%</span> <span class="token number">4</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+            min_length <span class="token operator">=</span> <span class="token function">min</span><span class="token punctuation">(</span>min_length<span class="token punctuation">,</span> window_length<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token comment">// 更新左指针并检查是否越界</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>left <span class="token operator">&lt;</span> input_str<span class="token punctuation">.</span><span class="token function">length</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+                direction_count<span class="token punctuation">[</span>input_str<span class="token punctuation">[</span>left<span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token operator">++</span><span class="token punctuation">;</span>
+                left<span class="token operator">++</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{<!-- --></span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{<!-- --></span>
+            <span class="token comment">// 更新右指针并检查是否越界</span>
+            right<span class="token operator">++</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>right <span class="token operator">&gt;=</span> input_str<span class="token punctuation">.</span><span class="token function">length</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            direction_count<span class="token punctuation">[</span>input_str<span class="token punctuation">[</span>right<span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token operator">--</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">return</span> min_length<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+    string input_str<span class="token punctuation">;</span>
+    cin <span class="token operator">&gt;&gt;</span> input_str<span class="token punctuation">;</span>
+    cout <span class="token operator">&lt;&lt;</span> <span class="token function">min_replacement_length</span><span class="token punctuation">(</span>input_str<span class="token punctuation">)</span> <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+
+<div class="hljs-button {2}" data-title="复制"></div></code><div class="hide-preCode-box"><span class="hide-preCode-bt" data-report-view="{&quot;spm&quot;:&quot;1001.2101.3001.7365&quot;}"><img class="look-more-preCode contentImg-no-view" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newCodeMoreWhite.png" alt="" title=""></span></div><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li><li style="color: rgb(153, 153, 153);">2</li><li style="color: rgb(153, 153, 153);">3</li><li style="color: rgb(153, 153, 153);">4</li><li style="color: rgb(153, 153, 153);">5</li><li style="color: rgb(153, 153, 153);">6</li><li style="color: rgb(153, 153, 153);">7</li><li style="color: rgb(153, 153, 153);">8</li><li style="color: rgb(153, 153, 153);">9</li><li style="color: rgb(153, 153, 153);">10</li><li style="color: rgb(153, 153, 153);">11</li><li style="color: rgb(153, 153, 153);">12</li><li style="color: rgb(153, 153, 153);">13</li><li style="color: rgb(153, 153, 153);">14</li><li style="color: rgb(153, 153, 153);">15</li><li style="color: rgb(153, 153, 153);">16</li><li style="color: rgb(153, 153, 153);">17</li><li style="color: rgb(153, 153, 153);">18</li><li style="color: rgb(153, 153, 153);">19</li><li style="color: rgb(153, 153, 153);">20</li><li style="color: rgb(153, 153, 153);">21</li><li style="color: rgb(153, 153, 153);">22</li><li style="color: rgb(153, 153, 153);">23</li><li style="color: rgb(153, 153, 153);">24</li><li style="color: rgb(153, 153, 153);">25</li><li style="color: rgb(153, 153, 153);">26</li><li style="color: rgb(153, 153, 153);">27</li><li style="color: rgb(153, 153, 153);">28</li><li style="color: rgb(153, 153, 153);">29</li><li style="color: rgb(153, 153, 153);">30</li><li style="color: rgb(153, 153, 153);">31</li><li style="color: rgb(153, 153, 153);">32</li><li style="color: rgb(153, 153, 153);">33</li><li style="color: rgb(153, 153, 153);">34</li><li style="color: rgb(153, 153, 153);">35</li><li style="color: rgb(153, 153, 153);">36</li><li style="color: rgb(153, 153, 153);">37</li><li style="color: rgb(153, 153, 153);">38</li><li style="color: rgb(153, 153, 153);">39</li><li style="color: rgb(153, 153, 153);">40</li><li style="color: rgb(153, 153, 153);">41</li><li style="color: rgb(153, 153, 153);">42</li><li style="color: rgb(153, 153, 153);">43</li><li style="color: rgb(153, 153, 153);">44</li><li style="color: rgb(153, 153, 153);">45</li><li style="color: rgb(153, 153, 153);">46</li><li style="color: rgb(153, 153, 153);">47</li><li style="color: rgb(153, 153, 153);">48</li><li style="color: rgb(153, 153, 153);">49</li><li style="color: rgb(153, 153, 153);">50</li><li style="color: rgb(153, 153, 153);">51</li><li style="color: rgb(153, 153, 153);">52</li><li style="color: rgb(153, 153, 153);">53</li><li style="color: rgb(153, 153, 153);">54</li><li style="color: rgb(153, 153, 153);">55</li><li style="color: rgb(153, 153, 153);">56</li><li style="color: rgb(153, 153, 153);">57</li><li style="color: rgb(153, 153, 153);">58</li><li style="color: rgb(153, 153, 153);">59</li><li style="color: rgb(153, 153, 153);">60</li><li style="color: rgb(153, 153, 153);">61</li><li style="color: rgb(153, 153, 153);">62</li><li style="color: rgb(153, 153, 153);">63</li><li style="color: rgb(153, 153, 153);">64</li><li style="color: rgb(153, 153, 153);">65</li><li style="color: rgb(153, 153, 153);">66</li></ul></pre> 
+<h2><a name="t12"></a><a id="C_370"></a>C语言</h2> 
+<pre data-index="8" class="set-code-hide prettyprint"><code class="prism language-c has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;stdio.h&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;string.h&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;limits.h&gt;</span></span>
+
+<span class="token comment">// 用于计算字符频率的辅助函数</span>
+<span class="token keyword">void</span> <span class="token function">calculate_frequency</span><span class="token punctuation">(</span><span class="token keyword">const</span> <span class="token keyword">char</span> <span class="token operator">*</span>s<span class="token punctuation">,</span> <span class="token keyword">int</span> <span class="token operator">*</span>freq<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> s<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">!=</span> <span class="token string">'\0'</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+        freq<span class="token punctuation">[</span>s<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token operator">++</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// 主函数</span>
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+    <span class="token keyword">char</span> s<span class="token punctuation">[</span><span class="token number">100001</span><span class="token punctuation">]</span><span class="token punctuation">;</span>  <span class="token comment">// 假设输入长度最大为100000</span>
+    <span class="token function">scanf</span><span class="token punctuation">(</span><span class="token string">"%s"</span><span class="token punctuation">,</span> s<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// 读取用户输入的走位字符串</span>
+
+    <span class="token keyword">int</span> n <span class="token operator">=</span> <span class="token function">strlen</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// 计算走位字符串的长度</span>
+    <span class="token keyword">int</span> required <span class="token operator">=</span> n <span class="token operator">/</span> <span class="token number">4</span><span class="token punctuation">;</span>  <span class="token comment">// 每个方向的步数在完美走位中应当相等</span>
+
+    <span class="token comment">// 初始化各方向的步数频率统计</span>
+    <span class="token keyword">int</span> freq<span class="token punctuation">[</span><span class="token number">256</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">{<!-- --></span><span class="token number">0</span><span class="token punctuation">}</span><span class="token punctuation">;</span>  <span class="token comment">// 统计'A', 'S', 'D', 'W'出现的次数</span>
+    <span class="token function">calculate_frequency</span><span class="token punctuation">(</span>s<span class="token punctuation">,</span> freq<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// 计算初始的频率</span>
+
+    <span class="token comment">// 如果已经是完美走位，则直接输出0</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>freq<span class="token punctuation">[</span><span class="token string">'A'</span><span class="token punctuation">]</span> <span class="token operator">==</span> required <span class="token operator">&amp;&amp;</span> freq<span class="token punctuation">[</span><span class="token string">'S'</span><span class="token punctuation">]</span> <span class="token operator">==</span> required <span class="token operator">&amp;&amp;</span>
+        freq<span class="token punctuation">[</span><span class="token string">'D'</span><span class="token punctuation">]</span> <span class="token operator">==</span> required <span class="token operator">&amp;&amp;</span> freq<span class="token punctuation">[</span><span class="token string">'W'</span><span class="token punctuation">]</span> <span class="token operator">==</span> required<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+        <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"0\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">// 初始化滑动窗口的左右边界和最小长度</span>
+    <span class="token keyword">int</span> left <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span> min_length <span class="token operator">=</span> INT_MAX<span class="token punctuation">;</span>
+
+    <span class="token comment">// 滑动窗口的核心逻辑</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> right <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> right <span class="token operator">&lt;</span> n<span class="token punctuation">;</span> right<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+        <span class="token comment">// 移动右边界，并减少对应字符的频率</span>
+        freq<span class="token punctuation">[</span>s<span class="token punctuation">[</span>right<span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token operator">--</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 检查是否满足完美走位的条件</span>
+        <span class="token keyword">while</span> <span class="token punctuation">(</span>freq<span class="token punctuation">[</span><span class="token string">'A'</span><span class="token punctuation">]</span> <span class="token operator">&lt;=</span> required <span class="token operator">&amp;&amp;</span> freq<span class="token punctuation">[</span><span class="token string">'S'</span><span class="token punctuation">]</span> <span class="token operator">&lt;=</span> required <span class="token operator">&amp;&amp;</span>
+               freq<span class="token punctuation">[</span><span class="token string">'D'</span><span class="token punctuation">]</span> <span class="token operator">&lt;=</span> required <span class="token operator">&amp;&amp;</span> freq<span class="token punctuation">[</span><span class="token string">'W'</span><span class="token punctuation">]</span> <span class="token operator">&lt;=</span> required<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+            <span class="token comment">// 更新最小长度</span>
+            min_length <span class="token operator">=</span> <span class="token punctuation">(</span>right <span class="token operator">-</span> left <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">&lt;</span> min_length <span class="token operator">?</span> <span class="token punctuation">(</span>right <span class="token operator">-</span> left <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">:</span> min_length<span class="token punctuation">;</span>
+
+            <span class="token comment">// 移动左边界，并恢复对应字符的频率</span>
+            freq<span class="token punctuation">[</span>s<span class="token punctuation">[</span>left<span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token operator">++</span><span class="token punctuation">;</span>
+            left<span class="token operator">++</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">// 输出最小替换长度</span>
+    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"%d\n"</span><span class="token punctuation">,</span> min_length<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<div class="hljs-button {2}" data-title="复制"></div></code><div class="hide-preCode-box"><span class="hide-preCode-bt" data-report-view="{&quot;spm&quot;:&quot;1001.2101.3001.7365&quot;}"><img class="look-more-preCode contentImg-no-view" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newCodeMoreWhite.png" alt="" title=""></span></div><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li><li style="color: rgb(153, 153, 153);">2</li><li style="color: rgb(153, 153, 153);">3</li><li style="color: rgb(153, 153, 153);">4</li><li style="color: rgb(153, 153, 153);">5</li><li style="color: rgb(153, 153, 153);">6</li><li style="color: rgb(153, 153, 153);">7</li><li style="color: rgb(153, 153, 153);">8</li><li style="color: rgb(153, 153, 153);">9</li><li style="color: rgb(153, 153, 153);">10</li><li style="color: rgb(153, 153, 153);">11</li><li style="color: rgb(153, 153, 153);">12</li><li style="color: rgb(153, 153, 153);">13</li><li style="color: rgb(153, 153, 153);">14</li><li style="color: rgb(153, 153, 153);">15</li><li style="color: rgb(153, 153, 153);">16</li><li style="color: rgb(153, 153, 153);">17</li><li style="color: rgb(153, 153, 153);">18</li><li style="color: rgb(153, 153, 153);">19</li><li style="color: rgb(153, 153, 153);">20</li><li style="color: rgb(153, 153, 153);">21</li><li style="color: rgb(153, 153, 153);">22</li><li style="color: rgb(153, 153, 153);">23</li><li style="color: rgb(153, 153, 153);">24</li><li style="color: rgb(153, 153, 153);">25</li><li style="color: rgb(153, 153, 153);">26</li><li style="color: rgb(153, 153, 153);">27</li><li style="color: rgb(153, 153, 153);">28</li><li style="color: rgb(153, 153, 153);">29</li><li style="color: rgb(153, 153, 153);">30</li><li style="color: rgb(153, 153, 153);">31</li><li style="color: rgb(153, 153, 153);">32</li><li style="color: rgb(153, 153, 153);">33</li><li style="color: rgb(153, 153, 153);">34</li><li style="color: rgb(153, 153, 153);">35</li><li style="color: rgb(153, 153, 153);">36</li><li style="color: rgb(153, 153, 153);">37</li><li style="color: rgb(153, 153, 153);">38</li><li style="color: rgb(153, 153, 153);">39</li><li style="color: rgb(153, 153, 153);">40</li><li style="color: rgb(153, 153, 153);">41</li><li style="color: rgb(153, 153, 153);">42</li><li style="color: rgb(153, 153, 153);">43</li><li style="color: rgb(153, 153, 153);">44</li><li style="color: rgb(153, 153, 153);">45</li><li style="color: rgb(153, 153, 153);">46</li><li style="color: rgb(153, 153, 153);">47</li><li style="color: rgb(153, 153, 153);">48</li><li style="color: rgb(153, 153, 153);">49</li><li style="color: rgb(153, 153, 153);">50</li><li style="color: rgb(153, 153, 153);">51</li><li style="color: rgb(153, 153, 153);">52</li><li style="color: rgb(153, 153, 153);">53</li><li style="color: rgb(153, 153, 153);">54</li><li style="color: rgb(153, 153, 153);">55</li></ul></pre> 
+ 
+<h2><a name="t13"></a><a id="_438"></a>完整用例</h2> 
+<h3><a name="t14"></a><a id="1_439"></a>用例1</h3> 
+<pre data-index="9" class="set-code-show prettyprint"><code class="prism language-input1 has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">WASDAASD
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre> 
+<h3><a name="t15"></a><a id="2_445"></a>用例2</h3> 
+<pre data-index="10" class="set-code-show prettyprint"><code class="prism language-input2 has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">AAAA
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre> 
+<h3><a name="t16"></a><a id="3_451"></a>用例3</h3> 
+<pre data-index="11" class="set-code-show prettyprint"><code class="prism language-input3 has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">WASD
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre> 
+<h3><a name="t17"></a><a id="4_457"></a>用例4</h3> 
+<pre data-index="12" class="set-code-show prettyprint"><code class="prism language-input4 has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">WWWW
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre> 
+<h3><a name="t18"></a><a id="5_463"></a>用例5</h3> 
+<pre data-index="13" class="set-code-show prettyprint"><code class="prism language-input5 has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">WASDWASD
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre> 
+<h3><a name="t19"></a><a id="6_469"></a>用例6</h3> 
+<pre data-index="14" class="set-code-show prettyprint"><code class="prism language-input6 has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">WASDASDW
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre> 
+<h3><a name="t20"></a><a id="7_475"></a>用例7</h3> 
+<pre data-index="15" class="set-code-show prettyprint"><code class="prism language-input7 has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">WASDAAAD
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre> 
+<h3><a name="t21"></a><a id="8_481"></a>用例8</h3> 
+<pre data-index="16" class="set-code-show prettyprint"><code class="prism language-input8 has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">WASDSSSD
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre> 
+<h3><a name="t22"></a><a id="9_487"></a>用例9</h3> 
+<pre data-index="17" class="set-code-show prettyprint"><code class="prism language-input9 has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">WASDDDDD
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre> 
+<h3><a name="t23"></a><a id="10_493"></a>用例10</h3> 
+<pre data-index="18" class="set-code-show prettyprint"><code class="prism language-input10 has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">WASDWSWD
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre>
+                </div><div data-report-view="{&quot;mod&quot;:&quot;1585297308_001&quot;,&quot;spm&quot;:&quot;1001.2101.3001.6548&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/banxia_frontend/article/details/142935179&quot;,&quot;extend1&quot;:&quot;pc&quot;,&quot;ab&quot;:&quot;new&quot;}"><div></div></div>
+                <link href="https://csdnimg.cn/release/blogv2/dist/mdeditor/css/editerView/markdown_views-f23dff6052.css" rel="stylesheet">
+                <link href="https://csdnimg.cn/release/blogv2/dist/mdeditor/css/style-e504d6a974.css" rel="stylesheet">
+        </div></html>

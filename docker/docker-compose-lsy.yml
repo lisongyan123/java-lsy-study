@@ -1,0 +1,68 @@
+version: '3.8'
+services:
+  lsy-java-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: lsy-java-app
+    ports:
+      - "8081:8080"
+    volumes:
+      - /tmp:/tmp
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - TZ=Asia/Shanghai
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - lsy-network
+
+  mysql-server1:
+    image: mysql:8.0
+    container_name: mysql1
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456  # 设置root密码
+      MYSQL_DATABASE: school              # 初始化数据库
+    ports:
+      - "3306:3306"                      # 映射到宿主机3306端口
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    networks:
+      - lsy-network
+
+  mysql-server2:
+    image: mysql:8.0
+    container_name: mysql2
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456  # 设置root密码
+      MYSQL_DATABASE: school              # 初始化数据库
+    ports:
+      - "3307:3306"                      # 映射到宿主机3306端口
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    networks:
+      - lsy-network
+
+  chunjun:
+    image: dtopensource/chunjun-master
+    container_name: chunjun
+    environment:
+      - TZ=Asia/Shanghai
+    volumes:
+      - C:\\Users\\84216\\Desktop\\chunjun-dist-1.12-SNAPSHOT\\chunjun-examples\\job\\stream.json:/opt/flink/job/stream.json
+    ports:
+      - "9081:9081"
+    restart: unless-stopped
+    networks:
+      - lsy-network
+networks:
+  lsy-network:
+    driver: bridge
+
+

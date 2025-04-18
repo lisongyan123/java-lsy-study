@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>java-lsy-parent</artifactId>
+        <groupId>com.lsy</groupId>
+        <version>1.0</version>
+    </parent>
+    <groupId>com.lsy.java</groupId>
+    <artifactId>lsy-common</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>lsy-common</name>
+    <description>lsy-common</description>
+    <properties>
+        <java.version>17</java.version>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>com.lsy.java</groupId>
+            <artifactId>lsy-core</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lsy.java</groupId>
+            <artifactId>lsy-asyncTool</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lsy.java</groupId>
+            <artifactId>lsy-model</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+    <build>
+        <defaultGoal>compile</defaultGoal>
+        <resources>
+            <!--将Java代码下的xml编译到class下面去-->
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/ *.xml</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <!--解决扫描不到 resources 的文件的问题-->
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/ *.*</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
+</project>

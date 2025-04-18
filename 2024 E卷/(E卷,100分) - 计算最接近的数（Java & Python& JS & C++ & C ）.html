@@ -1,0 +1,639 @@
+<html lang="zh-CN"><head><meta charset="UTF-8"><style>.nodata  main {width:1000px;margin: auto;}</style></head><body class="nodata " style=""><div class="main_father clearfix d-flex justify-content-center " style="height:100%;"> <div class="container clearfix " id="mainBox"><main><div class="blog-content-box"><div id="article_content" class="article_content clearfix">
+        <link rel="stylesheet" href="https://csdnimg.cn/release/blogv2/dist/mdeditor/css/editerView/kdoc_html_views-1a98987dfd.css">
+        <link rel="stylesheet" href="https://csdnimg.cn/release/blogv2/dist/mdeditor/css/editerView/ck_htmledit_views-704d5b9767.css">
+             
+                <div id="content_views" class="markdown_views prism-atom-one-light">
+                    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+                        <path stroke-linecap="round" d="M5,0 0,2.5 5,5z" id="raphael-marker-block" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path>
+                    </svg>
+                    <h2><a name="t0"></a><a id="OD_0"></a>最新华为OD机试</h2> 
+
+<h2><a name="t1"></a><a id="_4"></a>题目描述</h2> 
+<p>给定一个数组X和正整数K，请找出使表达式X[i] - x[i +1] … - X[i + K 1]，结果最接近于数组中位数的下标i，如果有多个i满足条件，请返回最大的i。<br> 其中，数组中位数:长度为N的数组，按照元素的值大小升序排列后，下标为N/2元素的值<br> <strong>补充说明:</strong></p> 
+<ol><li>数组X的元素均为正整数;</li><li>X的长度n取值范围: 2&lt;= n &lt;= 1000;</li><li>K大于0且小于数组的大小;</li><li>i的取值范围: 0 &lt;=i &lt; 1000;</li><li>题目的排序数组X[N]的中位数是X[N/2].</li></ol> 
+<h2><a name="t2"></a><a id="_16"></a>输入描述</h2> 
+<p>无</p> 
+<h2><a name="t3"></a><a id="_21"></a>输出描述</h2> 
+<p>无</p> 
+<h2><a name="t4"></a><a id="1_25"></a>示例1</h2> 
+<p>输入</p> 
+<pre data-index="0" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">[50,50,2,3],2
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre> 
+<p>输出</p> 
+<pre data-index="1" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;"> 1
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre> 
+<p>说明</p> 
+<blockquote> 
+ <p>说明:<br> 1、中位数为50: [50,50,2,3]升序排序后变成[2,3,50,50]，中位数为下标4/2=2的元素50;<br> 2、计算结果为1: X[50,50,2,3]根据题目计算X[i] - …- X[i + K- 1]得出三个数<br> 0 (X[0]-X[1]= 50 -50) 、<br> 48 (X[1]-X[2] = 50 -2)<br> -1 (X[2]-X[3]= 2-3) ，<br> 其中48最接近50，因此返回下标1</p> 
+</blockquote> 
+<h2><a name="t5"></a><a id="_51"></a>解题思路</h2> 
+<p>这道题目要求我们找到一个数组中某个范围内的下标，使得该下标对应的计算结果最接近于数组的中位数。以下是题目的具体解释：</p> 
+<h2><a name="t6"></a><a id="_55"></a>题目要点</h2> 
+<ol><li> <p><strong>输入与输出</strong>:</p> 
+  <ul><li>输入是一个数组 <code>X</code> 和一个正整数 <code>K</code>。</li><li>输出是一个下标 <code>i</code>，该下标对应的计算结果最接近数组的中位数。</li></ul> </li><li> <p><strong>中位数的定义</strong>:</p> 
+  <ul><li>中位数是将数组元素按大小排序后，位于中间位置的元素。</li><li>对于长度为 <code>N</code> 的数组，中位数是下标为 <code>N/2</code> 的元素（整除）。</li></ul> </li><li> <p><strong>计算表达式</strong>:</p> 
+  <ul><li>对于每个可能的下标 <code>i</code>，需要计算表达式：<br> <span class="katex--display"><span class="katex-display"><span class="katex"><span class="katex-mathml"> 
+         
+          
+           
+           
+             result 
+            
+           
+             = 
+            
+           
+             X 
+            
+           
+             [ 
+            
+           
+             i 
+            
+           
+             ] 
+            
+           
+             − 
+            
+           
+             X 
+            
+           
+             [ 
+            
+           
+             i 
+            
+           
+             + 
+            
+           
+             1 
+            
+           
+             ] 
+            
+           
+             − 
+            
+           
+             . 
+            
+           
+             . 
+            
+           
+             . 
+            
+           
+             − 
+            
+           
+             X 
+            
+           
+             [ 
+            
+           
+             i 
+            
+           
+             + 
+            
+           
+             K 
+            
+           
+             − 
+            
+           
+             1 
+            
+           
+             ] 
+            
+           
+          
+            \text{result} = X[i] - X[i+1] - ... - X[i+K-1] 
+           
+          
+        </span><span class="katex-html"><span class="base"><span class="strut" style="height: 0.6944em;"></span><span class="mord text"><span class="mord">result</span></span><span class="mspace" style="margin-right: 0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right: 0.2778em;"></span></span><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.0785em;">X</span><span class="mopen">[</span><span class="mord mathnormal">i</span><span class="mclose">]</span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.0785em;">X</span><span class="mopen">[</span><span class="mord mathnormal">i</span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord">1</span><span class="mclose">]</span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 0.6667em; vertical-align: -0.0833em;"></span><span class="mord">...</span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.0785em;">X</span><span class="mopen">[</span><span class="mord mathnormal">i</span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 0.7667em; vertical-align: -0.0833em;"></span><span class="mord mathnormal" style="margin-right: 0.0715em;">K</span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord">1</span><span class="mclose">]</span></span></span></span></span></span></li><li>这个表达式计算的是从下标 <code>i</code> 开始的 <code>K</code> 个元素的差值。</li></ul> </li><li> <p><strong>寻找最接近中位数的结果</strong>:</p> 
+  <ul><li>对于每个计算出的结果，求出它与中位数的差的绝对值。</li><li>找到差的绝对值最小的下标 <code>i</code>，如果有多个 <code>i</code>，则返回最大的 <code>i</code>。</li></ul> </li></ol> 
+<h2><a name="t7"></a><a id="_76"></a>示例分析</h2> 
+<p>以示例 <code>X = [50, 50, 2, 3]</code> 和 <code>K = 2</code> 为例：</p> 
+<ol><li> <p><strong>计算中位数</strong>:</p> 
+  <ul><li>排序后： <code>[2, 3, 50, 50]</code>，中位数为 <code>50</code>（下标为 <code>2</code> 的元素）。</li></ul> </li><li> <p><strong>计算结果</strong>:</p> 
+  <ul><li>对于 <code>i = 0</code>：<br> <span class="katex--display"><span class="katex-display"><span class="katex"><span class="katex-mathml"> 
+         
+          
+           
+           
+             result 
+            
+           
+             = 
+            
+           
+             X 
+            
+           
+             [ 
+            
+           
+             0 
+            
+           
+             ] 
+            
+           
+             − 
+            
+           
+             X 
+            
+           
+             [ 
+            
+           
+             1 
+            
+           
+             ] 
+            
+           
+             = 
+            
+           
+             50 
+            
+           
+             − 
+            
+           
+             50 
+            
+           
+             = 
+            
+           
+             0 
+            
+           
+          
+            \text{result} = X[0] - X[1] = 50 - 50 = 0 
+           
+          
+        </span><span class="katex-html"><span class="base"><span class="strut" style="height: 0.6944em;"></span><span class="mord text"><span class="mord">result</span></span><span class="mspace" style="margin-right: 0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right: 0.2778em;"></span></span><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.0785em;">X</span><span class="mopen">[</span><span class="mord">0</span><span class="mclose">]</span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.0785em;">X</span><span class="mopen">[</span><span class="mord">1</span><span class="mclose">]</span><span class="mspace" style="margin-right: 0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right: 0.2778em;"></span></span><span class="base"><span class="strut" style="height: 0.7278em; vertical-align: -0.0833em;"></span><span class="mord">50</span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 0.6444em;"></span><span class="mord">50</span><span class="mspace" style="margin-right: 0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right: 0.2778em;"></span></span><span class="base"><span class="strut" style="height: 0.6444em;"></span><span class="mord">0</span></span></span></span></span></span></li><li>对于 <code>i = 1</code>：<br> <span class="katex--display"><span class="katex-display"><span class="katex"><span class="katex-mathml"> 
+         
+          
+           
+           
+             result 
+            
+           
+             = 
+            
+           
+             X 
+            
+           
+             [ 
+            
+           
+             1 
+            
+           
+             ] 
+            
+           
+             − 
+            
+           
+             X 
+            
+           
+             [ 
+            
+           
+             2 
+            
+           
+             ] 
+            
+           
+             = 
+            
+           
+             50 
+            
+           
+             − 
+            
+           
+             2 
+            
+           
+             = 
+            
+           
+             48 
+            
+           
+          
+            \text{result} = X[1] - X[2] = 50 - 2 = 48 
+           
+          
+        </span><span class="katex-html"><span class="base"><span class="strut" style="height: 0.6944em;"></span><span class="mord text"><span class="mord">result</span></span><span class="mspace" style="margin-right: 0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right: 0.2778em;"></span></span><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.0785em;">X</span><span class="mopen">[</span><span class="mord">1</span><span class="mclose">]</span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.0785em;">X</span><span class="mopen">[</span><span class="mord">2</span><span class="mclose">]</span><span class="mspace" style="margin-right: 0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right: 0.2778em;"></span></span><span class="base"><span class="strut" style="height: 0.7278em; vertical-align: -0.0833em;"></span><span class="mord">50</span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 0.6444em;"></span><span class="mord">2</span><span class="mspace" style="margin-right: 0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right: 0.2778em;"></span></span><span class="base"><span class="strut" style="height: 0.6444em;"></span><span class="mord">48</span></span></span></span></span></span></li><li>对于 <code>i = 2</code>：<br> <span class="katex--display"><span class="katex-display"><span class="katex"><span class="katex-mathml"> 
+         
+          
+           
+           
+             result 
+            
+           
+             = 
+            
+           
+             X 
+            
+           
+             [ 
+            
+           
+             2 
+            
+           
+             ] 
+            
+           
+             − 
+            
+           
+             X 
+            
+           
+             [ 
+            
+           
+             3 
+            
+           
+             ] 
+            
+           
+             = 
+            
+           
+             2 
+            
+           
+             − 
+            
+           
+             3 
+            
+           
+             = 
+            
+           
+             − 
+            
+           
+             1 
+            
+           
+          
+            \text{result} = X[2] - X[3] = 2 - 3 = -1 
+           
+          
+        </span><span class="katex-html"><span class="base"><span class="strut" style="height: 0.6944em;"></span><span class="mord text"><span class="mord">result</span></span><span class="mspace" style="margin-right: 0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right: 0.2778em;"></span></span><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.0785em;">X</span><span class="mopen">[</span><span class="mord">2</span><span class="mclose">]</span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 1em; vertical-align: -0.25em;"></span><span class="mord mathnormal" style="margin-right: 0.0785em;">X</span><span class="mopen">[</span><span class="mord">3</span><span class="mclose">]</span><span class="mspace" style="margin-right: 0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right: 0.2778em;"></span></span><span class="base"><span class="strut" style="height: 0.7278em; vertical-align: -0.0833em;"></span><span class="mord">2</span><span class="mspace" style="margin-right: 0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right: 0.2222em;"></span></span><span class="base"><span class="strut" style="height: 0.6444em;"></span><span class="mord">3</span><span class="mspace" style="margin-right: 0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right: 0.2778em;"></span></span><span class="base"><span class="strut" style="height: 0.7278em; vertical-align: -0.0833em;"></span><span class="mord">−</span><span class="mord">1</span></span></span></span></span></span></li></ul> </li><li> <p><strong>结果与中位数的比较</strong>:</p> 
+  <ul><li>计算结果 <code>0</code>、<code>48</code>、<code>-1</code> 与中位数 <code>50</code> 的差： 
+    <ul><li><code>|0 - 50| = 50</code></li><li><code>|48 - 50| = 2</code></li><li><code>|-1 - 50| = 51</code></li></ul> </li><li><code>48</code> 是最接近 <code>50</code> 的，因此返回下标 <code>1</code>。</li></ul> </li></ol> 
+<h2><a name="t8"></a><a id="Java_105"></a>Java</h2> 
+<pre data-index="2" class="set-code-hide prettyprint"><code class="prism language-java has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;"><span class="token keyword">import</span> <span class="token namespace">java<span class="token punctuation">.</span>util<span class="token punctuation">.</span></span><span class="token class-name">Arrays</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token namespace">java<span class="token punctuation">.</span>util<span class="token punctuation">.</span></span><span class="token class-name">Scanner</span><span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Main</span> <span class="token punctuation">{<!-- --></span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+        <span class="token class-name">Scanner</span> in <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Scanner</span><span class="token punctuation">(</span><span class="token class-name">System</span><span class="token punctuation">.</span>in<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> input_str <span class="token operator">=</span> in<span class="token punctuation">.</span><span class="token function">nextLine</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token string">"["</span><span class="token punctuation">,</span><span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token string">"]"</span><span class="token punctuation">,</span><span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span><span class="token string">","</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">int</span> n <span class="token operator">=</span> input_str<span class="token punctuation">.</span>length <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span>
+        <span class="token keyword">int</span><span class="token punctuation">[</span><span class="token punctuation">]</span> nums <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token keyword">int</span><span class="token punctuation">[</span>n<span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token keyword">int</span> k <span class="token operator">=</span> <span class="token class-name">Integer</span><span class="token punctuation">.</span><span class="token function">valueOf</span><span class="token punctuation">(</span>input_str<span class="token punctuation">[</span>n<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">int</span> i<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span> i<span class="token operator">&lt;</span>n<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{<!-- --></span>
+            nums<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token class-name">Integer</span><span class="token punctuation">.</span><span class="token function">valueOf</span><span class="token punctuation">(</span>input_str<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">int</span><span class="token punctuation">[</span><span class="token punctuation">]</span> sorted_nums <span class="token operator">=</span> <span class="token class-name">Arrays</span><span class="token punctuation">.</span><span class="token function">copyOf</span><span class="token punctuation">(</span>nums<span class="token punctuation">,</span> n<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">Arrays</span><span class="token punctuation">.</span><span class="token function">sort</span><span class="token punctuation">(</span>sorted_nums<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">int</span> median <span class="token operator">=</span> sorted_nums<span class="token punctuation">[</span>n<span class="token operator">/</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">;</span>  <span class="token comment">// 计算中位数</span>
+
+        <span class="token keyword">int</span> minDiff <span class="token operator">=</span> <span class="token class-name">Integer</span><span class="token punctuation">.</span>MAX_VALUE<span class="token punctuation">;</span>  <span class="token comment">// 初始化最小差值为最大整数</span>
+        <span class="token keyword">int</span> result <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>  <span class="token comment">// 初始化结果为-1</span>
+        <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">int</span> i<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span> i<span class="token operator">&lt;=</span>n<span class="token operator">-</span>k<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{<!-- --></span>  <span class="token comment">// 遍历数组</span>
+            <span class="token keyword">int</span> count <span class="token operator">=</span> nums<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>  <span class="token comment">// 初始化计数器为当前元素</span>
+            <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">int</span> j<span class="token operator">=</span>i<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">;</span> j<span class="token operator">&lt;</span>i<span class="token operator">+</span>k<span class="token punctuation">;</span> j<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{<!-- --></span>  <span class="token comment">// 计算表达式X[i] - x[i +1] ... - X[i + K  1]</span>
+                count <span class="token operator">-=</span> nums<span class="token punctuation">[</span>j<span class="token punctuation">]</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">int</span> diff <span class="token operator">=</span> <span class="token class-name">Math</span><span class="token punctuation">.</span><span class="token function">abs</span><span class="token punctuation">(</span>count <span class="token operator">-</span> median<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// 计算当前差值</span>
+            <span class="token keyword">if</span><span class="token punctuation">(</span>diff <span class="token operator">&lt;</span> minDiff<span class="token punctuation">)</span><span class="token punctuation">{<!-- --></span>  <span class="token comment">// 如果当前差值小于最小差值</span>
+                minDiff <span class="token operator">=</span> diff<span class="token punctuation">;</span>  <span class="token comment">// 更新最小差值</span>
+                result <span class="token operator">=</span> i<span class="token punctuation">;</span>  <span class="token comment">// 更新结果为当前下标</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>diff <span class="token operator">==</span> minDiff<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>  <span class="token comment">// 如果当前差值等于最小差值</span>
+                result <span class="token operator">=</span> <span class="token class-name">Math</span><span class="token punctuation">.</span><span class="token function">max</span><span class="token punctuation">(</span>result<span class="token punctuation">,</span> i<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// 更新结果为最大的下标</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// 输出结果</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<div class="hljs-button {2}" data-title="复制"></div></code><div class="hide-preCode-box"><span class="hide-preCode-bt" data-report-view="{&quot;spm&quot;:&quot;1001.2101.3001.7365&quot;}"><img class="look-more-preCode contentImg-no-view" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newCodeMoreWhite.png" alt="" title=""></span></div><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li><li style="color: rgb(153, 153, 153);">2</li><li style="color: rgb(153, 153, 153);">3</li><li style="color: rgb(153, 153, 153);">4</li><li style="color: rgb(153, 153, 153);">5</li><li style="color: rgb(153, 153, 153);">6</li><li style="color: rgb(153, 153, 153);">7</li><li style="color: rgb(153, 153, 153);">8</li><li style="color: rgb(153, 153, 153);">9</li><li style="color: rgb(153, 153, 153);">10</li><li style="color: rgb(153, 153, 153);">11</li><li style="color: rgb(153, 153, 153);">12</li><li style="color: rgb(153, 153, 153);">13</li><li style="color: rgb(153, 153, 153);">14</li><li style="color: rgb(153, 153, 153);">15</li><li style="color: rgb(153, 153, 153);">16</li><li style="color: rgb(153, 153, 153);">17</li><li style="color: rgb(153, 153, 153);">18</li><li style="color: rgb(153, 153, 153);">19</li><li style="color: rgb(153, 153, 153);">20</li><li style="color: rgb(153, 153, 153);">21</li><li style="color: rgb(153, 153, 153);">22</li><li style="color: rgb(153, 153, 153);">23</li><li style="color: rgb(153, 153, 153);">24</li><li style="color: rgb(153, 153, 153);">25</li><li style="color: rgb(153, 153, 153);">26</li><li style="color: rgb(153, 153, 153);">27</li><li style="color: rgb(153, 153, 153);">28</li><li style="color: rgb(153, 153, 153);">29</li><li style="color: rgb(153, 153, 153);">30</li><li style="color: rgb(153, 153, 153);">31</li><li style="color: rgb(153, 153, 153);">32</li><li style="color: rgb(153, 153, 153);">33</li><li style="color: rgb(153, 153, 153);">34</li><li style="color: rgb(153, 153, 153);">35</li><li style="color: rgb(153, 153, 153);">36</li><li style="color: rgb(153, 153, 153);">37</li></ul></pre> 
+<h2><a name="t9"></a><a id="Python_147"></a>Python</h2> 
+<pre data-index="3" class="set-code-hide prettyprint"><code class="prism language-python has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">input_str <span class="token operator">=</span> <span class="token builtin">input</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>replace<span class="token punctuation">(</span><span class="token string">"["</span><span class="token punctuation">,</span> <span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">.</span>replace<span class="token punctuation">(</span><span class="token string">"]"</span><span class="token punctuation">,</span> <span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">.</span>split<span class="token punctuation">(</span><span class="token string">","</span><span class="token punctuation">)</span>
+
+<span class="token comment"># 计算输入数组的长度，n是数组的元素数量，最后一个元素为K</span>
+n <span class="token operator">=</span> <span class="token builtin">len</span><span class="token punctuation">(</span>input_str<span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1</span>
+
+<span class="token comment"># 将前n个元素转换为整数，构建整数数组nums</span>
+nums <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token builtin">int</span><span class="token punctuation">(</span>input_str<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span>n<span class="token punctuation">)</span><span class="token punctuation">]</span>
+
+<span class="token comment"># 将最后一个元素转换为整数，作为K的值</span>
+k <span class="token operator">=</span> <span class="token builtin">int</span><span class="token punctuation">(</span>input_str<span class="token punctuation">[</span>n<span class="token punctuation">]</span><span class="token punctuation">)</span>
+
+<span class="token comment"># 创建nums的副本，并对副本进行排序以计算中位数</span>
+sorted_nums <span class="token operator">=</span> nums<span class="token punctuation">.</span>copy<span class="token punctuation">(</span><span class="token punctuation">)</span>
+sorted_nums<span class="token punctuation">.</span>sort<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token comment"># 计算中位数：排序后下标为n//2的元素</span>
+median <span class="token operator">=</span> sorted_nums<span class="token punctuation">[</span>n <span class="token operator">//</span> <span class="token number">2</span><span class="token punctuation">]</span>
+
+<span class="token comment"># 初始化最小差值为正无穷大，结果下标初始化为-1</span>
+minDiff <span class="token operator">=</span> <span class="token builtin">float</span><span class="token punctuation">(</span><span class="token string">'inf'</span><span class="token punctuation">)</span>
+result <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">1</span>
+
+<span class="token comment"># 遍历所有可能的起始下标i，范围为0到n-k</span>
+<span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span>n <span class="token operator">-</span> k <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    count <span class="token operator">=</span> nums<span class="token punctuation">[</span>i<span class="token punctuation">]</span>  <span class="token comment"># 初始化count为当前下标的元素</span>
+    <span class="token comment"># 计算从i到i+k-1的元素的差值</span>
+    <span class="token keyword">for</span> j <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span>i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">,</span> i <span class="token operator">+</span> k<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        count <span class="token operator">-=</span> nums<span class="token punctuation">[</span>j<span class="token punctuation">]</span>  <span class="token comment"># 依次减去下标j对应的元素</span>
+
+    <span class="token comment"># 计算当前count与中位数之间的绝对差值</span>
+    diff <span class="token operator">=</span> <span class="token builtin">abs</span><span class="token punctuation">(</span>count <span class="token operator">-</span> median<span class="token punctuation">)</span>
+
+    <span class="token comment"># 如果当前差值小于已知最小差值，则更新最小差值和结果下标</span>
+    <span class="token keyword">if</span> diff <span class="token operator">&lt;</span> minDiff<span class="token punctuation">:</span>
+        minDiff <span class="token operator">=</span> diff
+        result <span class="token operator">=</span> i
+    <span class="token comment"># 如果当前差值等于已知最小差值，则更新结果下标为较大的那个</span>
+    <span class="token keyword">elif</span> diff <span class="token operator">==</span> minDiff<span class="token punctuation">:</span>
+        result <span class="token operator">=</span> <span class="token builtin">max</span><span class="token punctuation">(</span>result<span class="token punctuation">,</span> i<span class="token punctuation">)</span>
+
+<span class="token comment"># 输出最终结果下标</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span>
+<div class="hljs-button {2}" data-title="复制"></div></code><div class="hide-preCode-box"><span class="hide-preCode-bt" data-report-view="{&quot;spm&quot;:&quot;1001.2101.3001.7365&quot;}"><img class="look-more-preCode contentImg-no-view" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newCodeMoreWhite.png" alt="" title=""></span></div><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li><li style="color: rgb(153, 153, 153);">2</li><li style="color: rgb(153, 153, 153);">3</li><li style="color: rgb(153, 153, 153);">4</li><li style="color: rgb(153, 153, 153);">5</li><li style="color: rgb(153, 153, 153);">6</li><li style="color: rgb(153, 153, 153);">7</li><li style="color: rgb(153, 153, 153);">8</li><li style="color: rgb(153, 153, 153);">9</li><li style="color: rgb(153, 153, 153);">10</li><li style="color: rgb(153, 153, 153);">11</li><li style="color: rgb(153, 153, 153);">12</li><li style="color: rgb(153, 153, 153);">13</li><li style="color: rgb(153, 153, 153);">14</li><li style="color: rgb(153, 153, 153);">15</li><li style="color: rgb(153, 153, 153);">16</li><li style="color: rgb(153, 153, 153);">17</li><li style="color: rgb(153, 153, 153);">18</li><li style="color: rgb(153, 153, 153);">19</li><li style="color: rgb(153, 153, 153);">20</li><li style="color: rgb(153, 153, 153);">21</li><li style="color: rgb(153, 153, 153);">22</li><li style="color: rgb(153, 153, 153);">23</li><li style="color: rgb(153, 153, 153);">24</li><li style="color: rgb(153, 153, 153);">25</li><li style="color: rgb(153, 153, 153);">26</li><li style="color: rgb(153, 153, 153);">27</li><li style="color: rgb(153, 153, 153);">28</li><li style="color: rgb(153, 153, 153);">29</li><li style="color: rgb(153, 153, 153);">30</li><li style="color: rgb(153, 153, 153);">31</li><li style="color: rgb(153, 153, 153);">32</li><li style="color: rgb(153, 153, 153);">33</li><li style="color: rgb(153, 153, 153);">34</li><li style="color: rgb(153, 153, 153);">35</li><li style="color: rgb(153, 153, 153);">36</li><li style="color: rgb(153, 153, 153);">37</li><li style="color: rgb(153, 153, 153);">38</li><li style="color: rgb(153, 153, 153);">39</li><li style="color: rgb(153, 153, 153);">40</li><li style="color: rgb(153, 153, 153);">41</li><li style="color: rgb(153, 153, 153);">42</li></ul></pre> 
+<h2><a name="t10"></a><a id="JavaScript_193"></a>JavaScript</h2> 
+<pre data-index="4" class="set-code-hide prettyprint"><code class="prism language-js has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;"><span class="token keyword">const</span> readline <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'readline'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// 创建readline接口，设置输入输出流</span>
+<span class="token keyword">const</span> rl <span class="token operator">=</span> readline<span class="token punctuation">.</span><span class="token function">createInterface</span><span class="token punctuation">(</span><span class="token punctuation">{<!-- --></span>
+  input<span class="token operator">:</span> process<span class="token punctuation">.</span>stdin<span class="token punctuation">,</span>  
+  output<span class="token operator">:</span> process<span class="token punctuation">.</span>stdout  
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// 监听每一行输入</span>
+rl<span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'line'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token parameter">input_str</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{<!-- --></span>
+  <span class="token comment">// 移除输入字符串中的方括号</span>
+  input_str <span class="token operator">=</span> input_str<span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token string">"["</span><span class="token punctuation">,</span> <span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token string">"]"</span><span class="token punctuation">,</span> <span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  
+  <span class="token comment">// 将输入字符串按逗号分割，并转换为数字数组</span>
+  <span class="token keyword">const</span> input_arr <span class="token operator">=</span> input_str<span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span><span class="token string">","</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span>Number<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  
+  <span class="token comment">// n是数组的长度减1（最后一个元素是K）</span>
+  <span class="token keyword">const</span> n <span class="token operator">=</span> input_arr<span class="token punctuation">.</span>length <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span>
+  
+  <span class="token comment">// nums数组包含前n个元素</span>
+  <span class="token keyword">const</span> nums <span class="token operator">=</span> input_arr<span class="token punctuation">.</span><span class="token function">slice</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> n<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  
+  <span class="token comment">// k是数组中的最后一个元素，表示要计算的元素个数</span>
+  <span class="token keyword">const</span> k <span class="token operator">=</span> input_arr<span class="token punctuation">[</span>n<span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+  <span class="token comment">// 创建nums的副本并进行排序以计算中位数</span>
+  <span class="token keyword">const</span> sorted_nums <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token operator">...</span>nums<span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">sort</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">a<span class="token punctuation">,</span> b</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> a <span class="token operator">-</span> b<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  
+  <span class="token comment">// 计算中位数：排序后的中间元素</span>
+  <span class="token keyword">const</span> median <span class="token operator">=</span> sorted_nums<span class="token punctuation">[</span>Math<span class="token punctuation">.</span><span class="token function">floor</span><span class="token punctuation">(</span>n <span class="token operator">/</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+  <span class="token comment">// 初始化最小差值为JavaScript的安全整数最大值</span>
+  <span class="token keyword">let</span> minDiff <span class="token operator">=</span> Number<span class="token punctuation">.</span><span class="token constant">MAX_SAFE_INTEGER</span><span class="token punctuation">;</span>
+  
+  <span class="token comment">// 初始化结果下标为-1</span>
+  <span class="token keyword">let</span> result <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
+  
+  <span class="token comment">// 遍历所有可能的起始下标i，范围从0到n-k</span>
+  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;=</span> n <span class="token operator">-</span> k<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+    <span class="token keyword">let</span> count <span class="token operator">=</span> nums<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>  <span class="token comment">// 初始化count为当前下标的元素</span>
+    
+    <span class="token comment">// 计算从i到i+k-1的元素差值</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> j <span class="token operator">=</span> i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span> j <span class="token operator">&lt;</span> i <span class="token operator">+</span> k<span class="token punctuation">;</span> j<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+      count <span class="token operator">-=</span> nums<span class="token punctuation">[</span>j<span class="token punctuation">]</span><span class="token punctuation">;</span>  <span class="token comment">// 依次减去下标j对应的元素</span>
+    <span class="token punctuation">}</span>
+    
+    <span class="token comment">// 计算当前count与中位数之间的绝对差值</span>
+    <span class="token keyword">const</span> diff <span class="token operator">=</span> Math<span class="token punctuation">.</span><span class="token function">abs</span><span class="token punctuation">(</span>count <span class="token operator">-</span> median<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    
+    <span class="token comment">// 如果当前差值小于已知最小差值，则更新最小差值和结果下标</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>diff <span class="token operator">&lt;</span> minDiff<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+      minDiff <span class="token operator">=</span> diff<span class="token punctuation">;</span>
+      result <span class="token operator">=</span> i<span class="token punctuation">;</span>  <span class="token comment">// 更新结果下标为当前下标i</span>
+    <span class="token punctuation">}</span> 
+    <span class="token comment">// 如果当前差值等于已知最小差值，则更新结果下标为较大的那个</span>
+    <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>diff <span class="token operator">===</span> minDiff<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+      result <span class="token operator">=</span> Math<span class="token punctuation">.</span><span class="token function">max</span><span class="token punctuation">(</span>result<span class="token punctuation">,</span> i<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// 保留较大的下标</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token comment">// 输出最终结果下标</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  
+  <span class="token comment">// 关闭readline接口</span>
+  rl<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<div class="hljs-button {2}" data-title="复制"></div></code><div class="hide-preCode-box"><span class="hide-preCode-bt" data-report-view="{&quot;spm&quot;:&quot;1001.2101.3001.7365&quot;}"><img class="look-more-preCode contentImg-no-view" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newCodeMoreWhite.png" alt="" title=""></span></div><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li><li style="color: rgb(153, 153, 153);">2</li><li style="color: rgb(153, 153, 153);">3</li><li style="color: rgb(153, 153, 153);">4</li><li style="color: rgb(153, 153, 153);">5</li><li style="color: rgb(153, 153, 153);">6</li><li style="color: rgb(153, 153, 153);">7</li><li style="color: rgb(153, 153, 153);">8</li><li style="color: rgb(153, 153, 153);">9</li><li style="color: rgb(153, 153, 153);">10</li><li style="color: rgb(153, 153, 153);">11</li><li style="color: rgb(153, 153, 153);">12</li><li style="color: rgb(153, 153, 153);">13</li><li style="color: rgb(153, 153, 153);">14</li><li style="color: rgb(153, 153, 153);">15</li><li style="color: rgb(153, 153, 153);">16</li><li style="color: rgb(153, 153, 153);">17</li><li style="color: rgb(153, 153, 153);">18</li><li style="color: rgb(153, 153, 153);">19</li><li style="color: rgb(153, 153, 153);">20</li><li style="color: rgb(153, 153, 153);">21</li><li style="color: rgb(153, 153, 153);">22</li><li style="color: rgb(153, 153, 153);">23</li><li style="color: rgb(153, 153, 153);">24</li><li style="color: rgb(153, 153, 153);">25</li><li style="color: rgb(153, 153, 153);">26</li><li style="color: rgb(153, 153, 153);">27</li><li style="color: rgb(153, 153, 153);">28</li><li style="color: rgb(153, 153, 153);">29</li><li style="color: rgb(153, 153, 153);">30</li><li style="color: rgb(153, 153, 153);">31</li><li style="color: rgb(153, 153, 153);">32</li><li style="color: rgb(153, 153, 153);">33</li><li style="color: rgb(153, 153, 153);">34</li><li style="color: rgb(153, 153, 153);">35</li><li style="color: rgb(153, 153, 153);">36</li><li style="color: rgb(153, 153, 153);">37</li><li style="color: rgb(153, 153, 153);">38</li><li style="color: rgb(153, 153, 153);">39</li><li style="color: rgb(153, 153, 153);">40</li><li style="color: rgb(153, 153, 153);">41</li><li style="color: rgb(153, 153, 153);">42</li><li style="color: rgb(153, 153, 153);">43</li><li style="color: rgb(153, 153, 153);">44</li><li style="color: rgb(153, 153, 153);">45</li><li style="color: rgb(153, 153, 153);">46</li><li style="color: rgb(153, 153, 153);">47</li><li style="color: rgb(153, 153, 153);">48</li><li style="color: rgb(153, 153, 153);">49</li><li style="color: rgb(153, 153, 153);">50</li><li style="color: rgb(153, 153, 153);">51</li><li style="color: rgb(153, 153, 153);">52</li><li style="color: rgb(153, 153, 153);">53</li><li style="color: rgb(153, 153, 153);">54</li><li style="color: rgb(153, 153, 153);">55</li><li style="color: rgb(153, 153, 153);">56</li><li style="color: rgb(153, 153, 153);">57</li><li style="color: rgb(153, 153, 153);">58</li><li style="color: rgb(153, 153, 153);">59</li><li style="color: rgb(153, 153, 153);">60</li><li style="color: rgb(153, 153, 153);">61</li><li style="color: rgb(153, 153, 153);">62</li><li style="color: rgb(153, 153, 153);">63</li><li style="color: rgb(153, 153, 153);">64</li><li style="color: rgb(153, 153, 153);">65</li><li style="color: rgb(153, 153, 153);">66</li></ul></pre> 
+<h2><a name="t11"></a><a id="C_265"></a>C++</h2> 
+<pre data-index="5" class="set-code-hide prettyprint"><code class="prism language-c has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;iostream&gt;</span>   </span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;vector&gt;</span>     </span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;algorithm&gt;</span>  </span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;climits&gt;</span>   </span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;sstream&gt;</span>   </span>
+using namespace std<span class="token punctuation">;</span>
+
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+    string input_str<span class="token punctuation">;</span>   
+    <span class="token function">getline</span><span class="token punctuation">(</span>cin<span class="token punctuation">,</span> input_str<span class="token punctuation">)</span><span class="token punctuation">;</span>   
+
+    <span class="token comment">// 移除字符串中的方括号 '[' 和 ']'</span>
+    input_str<span class="token punctuation">.</span><span class="token function">erase</span><span class="token punctuation">(</span><span class="token function">remove</span><span class="token punctuation">(</span>input_str<span class="token punctuation">.</span><span class="token function">begin</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> input_str<span class="token punctuation">.</span><span class="token function">end</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">'['</span><span class="token punctuation">)</span><span class="token punctuation">,</span> input_str<span class="token punctuation">.</span><span class="token function">end</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    input_str<span class="token punctuation">.</span><span class="token function">erase</span><span class="token punctuation">(</span><span class="token function">remove</span><span class="token punctuation">(</span>input_str<span class="token punctuation">.</span><span class="token function">begin</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> input_str<span class="token punctuation">.</span><span class="token function">end</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">']'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> input_str<span class="token punctuation">.</span><span class="token function">end</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    vector<span class="token operator">&lt;</span>string<span class="token operator">&gt;</span> input_vec<span class="token punctuation">;</span>  <span class="token comment">// 声明一个字符串向量用于存储分割后的输入</span>
+    <span class="token class-name">size_t</span> pos <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>  <span class="token comment">// 声明一个位置变量，用于查找逗号</span>
+    string token<span class="token punctuation">;</span>    <span class="token comment">// 声明一个临时字符串，用于存储每个分割出的部分</span>
+
+    <span class="token comment">// 循环查找并分割字符串</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>pos <span class="token operator">=</span> input_str<span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span><span class="token string">","</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">!=</span> string<span class="token operator">::</span>npos<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>  <span class="token comment">// 找到逗号位置</span>
+        token <span class="token operator">=</span> input_str<span class="token punctuation">.</span><span class="token function">substr</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> pos<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// 获取逗号前的子字符串</span>
+        input_vec<span class="token punctuation">.</span><span class="token function">push_back</span><span class="token punctuation">(</span>token<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// 将子字符串添加到向量中</span>
+        input_str<span class="token punctuation">.</span><span class="token function">erase</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> pos <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// 移除已处理的部分</span>
+    <span class="token punctuation">}</span>
+    input_vec<span class="token punctuation">.</span><span class="token function">push_back</span><span class="token punctuation">(</span>input_str<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// 添加最后一个元素</span>
+
+    <span class="token keyword">int</span> n <span class="token operator">=</span> input_vec<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span>  <span class="token comment">// 计算有效元素的数量（最后一个元素是K）</span>
+    vector<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">&gt;</span> nums<span class="token punctuation">;</span>  <span class="token comment">// 声明一个整型向量用于存储数字</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> n<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+        nums<span class="token punctuation">.</span><span class="token function">push_back</span><span class="token punctuation">(</span><span class="token function">stoi</span><span class="token punctuation">(</span>input_vec<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// 将字符串转换为整数并添加到nums中</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">int</span> k <span class="token operator">=</span> <span class="token function">stoi</span><span class="token punctuation">(</span>input_vec<span class="token punctuation">[</span>n<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// 将最后一个元素转换为整数，作为K的值</span>
+
+    <span class="token comment">// 创建nums的副本并进行排序以计算中位数</span>
+    vector<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">&gt;</span> sorted_nums <span class="token operator">=</span> nums<span class="token punctuation">;</span>
+    <span class="token function">sort</span><span class="token punctuation">(</span>sorted_nums<span class="token punctuation">.</span><span class="token function">begin</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> sorted_nums<span class="token punctuation">.</span><span class="token function">end</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">int</span> median <span class="token operator">=</span> sorted_nums<span class="token punctuation">[</span>n <span class="token operator">/</span> <span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">;</span>  <span class="token comment">// 计算中位数</span>
+
+    <span class="token keyword">int</span> minDiff <span class="token operator">=</span> INT_MAX<span class="token punctuation">;</span>  <span class="token comment">// 初始化最小差值为整数的最大值</span>
+    <span class="token keyword">int</span> result <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>  <span class="token comment">// 初始化结果下标为-1</span>
+
+    <span class="token comment">// 遍历所有可能的起始下标i，范围从0到n-k</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;=</span> n <span class="token operator">-</span> k<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+        <span class="token keyword">int</span> count <span class="token operator">=</span> nums<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>  <span class="token comment">// 初始化count为当前下标的元素</span>
+        
+        <span class="token comment">// 计算从i到i+k-1的元素差值</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> j <span class="token operator">=</span> i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span> j <span class="token operator">&lt;</span> i <span class="token operator">+</span> k<span class="token punctuation">;</span> j<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+            count <span class="token operator">-=</span> nums<span class="token punctuation">[</span>j<span class="token punctuation">]</span><span class="token punctuation">;</span>  <span class="token comment">// 依次减去下标j对应的元素</span>
+        <span class="token punctuation">}</span>
+        
+        <span class="token keyword">int</span> diff <span class="token operator">=</span> <span class="token function">abs</span><span class="token punctuation">(</span>count <span class="token operator">-</span> median<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// 计算当前count与中位数之间的绝对差值</span>
+        
+        <span class="token comment">// 如果当前差值小于已知最小差值，则更新最小差值和结果下标</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>diff <span class="token operator">&lt;</span> minDiff<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+            minDiff <span class="token operator">=</span> diff<span class="token punctuation">;</span>
+            result <span class="token operator">=</span> i<span class="token punctuation">;</span>  <span class="token comment">// 更新结果下标为当前下标i</span>
+        <span class="token punctuation">}</span> 
+        <span class="token comment">// 如果当前差值等于已知最小差值，则更新结果下标为较大的那个</span>
+        <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>diff <span class="token operator">==</span> minDiff<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+            result <span class="token operator">=</span> <span class="token function">max</span><span class="token punctuation">(</span>result<span class="token punctuation">,</span> i<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// 保留较大的下标</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    cout <span class="token operator">&lt;&lt;</span> result <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>  <span class="token comment">// 输出最终结果下标</span>
+
+    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>  <span class="token comment">// 返回0，表示程序正常结束</span>
+<span class="token punctuation">}</span>
+<div class="hljs-button {2}" data-title="复制"></div></code><div class="hide-preCode-box"><span class="hide-preCode-bt" data-report-view="{&quot;spm&quot;:&quot;1001.2101.3001.7365&quot;}"><img class="look-more-preCode contentImg-no-view" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newCodeMoreWhite.png" alt="" title=""></span></div><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li><li style="color: rgb(153, 153, 153);">2</li><li style="color: rgb(153, 153, 153);">3</li><li style="color: rgb(153, 153, 153);">4</li><li style="color: rgb(153, 153, 153);">5</li><li style="color: rgb(153, 153, 153);">6</li><li style="color: rgb(153, 153, 153);">7</li><li style="color: rgb(153, 153, 153);">8</li><li style="color: rgb(153, 153, 153);">9</li><li style="color: rgb(153, 153, 153);">10</li><li style="color: rgb(153, 153, 153);">11</li><li style="color: rgb(153, 153, 153);">12</li><li style="color: rgb(153, 153, 153);">13</li><li style="color: rgb(153, 153, 153);">14</li><li style="color: rgb(153, 153, 153);">15</li><li style="color: rgb(153, 153, 153);">16</li><li style="color: rgb(153, 153, 153);">17</li><li style="color: rgb(153, 153, 153);">18</li><li style="color: rgb(153, 153, 153);">19</li><li style="color: rgb(153, 153, 153);">20</li><li style="color: rgb(153, 153, 153);">21</li><li style="color: rgb(153, 153, 153);">22</li><li style="color: rgb(153, 153, 153);">23</li><li style="color: rgb(153, 153, 153);">24</li><li style="color: rgb(153, 153, 153);">25</li><li style="color: rgb(153, 153, 153);">26</li><li style="color: rgb(153, 153, 153);">27</li><li style="color: rgb(153, 153, 153);">28</li><li style="color: rgb(153, 153, 153);">29</li><li style="color: rgb(153, 153, 153);">30</li><li style="color: rgb(153, 153, 153);">31</li><li style="color: rgb(153, 153, 153);">32</li><li style="color: rgb(153, 153, 153);">33</li><li style="color: rgb(153, 153, 153);">34</li><li style="color: rgb(153, 153, 153);">35</li><li style="color: rgb(153, 153, 153);">36</li><li style="color: rgb(153, 153, 153);">37</li><li style="color: rgb(153, 153, 153);">38</li><li style="color: rgb(153, 153, 153);">39</li><li style="color: rgb(153, 153, 153);">40</li><li style="color: rgb(153, 153, 153);">41</li><li style="color: rgb(153, 153, 153);">42</li><li style="color: rgb(153, 153, 153);">43</li><li style="color: rgb(153, 153, 153);">44</li><li style="color: rgb(153, 153, 153);">45</li><li style="color: rgb(153, 153, 153);">46</li><li style="color: rgb(153, 153, 153);">47</li><li style="color: rgb(153, 153, 153);">48</li><li style="color: rgb(153, 153, 153);">49</li><li style="color: rgb(153, 153, 153);">50</li><li style="color: rgb(153, 153, 153);">51</li><li style="color: rgb(153, 153, 153);">52</li><li style="color: rgb(153, 153, 153);">53</li><li style="color: rgb(153, 153, 153);">54</li><li style="color: rgb(153, 153, 153);">55</li><li style="color: rgb(153, 153, 153);">56</li><li style="color: rgb(153, 153, 153);">57</li><li style="color: rgb(153, 153, 153);">58</li><li style="color: rgb(153, 153, 153);">59</li><li style="color: rgb(153, 153, 153);">60</li><li style="color: rgb(153, 153, 153);">61</li><li style="color: rgb(153, 153, 153);">62</li><li style="color: rgb(153, 153, 153);">63</li><li style="color: rgb(153, 153, 153);">64</li><li style="color: rgb(153, 153, 153);">65</li><li style="color: rgb(153, 153, 153);">66</li><li style="color: rgb(153, 153, 153);">67</li><li style="color: rgb(153, 153, 153);">68</li></ul></pre> 
+<h2><a name="t12"></a><a id="C_338"></a>C语言</h2> 
+<pre data-index="6" class="set-code-hide prettyprint"><code class="prism language-c has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;stdio.h&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;stdlib.h&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;string.h&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;limits.h&gt;</span></span>
+
+<span class="token keyword">int</span> <span class="token function">compare</span><span class="token punctuation">(</span><span class="token keyword">const</span> <span class="token keyword">void</span> <span class="token operator">*</span>a<span class="token punctuation">,</span> <span class="token keyword">const</span> <span class="token keyword">void</span> <span class="token operator">*</span>b<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+    <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token operator">*</span><span class="token punctuation">(</span><span class="token keyword">int</span> <span class="token operator">*</span><span class="token punctuation">)</span>a <span class="token operator">-</span> <span class="token operator">*</span><span class="token punctuation">(</span><span class="token keyword">int</span> <span class="token operator">*</span><span class="token punctuation">)</span>b<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// 排序比较函数</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+    <span class="token keyword">char</span> input_str<span class="token punctuation">[</span><span class="token number">1000</span><span class="token punctuation">]</span><span class="token punctuation">;</span>  <span class="token comment">// 声明输入字符串</span>
+    <span class="token function">fgets</span><span class="token punctuation">(</span>input_str<span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>input_str<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token constant">stdin</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// 读取一行输入</span>
+
+    <span class="token comment">// 去掉字符串中的方括号 '[' 和 ']'</span>
+    <span class="token keyword">char</span> <span class="token operator">*</span>ptr <span class="token operator">=</span> <span class="token function">strchr</span><span class="token punctuation">(</span>input_str<span class="token punctuation">,</span> <span class="token string">'['</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span>ptr<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+        <span class="token function">memmove</span><span class="token punctuation">(</span>ptr<span class="token punctuation">,</span> ptr <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token function">strlen</span><span class="token punctuation">(</span>ptr<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// 移除'['</span>
+        ptr <span class="token operator">=</span> <span class="token function">strchr</span><span class="token punctuation">(</span>input_str<span class="token punctuation">,</span> <span class="token string">'['</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    ptr <span class="token operator">=</span> <span class="token function">strchr</span><span class="token punctuation">(</span>input_str<span class="token punctuation">,</span> <span class="token string">']'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span>ptr<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+        <span class="token function">memmove</span><span class="token punctuation">(</span>ptr<span class="token punctuation">,</span> ptr <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token function">strlen</span><span class="token punctuation">(</span>ptr<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// 移除']'</span>
+        ptr <span class="token operator">=</span> <span class="token function">strchr</span><span class="token punctuation">(</span>input_str<span class="token punctuation">,</span> <span class="token string">']'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">// 分割输入字符串</span>
+    <span class="token keyword">int</span> nums<span class="token punctuation">[</span><span class="token number">100</span><span class="token punctuation">]</span><span class="token punctuation">;</span>  <span class="token comment">// 假设最大长度为100</span>
+    <span class="token keyword">int</span> n <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span> k <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token keyword">char</span> <span class="token operator">*</span>token <span class="token operator">=</span> <span class="token function">strtok</span><span class="token punctuation">(</span>input_str<span class="token punctuation">,</span> <span class="token string">","</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span>token<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>token<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">!=</span> <span class="token string">'\0'</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>n <span class="token operator">&lt;</span> <span class="token number">100</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+                nums<span class="token punctuation">[</span>n<span class="token operator">++</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">atoi</span><span class="token punctuation">(</span>token<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// 转换为整数并存入数组</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        token <span class="token operator">=</span> <span class="token function">strtok</span><span class="token punctuation">(</span><span class="token constant">NULL</span><span class="token punctuation">,</span> <span class="token string">","</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    k <span class="token operator">=</span> nums<span class="token punctuation">[</span>n <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">;</span>  <span class="token comment">// K的值是最后一个元素</span>
+    n<span class="token operator">--</span><span class="token punctuation">;</span>  <span class="token comment">// 调整有效元素数量</span>
+
+    <span class="token comment">// 复制并排序数组以计算中位数</span>
+    <span class="token keyword">int</span> sorted_nums<span class="token punctuation">[</span><span class="token number">100</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token function">memcpy</span><span class="token punctuation">(</span>sorted_nums<span class="token punctuation">,</span> nums<span class="token punctuation">,</span> n <span class="token operator">*</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">qsort</span><span class="token punctuation">(</span>sorted_nums<span class="token punctuation">,</span> n<span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">)</span><span class="token punctuation">,</span> compare<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">int</span> median <span class="token operator">=</span> sorted_nums<span class="token punctuation">[</span>n <span class="token operator">/</span> <span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">;</span>  <span class="token comment">// 计算中位数</span>
+
+    <span class="token keyword">int</span> minDiff <span class="token operator">=</span> INT_MAX<span class="token punctuation">;</span>  <span class="token comment">// 初始化最小差值为最大整数</span>
+    <span class="token keyword">int</span> result <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>  <span class="token comment">// 初始化结果为-1</span>
+
+    <span class="token comment">// 遍历数组</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;=</span> n <span class="token operator">-</span> k<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+        <span class="token keyword">int</span> count <span class="token operator">=</span> nums<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>  <span class="token comment">// 初始化计数器为当前元素</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> j <span class="token operator">=</span> i <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span> j <span class="token operator">&lt;</span> i <span class="token operator">+</span> k<span class="token punctuation">;</span> j<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+            count <span class="token operator">-=</span> nums<span class="token punctuation">[</span>j<span class="token punctuation">]</span><span class="token punctuation">;</span>  <span class="token comment">// 计算当前表达式的值</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">int</span> diff <span class="token operator">=</span> <span class="token function">abs</span><span class="token punctuation">(</span>count <span class="token operator">-</span> median<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// 计算当前差值</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>diff <span class="token operator">&lt;</span> minDiff<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>  <span class="token comment">// 如果当前差值小于最小差值</span>
+            minDiff <span class="token operator">=</span> diff<span class="token punctuation">;</span>  <span class="token comment">// 更新最小差值</span>
+            result <span class="token operator">=</span> i<span class="token punctuation">;</span>  <span class="token comment">// 更新结果为当前下标</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>diff <span class="token operator">==</span> minDiff<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>  <span class="token comment">// 如果当前差值等于最小差值</span>
+            result <span class="token operator">=</span> <span class="token punctuation">(</span>result <span class="token operator">&gt;</span> i<span class="token punctuation">)</span> <span class="token operator">?</span> result <span class="token operator">:</span> i<span class="token punctuation">;</span>  <span class="token comment">// 更新结果为最大的下标</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"%d\n"</span><span class="token punctuation">,</span> result<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// 输出结果</span>
+    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>  <span class="token comment">// 返回0，表示程序正常结束</span>
+<span class="token punctuation">}</span>
+<div class="hljs-button {2}" data-title="复制"></div></code><div class="hide-preCode-box"><span class="hide-preCode-bt" data-report-view="{&quot;spm&quot;:&quot;1001.2101.3001.7365&quot;}"><img class="look-more-preCode contentImg-no-view" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newCodeMoreWhite.png" alt="" title=""></span></div><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li><li style="color: rgb(153, 153, 153);">2</li><li style="color: rgb(153, 153, 153);">3</li><li style="color: rgb(153, 153, 153);">4</li><li style="color: rgb(153, 153, 153);">5</li><li style="color: rgb(153, 153, 153);">6</li><li style="color: rgb(153, 153, 153);">7</li><li style="color: rgb(153, 153, 153);">8</li><li style="color: rgb(153, 153, 153);">9</li><li style="color: rgb(153, 153, 153);">10</li><li style="color: rgb(153, 153, 153);">11</li><li style="color: rgb(153, 153, 153);">12</li><li style="color: rgb(153, 153, 153);">13</li><li style="color: rgb(153, 153, 153);">14</li><li style="color: rgb(153, 153, 153);">15</li><li style="color: rgb(153, 153, 153);">16</li><li style="color: rgb(153, 153, 153);">17</li><li style="color: rgb(153, 153, 153);">18</li><li style="color: rgb(153, 153, 153);">19</li><li style="color: rgb(153, 153, 153);">20</li><li style="color: rgb(153, 153, 153);">21</li><li style="color: rgb(153, 153, 153);">22</li><li style="color: rgb(153, 153, 153);">23</li><li style="color: rgb(153, 153, 153);">24</li><li style="color: rgb(153, 153, 153);">25</li><li style="color: rgb(153, 153, 153);">26</li><li style="color: rgb(153, 153, 153);">27</li><li style="color: rgb(153, 153, 153);">28</li><li style="color: rgb(153, 153, 153);">29</li><li style="color: rgb(153, 153, 153);">30</li><li style="color: rgb(153, 153, 153);">31</li><li style="color: rgb(153, 153, 153);">32</li><li style="color: rgb(153, 153, 153);">33</li><li style="color: rgb(153, 153, 153);">34</li><li style="color: rgb(153, 153, 153);">35</li><li style="color: rgb(153, 153, 153);">36</li><li style="color: rgb(153, 153, 153);">37</li><li style="color: rgb(153, 153, 153);">38</li><li style="color: rgb(153, 153, 153);">39</li><li style="color: rgb(153, 153, 153);">40</li><li style="color: rgb(153, 153, 153);">41</li><li style="color: rgb(153, 153, 153);">42</li><li style="color: rgb(153, 153, 153);">43</li><li style="color: rgb(153, 153, 153);">44</li><li style="color: rgb(153, 153, 153);">45</li><li style="color: rgb(153, 153, 153);">46</li><li style="color: rgb(153, 153, 153);">47</li><li style="color: rgb(153, 153, 153);">48</li><li style="color: rgb(153, 153, 153);">49</li><li style="color: rgb(153, 153, 153);">50</li><li style="color: rgb(153, 153, 153);">51</li><li style="color: rgb(153, 153, 153);">52</li><li style="color: rgb(153, 153, 153);">53</li><li style="color: rgb(153, 153, 153);">54</li><li style="color: rgb(153, 153, 153);">55</li><li style="color: rgb(153, 153, 153);">56</li><li style="color: rgb(153, 153, 153);">57</li><li style="color: rgb(153, 153, 153);">58</li><li style="color: rgb(153, 153, 153);">59</li><li style="color: rgb(153, 153, 153);">60</li><li style="color: rgb(153, 153, 153);">61</li><li style="color: rgb(153, 153, 153);">62</li><li style="color: rgb(153, 153, 153);">63</li><li style="color: rgb(153, 153, 153);">64</li><li style="color: rgb(153, 153, 153);">65</li><li style="color: rgb(153, 153, 153);">66</li><li style="color: rgb(153, 153, 153);">67</li></ul></pre> 
+ 
+<h2><a name="t13"></a><a id="_418"></a>完整用例</h2> 
+<h3><a name="t14"></a><a id="1_419"></a>用例1</h3> 
+<pre data-index="7" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">[50,50,2,3],2
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre> 
+<h3><a name="t15"></a><a id="2_424"></a>用例2</h3> 
+<pre data-index="8" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">[1,2,3,4,5],2
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre> 
+<h3><a name="t16"></a><a id="3_428"></a>用例3</h3> 
+<pre data-index="9" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">[10,20,30,40,50],3
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre> 
+<h3><a name="t17"></a><a id="4_432"></a>用例4</h3> 
+<pre data-index="10" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">[100,200,300,400,500],4
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre> 
+<h3><a name="t18"></a><a id="5_436"></a>用例5</h3> 
+<pre data-index="11" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">[5,10,15,20,25],2
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre> 
+<h3><a name="t19"></a><a id="6_440"></a>用例6</h3> 
+<pre data-index="12" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">[1,2,3,4,5,6,7,8,9,10],4
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre> 
+<h3><a name="t20"></a><a id="7_444"></a>用例7</h3> 
+<pre data-index="13" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">[1,3,5,7,9],2
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre> 
+<h3><a name="t21"></a><a id="8_448"></a>用例8</h3> 
+<pre data-index="14" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">[1,1,1,1,1,1,1,1,1,1,1],3
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre> 
+<h3><a name="t22"></a><a id="9_452"></a>用例9</h3> 
+<pre data-index="15" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">[9,8,7,6,5,4,3,2,1],3
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre> 
+<h3><a name="t23"></a><a id="10_456"></a>用例10</h3> 
+<pre data-index="16" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">[5,5,5,5,5],2
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre>
+                </div><div data-report-view="{&quot;mod&quot;:&quot;1585297308_001&quot;,&quot;spm&quot;:&quot;1001.2101.3001.6548&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/banxia_frontend/article/details/143456283&quot;,&quot;extend1&quot;:&quot;pc&quot;,&quot;ab&quot;:&quot;new&quot;}"><div></div></div>
+                <link href="https://csdnimg.cn/release/blogv2/dist/mdeditor/css/editerView/markdown_views-f23dff6052.css" rel="stylesheet">
+                <link href="https://csdnimg.cn/release/blogv2/dist/mdeditor/css/style-e504d6a974.css" rel="stylesheet">
+        </div></html>

@@ -1,0 +1,367 @@
+<html lang="zh-CN"><head><meta charset="UTF-8"><style>.nodata  main {width:1000px;margin: auto;}</style></head><body class="nodata " style=""><div class="main_father clearfix d-flex justify-content-center " style="height:100%;"> <div class="container clearfix " id="mainBox"><main><div class="blog-content-box"><div id="article_content" class="article_content clearfix">
+        <link rel="stylesheet" href="https://csdnimg.cn/release/blogv2/dist/mdeditor/css/editerView/kdoc_html_views-1a98987dfd.css">
+        <link rel="stylesheet" href="https://csdnimg.cn/release/blogv2/dist/mdeditor/css/editerView/ck_htmledit_views-704d5b9767.css">
+             
+                <div id="content_views" class="markdown_views prism-atom-one-light">
+                    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+                        <path stroke-linecap="round" d="M5,0 0,2.5 5,5z" id="raphael-marker-block" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path>
+                    </svg>
+                    <h2><a name="t0"></a><a id="OD_1"></a>最新华为OD机试</h2> 
+
+<h2><a name="t1"></a><a id="_5"></a>题目描述</h2> 
+<p>某块业务芯片最小容量单位为1.25G，总容量为M*1.25G，对该芯片资源编号为1，2，…，M。该芯片支持3种不同的配置，分别为A、B、C。</p> 
+<ul><li>配置A：占用容量为 1.25 * 1 = 1.25G</li><li>配置B：占用容量为 1.25 * 2 = 2.5G</li><li>配置C：占用容量为 1.25 * 8 = 10G</li></ul> 
+<p>某块板卡上集成了N块上述芯片，对芯片编号为1，2，…，N，各个芯片之间彼此独立，不能跨芯片占用资源。</p> 
+<p>给定板卡上芯片数量N、每块芯片容量M、用户按次序配置后，请输出芯片资源占用情况，保证消耗的芯片数量最少。</p> 
+<p>资源分配规则：按照芯片编号从小到大分配所需资源，芯片上资源如果被占用标记为1，没有被占用标记为0.</p> 
+<p>用户配置序列：用户配置是按次序依次配置到芯片中，如果用户配置序列种某个配置超过了芯片总容量，丢弃该配置，继续遍历用户后续配置。</p> 
+<h2><a name="t2"></a><a id="_21"></a>输入描述</h2> 
+<p>M：每块芯片容量为 M * 1.25G，取值范围为：1~256</p> 
+<p>N：每块板卡包含芯片数量，取值范围为1~32</p> 
+<p>用户配置序列：例如ACABA，长度不超过1000</p> 
+<h2><a name="t3"></a><a id="_30"></a>输出描述</h2> 
+<p>板卡上每块芯片的占用情况</p> 
+<h4><a name="t4"></a><a id="_34"></a>备注</h4> 
+<p>用户配置是按次序依次配置到芯片中，如果用户配置序列种某个配置超过了芯片总容量，丢弃该配置，继续遍历用户后续配置。</p> 
+<h2><a name="t5"></a><a id="1_38"></a>示例1</h2> 
+<p>输入</p> 
+<pre data-index="0" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">8
+2
+ACABA
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li><li style="color: rgb(153, 153, 153);">2</li><li style="color: rgb(153, 153, 153);">3</li></ul></pre> 
+<p>输出</p> 
+<pre data-index="1" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">11111000
+11111111
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li><li style="color: rgb(153, 153, 153);">2</li></ul></pre> 
+<p>说明</p> 
+<blockquote> 
+ <p>用户第1个配置A：占用第1块芯片第1个资源，芯片占用情况为：<br> 10000000<br> 00000000<br> 用户第2个配置C：第1块芯片剩余8.75G，配置C容量不够，只能占用第2块芯片，芯片占用情况为：<br> 10000000<br> 11111111<br> 用户第3个配置A：第1块芯片剩余8.75G，还能继续配置，占用第1块芯片第2个资源，芯片占用情况为：<br> 11000000<br> 11111111<br> 用户第4个配置B：第1块芯片剩余7.<a href="https://so.csdn.net/so/search?q=5G&amp;spm=1001.2101.3001.7020">5G</a>，还能继续配置，占用第1块芯片第3、4个资源，芯片占用情况为：<br> 11110000<br> 11111111<br> 用户第5个配置A：第1块芯片剩余5G，还能继续配置，占用第1块芯片第5个资源，芯片占用情况为：<br> 11110000<br> 11111111</p> 
+</blockquote> 
+<h2><a name="t6"></a><a id="2_73"></a>示例2</h2> 
+<p>输入</p> 
+<pre data-index="2" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">8
+2
+ACBCB
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li><li style="color: rgb(153, 153, 153);">2</li><li style="color: rgb(153, 153, 153);">3</li></ul></pre> 
+<p>输出</p> 
+<pre data-index="3" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">11111000
+11111111
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li><li style="color: rgb(153, 153, 153);">2</li></ul></pre> 
+<p>说明</p> 
+<blockquote> 
+ <p>用户第1个配置A：占用第1块芯片第1个资源，芯片占用情况为：<br> 10000000<br> 00000000<br> 用户第2个配置C：第1块芯片剩余8.75G，配置C容量不够，只能占用第2块芯片，芯片占用情况为：<br> 10000000<br> 11111111<br> 用户第3个配置B：第1块芯片剩余8.75G，还能继续配置，占用第1块芯片第2、3个资源，芯片占用情况为：<br> 11100000<br> 11111111<br> 用户第4个配置C：芯片资源不够，丢弃配置，继续下一个配置，本次配置后芯片占用情况保持不变：<br> 11100000<br> 11111111<br> 用户第5个配置B：第1块芯片剩余6.25G,还能继续配置，占用第1块芯片第4、5个资源，芯片占用情况为：<br> 11111000<br> 11111111</p> 
+</blockquote> 
+<h2><a name="t7"></a><a id="_108"></a>解题思路</h2> 
+<p>以用例1解释一下：</p> 
+<p>用例1的前两行输入表示：</p> 
+<p>板卡上有N=2个芯片，而每个芯片有8个单位容量，因此对应如下：</p> 
+<blockquote> 
+ <p>00000000</p> 
+ <p>00000000</p> 
+</blockquote> 
+<p>其中每个0代表一个单位容量，而一个芯片有8单位容量，因此第一排8个0代表一个芯片的总容量，第二排8个0代表另一个芯片的总容量。</p> 
+<h4><a name="t8"></a><a id="_122"></a>代码思路</h4> 
+<p>首先，读入每块芯片的容量和板卡上芯片的数量，以及用户配置序列。然后，初始化每块板卡的总容量为芯片数量 * 芯片容量。接下来，定义一个字典，将用户配置序列中的字符映射到对应的容量。遍历用户配置序列，按照芯片编号从小到大分配所需资源。具体地，对于每个配置，遍历每块板卡，找到第一个容量足够的板卡，将其对应的总容量减去所需资源。最后，输出每块芯片的占用情况。对于每块芯片，计算已用和未用容量，构造字符串表示每块芯片的占用情况。</p> 
+<h2><a name="t9"></a><a id="Java_126"></a>Java</h2> 
+<pre data-index="4" class="set-code-hide prettyprint"><code class="prism language-java has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;"><span class="token keyword">import</span> <span class="token namespace">java<span class="token punctuation">.</span>util<span class="token punctuation">.</span></span><span class="token operator">*</span><span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Main</span> <span class="token punctuation">{<!-- --></span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+        <span class="token class-name">Scanner</span> scanner <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Scanner</span><span class="token punctuation">(</span><span class="token class-name">System</span><span class="token punctuation">.</span>in<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 输入每块芯片的容量和板卡上芯片的数量</span>
+        <span class="token keyword">int</span> chip_capacity <span class="token operator">=</span> scanner<span class="token punctuation">.</span><span class="token function">nextInt</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">int</span> chip_count <span class="token operator">=</span> scanner<span class="token punctuation">.</span><span class="token function">nextInt</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 输入用户配置序列</span>
+        <span class="token class-name">String</span> sequence <span class="token operator">=</span> scanner<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 初始化每块板卡的总容量</span>
+        <span class="token class-name">List</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Double</span><span class="token punctuation">&gt;</span></span> board_card <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token punctuation">&gt;</span></span><span class="token punctuation">(</span><span class="token class-name">Collections</span><span class="token punctuation">.</span><span class="token function">nCopies</span><span class="token punctuation">(</span>chip_count<span class="token punctuation">,</span> chip_capacity <span class="token operator">*</span> <span class="token number">1.25</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 遍历用户配置序列，按照芯片编号从小到大分配所需资源</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> sequence<span class="token punctuation">.</span><span class="token function">length</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+            <span class="token keyword">char</span> config <span class="token operator">=</span> sequence<span class="token punctuation">.</span><span class="token function">charAt</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">double</span> need<span class="token punctuation">;</span>
+
+            <span class="token comment">// 直接计算每种配置的需求</span>
+            <span class="token keyword">switch</span> <span class="token punctuation">(</span>config<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+                <span class="token keyword">case</span> <span class="token string">'A'</span><span class="token operator">:</span>
+                    need <span class="token operator">=</span> <span class="token number">1.25</span> <span class="token operator">*</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token comment">// 1.25G</span>
+                    <span class="token keyword">break</span><span class="token punctuation">;</span>
+                <span class="token keyword">case</span> <span class="token string">'B'</span><span class="token operator">:</span>
+                    need <span class="token operator">=</span> <span class="token number">1.25</span> <span class="token operator">*</span> <span class="token number">2</span><span class="token punctuation">;</span> <span class="token comment">// 2.5G</span>
+                    <span class="token keyword">break</span><span class="token punctuation">;</span>
+                <span class="token keyword">case</span> <span class="token string">'C'</span><span class="token operator">:</span>
+                    need <span class="token operator">=</span> <span class="token number">1.25</span> <span class="token operator">*</span> <span class="token number">8</span><span class="token punctuation">;</span> <span class="token comment">// 10G</span>
+                    <span class="token keyword">break</span><span class="token punctuation">;</span>
+                <span class="token keyword">default</span><span class="token operator">:</span>
+                    <span class="token keyword">continue</span><span class="token punctuation">;</span> <span class="token comment">// 如果是未知配置，跳过</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token comment">// 分配资源</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> j <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> j <span class="token operator">&lt;</span> chip_count<span class="token punctuation">;</span> j<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>board_card<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>j<span class="token punctuation">)</span> <span class="token operator">&gt;=</span> need<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+                    board_card<span class="token punctuation">.</span><span class="token function">set</span><span class="token punctuation">(</span>j<span class="token punctuation">,</span> board_card<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>j<span class="token punctuation">)</span> <span class="token operator">-</span> need<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">break</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment">// 输出每块芯片的占用情况</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> chip_count<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+            <span class="token comment">// 计算每块芯片的已用和未用容量</span>
+            <span class="token keyword">int</span> un_used <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">)</span> <span class="token punctuation">(</span>board_card<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span> <span class="token operator">/</span> <span class="token number">1.25</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">int</span> used <span class="token operator">=</span> chip_capacity <span class="token operator">-</span> un_used<span class="token punctuation">;</span>
+
+            <span class="token comment">// 构造字符串表示每块芯片的占用情况</span>
+            <span class="token class-name">StringBuilder</span> sb <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">StringBuilder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> j <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> j <span class="token operator">&lt;</span> used<span class="token punctuation">;</span> j<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+                sb<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span><span class="token string">'1'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> k <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> k <span class="token operator">&lt;</span> un_used<span class="token punctuation">;</span> k<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+                sb<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span><span class="token string">'0'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>sb<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        scanner<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<div class="hljs-button {2}" data-title="复制"></div></code><div class="hide-preCode-box"><span class="hide-preCode-bt" data-report-view="{&quot;spm&quot;:&quot;1001.2101.3001.7365&quot;}"><img class="look-more-preCode contentImg-no-view" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newCodeMoreWhite.png" alt="" title=""></span></div><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li><li style="color: rgb(153, 153, 153);">2</li><li style="color: rgb(153, 153, 153);">3</li><li style="color: rgb(153, 153, 153);">4</li><li style="color: rgb(153, 153, 153);">5</li><li style="color: rgb(153, 153, 153);">6</li><li style="color: rgb(153, 153, 153);">7</li><li style="color: rgb(153, 153, 153);">8</li><li style="color: rgb(153, 153, 153);">9</li><li style="color: rgb(153, 153, 153);">10</li><li style="color: rgb(153, 153, 153);">11</li><li style="color: rgb(153, 153, 153);">12</li><li style="color: rgb(153, 153, 153);">13</li><li style="color: rgb(153, 153, 153);">14</li><li style="color: rgb(153, 153, 153);">15</li><li style="color: rgb(153, 153, 153);">16</li><li style="color: rgb(153, 153, 153);">17</li><li style="color: rgb(153, 153, 153);">18</li><li style="color: rgb(153, 153, 153);">19</li><li style="color: rgb(153, 153, 153);">20</li><li style="color: rgb(153, 153, 153);">21</li><li style="color: rgb(153, 153, 153);">22</li><li style="color: rgb(153, 153, 153);">23</li><li style="color: rgb(153, 153, 153);">24</li><li style="color: rgb(153, 153, 153);">25</li><li style="color: rgb(153, 153, 153);">26</li><li style="color: rgb(153, 153, 153);">27</li><li style="color: rgb(153, 153, 153);">28</li><li style="color: rgb(153, 153, 153);">29</li><li style="color: rgb(153, 153, 153);">30</li><li style="color: rgb(153, 153, 153);">31</li><li style="color: rgb(153, 153, 153);">32</li><li style="color: rgb(153, 153, 153);">33</li><li style="color: rgb(153, 153, 153);">34</li><li style="color: rgb(153, 153, 153);">35</li><li style="color: rgb(153, 153, 153);">36</li><li style="color: rgb(153, 153, 153);">37</li><li style="color: rgb(153, 153, 153);">38</li><li style="color: rgb(153, 153, 153);">39</li><li style="color: rgb(153, 153, 153);">40</li><li style="color: rgb(153, 153, 153);">41</li><li style="color: rgb(153, 153, 153);">42</li><li style="color: rgb(153, 153, 153);">43</li><li style="color: rgb(153, 153, 153);">44</li><li style="color: rgb(153, 153, 153);">45</li><li style="color: rgb(153, 153, 153);">46</li><li style="color: rgb(153, 153, 153);">47</li><li style="color: rgb(153, 153, 153);">48</li><li style="color: rgb(153, 153, 153);">49</li><li style="color: rgb(153, 153, 153);">50</li><li style="color: rgb(153, 153, 153);">51</li><li style="color: rgb(153, 153, 153);">52</li><li style="color: rgb(153, 153, 153);">53</li><li style="color: rgb(153, 153, 153);">54</li><li style="color: rgb(153, 153, 153);">55</li><li style="color: rgb(153, 153, 153);">56</li><li style="color: rgb(153, 153, 153);">57</li><li style="color: rgb(153, 153, 153);">58</li><li style="color: rgb(153, 153, 153);">59</li><li style="color: rgb(153, 153, 153);">60</li><li style="color: rgb(153, 153, 153);">61</li><li style="color: rgb(153, 153, 153);">62</li><li style="color: rgb(153, 153, 153);">63</li><li style="color: rgb(153, 153, 153);">64</li><li style="color: rgb(153, 153, 153);">65</li></ul></pre> 
+<h2><a name="t10"></a><a id="Python_196"></a>Python</h2> 
+<pre data-index="5" class="set-code-hide prettyprint"><code class="prism language-python has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;"> 
+<span class="token keyword">import</span> sys
+
+<span class="token keyword">def</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token comment"># 输入每块芯片的容量和板卡上芯片的数量</span>
+    chip_capacity <span class="token operator">=</span> <span class="token builtin">int</span><span class="token punctuation">(</span><span class="token builtin">input</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>  <span class="token comment"># 每块芯片的容量</span>
+    chip_count <span class="token operator">=</span> <span class="token builtin">int</span><span class="token punctuation">(</span><span class="token builtin">input</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>      <span class="token comment"># 板卡上芯片的数量</span>
+
+    <span class="token comment"># 输入用户配置序列</span>
+    sequence <span class="token operator">=</span> <span class="token builtin">input</span><span class="token punctuation">(</span><span class="token punctuation">)</span>  <span class="token comment"># 用户配置序列</span>
+
+    <span class="token comment"># 初始化每块板卡的总容量</span>
+    board_card <span class="token operator">=</span> <span class="token punctuation">[</span>chip_capacity <span class="token operator">*</span> <span class="token number">1.25</span><span class="token punctuation">]</span> <span class="token operator">*</span> chip_count
+
+    <span class="token comment"># 遍历用户配置序列，按照芯片编号从小到大分配所需资源</span>
+    <span class="token keyword">for</span> config <span class="token keyword">in</span> sequence<span class="token punctuation">:</span>
+        <span class="token keyword">if</span> config <span class="token operator">==</span> <span class="token string">'A'</span><span class="token punctuation">:</span>
+            need <span class="token operator">=</span> <span class="token number">1.25</span> <span class="token operator">*</span> <span class="token number">1</span>  <span class="token comment"># 1.25G</span>
+        <span class="token keyword">elif</span> config <span class="token operator">==</span> <span class="token string">'B'</span><span class="token punctuation">:</span>
+            need <span class="token operator">=</span> <span class="token number">1.25</span> <span class="token operator">*</span> <span class="token number">2</span>  <span class="token comment"># 2.5G</span>
+        <span class="token keyword">elif</span> config <span class="token operator">==</span> <span class="token string">'C'</span><span class="token punctuation">:</span>
+            need <span class="token operator">=</span> <span class="token number">1.25</span> <span class="token operator">*</span> <span class="token number">8</span>  <span class="token comment"># 10G</span>
+        <span class="token keyword">else</span><span class="token punctuation">:</span>
+            <span class="token keyword">continue</span>  <span class="token comment"># 如果是未知配置，跳过</span>
+
+        <span class="token comment"># 分配资源</span>
+        <span class="token keyword">for</span> j <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span>chip_count<span class="token punctuation">)</span><span class="token punctuation">:</span>
+            <span class="token keyword">if</span> board_card<span class="token punctuation">[</span>j<span class="token punctuation">]</span> <span class="token operator">&gt;=</span> need<span class="token punctuation">:</span>
+                board_card<span class="token punctuation">[</span>j<span class="token punctuation">]</span> <span class="token operator">-=</span> need  <span class="token comment"># 减去所需容量</span>
+                <span class="token keyword">break</span>
+
+    <span class="token comment"># 输出每块芯片的占用情况</span>
+    <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span>chip_count<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        un_used <span class="token operator">=</span> <span class="token builtin">int</span><span class="token punctuation">(</span>board_card<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">/</span> <span class="token number">1.25</span><span class="token punctuation">)</span>  <span class="token comment"># 计算未使用的容量</span>
+        used <span class="token operator">=</span> chip_capacity <span class="token operator">-</span> un_used  <span class="token comment"># 计算已使用的容量</span>
+
+        <span class="token comment"># 构造字符串表示每块芯片的占用情况</span>
+        result <span class="token operator">=</span> <span class="token string">'1'</span> <span class="token operator">*</span> used <span class="token operator">+</span> <span class="token string">'0'</span> <span class="token operator">*</span> un_used  <span class="token comment"># 使用 '1' 表示已占用，'0' 表示未占用</span>
+        <span class="token keyword">print</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span>  <span class="token comment"># 输出结果</span>
+
+<span class="token keyword">if</span> __name__ <span class="token operator">==</span> <span class="token string">"__main__"</span><span class="token punctuation">:</span>
+    main<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<div class="hljs-button {2}" data-title="复制"></div></code><div class="hide-preCode-box"><span class="hide-preCode-bt" data-report-view="{&quot;spm&quot;:&quot;1001.2101.3001.7365&quot;}"><img class="look-more-preCode contentImg-no-view" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newCodeMoreWhite.png" alt="" title=""></span></div><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li><li style="color: rgb(153, 153, 153);">2</li><li style="color: rgb(153, 153, 153);">3</li><li style="color: rgb(153, 153, 153);">4</li><li style="color: rgb(153, 153, 153);">5</li><li style="color: rgb(153, 153, 153);">6</li><li style="color: rgb(153, 153, 153);">7</li><li style="color: rgb(153, 153, 153);">8</li><li style="color: rgb(153, 153, 153);">9</li><li style="color: rgb(153, 153, 153);">10</li><li style="color: rgb(153, 153, 153);">11</li><li style="color: rgb(153, 153, 153);">12</li><li style="color: rgb(153, 153, 153);">13</li><li style="color: rgb(153, 153, 153);">14</li><li style="color: rgb(153, 153, 153);">15</li><li style="color: rgb(153, 153, 153);">16</li><li style="color: rgb(153, 153, 153);">17</li><li style="color: rgb(153, 153, 153);">18</li><li style="color: rgb(153, 153, 153);">19</li><li style="color: rgb(153, 153, 153);">20</li><li style="color: rgb(153, 153, 153);">21</li><li style="color: rgb(153, 153, 153);">22</li><li style="color: rgb(153, 153, 153);">23</li><li style="color: rgb(153, 153, 153);">24</li><li style="color: rgb(153, 153, 153);">25</li><li style="color: rgb(153, 153, 153);">26</li><li style="color: rgb(153, 153, 153);">27</li><li style="color: rgb(153, 153, 153);">28</li><li style="color: rgb(153, 153, 153);">29</li><li style="color: rgb(153, 153, 153);">30</li><li style="color: rgb(153, 153, 153);">31</li><li style="color: rgb(153, 153, 153);">32</li><li style="color: rgb(153, 153, 153);">33</li><li style="color: rgb(153, 153, 153);">34</li><li style="color: rgb(153, 153, 153);">35</li><li style="color: rgb(153, 153, 153);">36</li><li style="color: rgb(153, 153, 153);">37</li><li style="color: rgb(153, 153, 153);">38</li><li style="color: rgb(153, 153, 153);">39</li><li style="color: rgb(153, 153, 153);">40</li><li style="color: rgb(153, 153, 153);">41</li><li style="color: rgb(153, 153, 153);">42</li></ul></pre> 
+<h2><a name="t11"></a><a id="JavaScript_242"></a>JavaScript</h2> 
+<pre data-index="6" class="set-code-hide prettyprint"><code class="prism language-js has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;"><span class="token comment">// Node.js 版本</span>
+<span class="token keyword">const</span> readline <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'readline'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// 创建接口以读取输入</span>
+<span class="token keyword">const</span> rl <span class="token operator">=</span> readline<span class="token punctuation">.</span><span class="token function">createInterface</span><span class="token punctuation">(</span><span class="token punctuation">{<!-- --></span>
+    input<span class="token operator">:</span> process<span class="token punctuation">.</span>stdin<span class="token punctuation">,</span>
+    output<span class="token operator">:</span> process<span class="token punctuation">.</span>stdout
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">let</span> chip_capacity<span class="token punctuation">;</span>
+<span class="token keyword">let</span> chip_count<span class="token punctuation">;</span>
+rl<span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">'line'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token parameter">line</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{<!-- --></span>
+    <span class="token comment">// 第一次输入：每块芯片的容量</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>chip_capacity<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+        chip_capacity <span class="token operator">=</span> <span class="token function">parseInt</span><span class="token punctuation">(</span>line<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 读取芯片容量</span>
+        <span class="token keyword">return</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment">// 第二次输入：板卡上芯片的数量</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>chip_count<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+        chip_count <span class="token operator">=</span> <span class="token function">parseInt</span><span class="token punctuation">(</span>line<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 读取芯片数量</span>
+        <span class="token keyword">return</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment">// 第三次输入：用户配置序列</span>
+    sequence <span class="token operator">=</span> line<span class="token punctuation">;</span> <span class="token comment">// 读取用户配置序列</span>
+    rl<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 关闭输入接口</span>
+
+    <span class="token comment">// 初始化每块板卡的总容量</span>
+    <span class="token keyword">const</span> board_card <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Array</span><span class="token punctuation">(</span>chip_count<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">fill</span><span class="token punctuation">(</span>chip_capacity <span class="token operator">*</span> <span class="token number">1.25</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// 遍历用户配置序列，按照芯片编号从小到大分配所需资源</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> sequence<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+        <span class="token keyword">let</span> need<span class="token punctuation">;</span>
+        <span class="token keyword">switch</span> <span class="token punctuation">(</span>sequence<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+            <span class="token keyword">case</span> <span class="token string">'A'</span><span class="token operator">:</span>
+                need <span class="token operator">=</span> <span class="token number">1.25</span> <span class="token operator">*</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token comment">// 1.25G</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token keyword">case</span> <span class="token string">'B'</span><span class="token operator">:</span>
+                need <span class="token operator">=</span> <span class="token number">1.25</span> <span class="token operator">*</span> <span class="token number">2</span><span class="token punctuation">;</span> <span class="token comment">// 2.5G</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token keyword">case</span> <span class="token string">'C'</span><span class="token operator">:</span>
+                need <span class="token operator">=</span> <span class="token number">1.25</span> <span class="token operator">*</span> <span class="token number">8</span><span class="token punctuation">;</span> <span class="token comment">// 10G</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token keyword">default</span><span class="token operator">:</span>
+                <span class="token keyword">continue</span><span class="token punctuation">;</span> <span class="token comment">// 如果是未知配置，跳过</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment">// 分配资源</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> j <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> j <span class="token operator">&lt;</span> chip_count<span class="token punctuation">;</span> j<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>board_card<span class="token punctuation">[</span>j<span class="token punctuation">]</span> <span class="token operator">&gt;=</span> need<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+                board_card<span class="token punctuation">[</span>j<span class="token punctuation">]</span> <span class="token operator">-=</span> need<span class="token punctuation">;</span> <span class="token comment">// 减去所需容量</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">// 输出每块芯片的占用情况</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> chip_count<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+        <span class="token keyword">const</span> un_used <span class="token operator">=</span> Math<span class="token punctuation">.</span><span class="token function">floor</span><span class="token punctuation">(</span>board_card<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">/</span> <span class="token number">1.25</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 计算未使用的容量</span>
+        <span class="token keyword">const</span> used <span class="token operator">=</span> chip_capacity <span class="token operator">-</span> un_used<span class="token punctuation">;</span> <span class="token comment">// 计算已使用的容量</span>
+
+        <span class="token comment">// 构造字符串表示每块芯片的占用情况</span>
+        <span class="token keyword">const</span> result <span class="token operator">=</span> <span class="token string">'1'</span><span class="token punctuation">.</span><span class="token function">repeat</span><span class="token punctuation">(</span>used<span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">'0'</span><span class="token punctuation">.</span><span class="token function">repeat</span><span class="token punctuation">(</span>un_used<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 使用 '1' 表示已占用，'0' 表示未占用</span>
+        console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 输出结果</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<div class="hljs-button {2}" data-title="复制"></div></code><div class="hide-preCode-box"><span class="hide-preCode-bt" data-report-view="{&quot;spm&quot;:&quot;1001.2101.3001.7365&quot;}"><img class="look-more-preCode contentImg-no-view" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newCodeMoreWhite.png" alt="" title=""></span></div><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li><li style="color: rgb(153, 153, 153);">2</li><li style="color: rgb(153, 153, 153);">3</li><li style="color: rgb(153, 153, 153);">4</li><li style="color: rgb(153, 153, 153);">5</li><li style="color: rgb(153, 153, 153);">6</li><li style="color: rgb(153, 153, 153);">7</li><li style="color: rgb(153, 153, 153);">8</li><li style="color: rgb(153, 153, 153);">9</li><li style="color: rgb(153, 153, 153);">10</li><li style="color: rgb(153, 153, 153);">11</li><li style="color: rgb(153, 153, 153);">12</li><li style="color: rgb(153, 153, 153);">13</li><li style="color: rgb(153, 153, 153);">14</li><li style="color: rgb(153, 153, 153);">15</li><li style="color: rgb(153, 153, 153);">16</li><li style="color: rgb(153, 153, 153);">17</li><li style="color: rgb(153, 153, 153);">18</li><li style="color: rgb(153, 153, 153);">19</li><li style="color: rgb(153, 153, 153);">20</li><li style="color: rgb(153, 153, 153);">21</li><li style="color: rgb(153, 153, 153);">22</li><li style="color: rgb(153, 153, 153);">23</li><li style="color: rgb(153, 153, 153);">24</li><li style="color: rgb(153, 153, 153);">25</li><li style="color: rgb(153, 153, 153);">26</li><li style="color: rgb(153, 153, 153);">27</li><li style="color: rgb(153, 153, 153);">28</li><li style="color: rgb(153, 153, 153);">29</li><li style="color: rgb(153, 153, 153);">30</li><li style="color: rgb(153, 153, 153);">31</li><li style="color: rgb(153, 153, 153);">32</li><li style="color: rgb(153, 153, 153);">33</li><li style="color: rgb(153, 153, 153);">34</li><li style="color: rgb(153, 153, 153);">35</li><li style="color: rgb(153, 153, 153);">36</li><li style="color: rgb(153, 153, 153);">37</li><li style="color: rgb(153, 153, 153);">38</li><li style="color: rgb(153, 153, 153);">39</li><li style="color: rgb(153, 153, 153);">40</li><li style="color: rgb(153, 153, 153);">41</li><li style="color: rgb(153, 153, 153);">42</li><li style="color: rgb(153, 153, 153);">43</li><li style="color: rgb(153, 153, 153);">44</li><li style="color: rgb(153, 153, 153);">45</li><li style="color: rgb(153, 153, 153);">46</li><li style="color: rgb(153, 153, 153);">47</li><li style="color: rgb(153, 153, 153);">48</li><li style="color: rgb(153, 153, 153);">49</li><li style="color: rgb(153, 153, 153);">50</li><li style="color: rgb(153, 153, 153);">51</li><li style="color: rgb(153, 153, 153);">52</li><li style="color: rgb(153, 153, 153);">53</li><li style="color: rgb(153, 153, 153);">54</li><li style="color: rgb(153, 153, 153);">55</li><li style="color: rgb(153, 153, 153);">56</li><li style="color: rgb(153, 153, 153);">57</li><li style="color: rgb(153, 153, 153);">58</li><li style="color: rgb(153, 153, 153);">59</li><li style="color: rgb(153, 153, 153);">60</li><li style="color: rgb(153, 153, 153);">61</li><li style="color: rgb(153, 153, 153);">62</li><li style="color: rgb(153, 153, 153);">63</li><li style="color: rgb(153, 153, 153);">64</li></ul></pre> 
+<h2><a name="t12"></a><a id="C_312"></a>C++</h2> 
+<pre data-index="7" class="set-code-hide prettyprint"><code class="prism language-c has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;iostream&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;vector&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;string&gt;</span></span>
+
+using namespace std<span class="token punctuation">;</span>
+
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+    <span class="token comment">// 输入每块芯片的容量和板卡上芯片的数量</span>
+    <span class="token keyword">int</span> chip_capacity<span class="token punctuation">,</span> chip_count<span class="token punctuation">;</span>
+    cin <span class="token operator">&gt;&gt;</span> chip_capacity <span class="token operator">&gt;&gt;</span> chip_count<span class="token punctuation">;</span>
+
+    <span class="token comment">// 输入用户配置序列</span>
+    string sequence<span class="token punctuation">;</span>
+    cin <span class="token operator">&gt;&gt;</span> sequence<span class="token punctuation">;</span>
+
+    <span class="token comment">// 初始化每块板卡的总容量</span>
+    vector<span class="token operator">&lt;</span><span class="token keyword">double</span><span class="token operator">&gt;</span> <span class="token function">board_card</span><span class="token punctuation">(</span>chip_count<span class="token punctuation">,</span> chip_capacity <span class="token operator">*</span> <span class="token number">1.25</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// 遍历用户配置序列，按照芯片编号从小到大分配所需资源</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">char</span> config <span class="token operator">:</span> sequence<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+        <span class="token keyword">double</span> need<span class="token punctuation">;</span>
+        <span class="token keyword">switch</span> <span class="token punctuation">(</span>config<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+            <span class="token keyword">case</span> <span class="token string">'A'</span><span class="token operator">:</span>
+                need <span class="token operator">=</span> <span class="token number">1.25</span> <span class="token operator">*</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token comment">// 1.25G</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token keyword">case</span> <span class="token string">'B'</span><span class="token operator">:</span>
+                need <span class="token operator">=</span> <span class="token number">1.25</span> <span class="token operator">*</span> <span class="token number">2</span><span class="token punctuation">;</span> <span class="token comment">// 2.5G</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token keyword">case</span> <span class="token string">'C'</span><span class="token operator">:</span>
+                need <span class="token operator">=</span> <span class="token number">1.25</span> <span class="token operator">*</span> <span class="token number">8</span><span class="token punctuation">;</span> <span class="token comment">// 10G</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token keyword">default</span><span class="token operator">:</span>
+                <span class="token keyword">continue</span><span class="token punctuation">;</span> <span class="token comment">// 如果是未知配置，跳过</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment">// 分配资源</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> j <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> j <span class="token operator">&lt;</span> chip_count<span class="token punctuation">;</span> j<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>board_card<span class="token punctuation">[</span>j<span class="token punctuation">]</span> <span class="token operator">&gt;=</span> need<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+                board_card<span class="token punctuation">[</span>j<span class="token punctuation">]</span> <span class="token operator">-=</span> need<span class="token punctuation">;</span> <span class="token comment">// 减去所需容量</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">// 输出每块芯片的占用情况</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> chip_count<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+        <span class="token keyword">int</span> un_used <span class="token operator">=</span> static_cast<span class="token operator">&lt;</span><span class="token keyword">int</span><span class="token operator">&gt;</span><span class="token punctuation">(</span>board_card<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">/</span> <span class="token number">1.25</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 计算未使用的容量</span>
+        <span class="token keyword">int</span> used <span class="token operator">=</span> chip_capacity <span class="token operator">-</span> un_used<span class="token punctuation">;</span> <span class="token comment">// 计算已使用的容量</span>
+
+        <span class="token comment">// 构造字符串表示每块芯片的占用情况</span>
+        string <span class="token function">result</span><span class="token punctuation">(</span>used<span class="token punctuation">,</span> <span class="token string">'1'</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 使用 '1' 表示已占用</span>
+        result<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span>un_used<span class="token punctuation">,</span> <span class="token string">'0'</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 使用 '0' 表示未占用</span>
+        cout <span class="token operator">&lt;&lt;</span> result <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span> <span class="token comment">// 输出结果</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<div class="hljs-button {2}" data-title="复制"></div></code><div class="hide-preCode-box"><span class="hide-preCode-bt" data-report-view="{&quot;spm&quot;:&quot;1001.2101.3001.7365&quot;}"><img class="look-more-preCode contentImg-no-view" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newCodeMoreWhite.png" alt="" title=""></span></div><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li><li style="color: rgb(153, 153, 153);">2</li><li style="color: rgb(153, 153, 153);">3</li><li style="color: rgb(153, 153, 153);">4</li><li style="color: rgb(153, 153, 153);">5</li><li style="color: rgb(153, 153, 153);">6</li><li style="color: rgb(153, 153, 153);">7</li><li style="color: rgb(153, 153, 153);">8</li><li style="color: rgb(153, 153, 153);">9</li><li style="color: rgb(153, 153, 153);">10</li><li style="color: rgb(153, 153, 153);">11</li><li style="color: rgb(153, 153, 153);">12</li><li style="color: rgb(153, 153, 153);">13</li><li style="color: rgb(153, 153, 153);">14</li><li style="color: rgb(153, 153, 153);">15</li><li style="color: rgb(153, 153, 153);">16</li><li style="color: rgb(153, 153, 153);">17</li><li style="color: rgb(153, 153, 153);">18</li><li style="color: rgb(153, 153, 153);">19</li><li style="color: rgb(153, 153, 153);">20</li><li style="color: rgb(153, 153, 153);">21</li><li style="color: rgb(153, 153, 153);">22</li><li style="color: rgb(153, 153, 153);">23</li><li style="color: rgb(153, 153, 153);">24</li><li style="color: rgb(153, 153, 153);">25</li><li style="color: rgb(153, 153, 153);">26</li><li style="color: rgb(153, 153, 153);">27</li><li style="color: rgb(153, 153, 153);">28</li><li style="color: rgb(153, 153, 153);">29</li><li style="color: rgb(153, 153, 153);">30</li><li style="color: rgb(153, 153, 153);">31</li><li style="color: rgb(153, 153, 153);">32</li><li style="color: rgb(153, 153, 153);">33</li><li style="color: rgb(153, 153, 153);">34</li><li style="color: rgb(153, 153, 153);">35</li><li style="color: rgb(153, 153, 153);">36</li><li style="color: rgb(153, 153, 153);">37</li><li style="color: rgb(153, 153, 153);">38</li><li style="color: rgb(153, 153, 153);">39</li><li style="color: rgb(153, 153, 153);">40</li><li style="color: rgb(153, 153, 153);">41</li><li style="color: rgb(153, 153, 153);">42</li><li style="color: rgb(153, 153, 153);">43</li><li style="color: rgb(153, 153, 153);">44</li><li style="color: rgb(153, 153, 153);">45</li><li style="color: rgb(153, 153, 153);">46</li><li style="color: rgb(153, 153, 153);">47</li><li style="color: rgb(153, 153, 153);">48</li><li style="color: rgb(153, 153, 153);">49</li><li style="color: rgb(153, 153, 153);">50</li><li style="color: rgb(153, 153, 153);">51</li><li style="color: rgb(153, 153, 153);">52</li><li style="color: rgb(153, 153, 153);">53</li><li style="color: rgb(153, 153, 153);">54</li><li style="color: rgb(153, 153, 153);">55</li><li style="color: rgb(153, 153, 153);">56</li><li style="color: rgb(153, 153, 153);">57</li></ul></pre> 
+<h2><a name="t13"></a><a id="C_374"></a>C语言</h2> 
+<pre data-index="8" class="set-code-hide prettyprint"><code class="prism language-c has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;stdio.h&gt;</span></span>
+
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+    <span class="token comment">// 输入每块芯片的容量和板卡上芯片的数量</span>
+    <span class="token keyword">int</span> chip_capacity<span class="token punctuation">,</span> chip_count<span class="token punctuation">;</span>
+    <span class="token function">scanf</span><span class="token punctuation">(</span><span class="token string">"%d %d"</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>chip_capacity<span class="token punctuation">,</span> <span class="token operator">&amp;</span>chip_count<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// 输入用户配置序列</span>
+    <span class="token keyword">char</span> sequence<span class="token punctuation">[</span><span class="token number">1001</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token comment">// 假设配置序列不超过1000个字符</span>
+    <span class="token function">scanf</span><span class="token punctuation">(</span><span class="token string">"%s"</span><span class="token punctuation">,</span> sequence<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// 初始化每块板卡的总容量</span>
+    <span class="token keyword">double</span> board_card<span class="token punctuation">[</span><span class="token number">32</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span class="token comment">// 假设最多有32块芯片</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> chip_count<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+        board_card<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> chip_capacity <span class="token operator">*</span> <span class="token number">1.25</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">// 遍历用户配置序列，按照芯片编号从小到大分配所需资源</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> sequence<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">!=</span> <span class="token string">'\0'</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+        <span class="token keyword">double</span> need<span class="token punctuation">;</span>
+        <span class="token keyword">switch</span> <span class="token punctuation">(</span>sequence<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+            <span class="token keyword">case</span> <span class="token string">'A'</span><span class="token operator">:</span>
+                need <span class="token operator">=</span> <span class="token number">1.25</span> <span class="token operator">*</span> <span class="token number">1</span><span class="token punctuation">;</span> <span class="token comment">// 1.25G</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token keyword">case</span> <span class="token string">'B'</span><span class="token operator">:</span>
+                need <span class="token operator">=</span> <span class="token number">1.25</span> <span class="token operator">*</span> <span class="token number">2</span><span class="token punctuation">;</span> <span class="token comment">// 2.5G</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token keyword">case</span> <span class="token string">'C'</span><span class="token operator">:</span>
+                need <span class="token operator">=</span> <span class="token number">1.25</span> <span class="token operator">*</span> <span class="token number">8</span><span class="token punctuation">;</span> <span class="token comment">// 10G</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token keyword">default</span><span class="token operator">:</span>
+                <span class="token keyword">continue</span><span class="token punctuation">;</span> <span class="token comment">// 如果是未知配置，跳过</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment">// 分配资源</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> j <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> j <span class="token operator">&lt;</span> chip_count<span class="token punctuation">;</span> j<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>board_card<span class="token punctuation">[</span>j<span class="token punctuation">]</span> <span class="token operator">&gt;=</span> need<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+                board_card<span class="token punctuation">[</span>j<span class="token punctuation">]</span> <span class="token operator">-=</span> need<span class="token punctuation">;</span> <span class="token comment">// 减去所需容量</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">// 输出每块芯片的占用情况</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> chip_count<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+        <span class="token keyword">int</span> un_used <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">)</span><span class="token punctuation">(</span>board_card<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">/</span> <span class="token number">1.25</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 计算未使用的容量</span>
+        <span class="token keyword">int</span> used <span class="token operator">=</span> chip_capacity <span class="token operator">-</span> un_used<span class="token punctuation">;</span> <span class="token comment">// 计算已使用的容量</span>
+
+        <span class="token comment">// 输出每块芯片的占用情况</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> k <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> k <span class="token operator">&lt;</span> used<span class="token punctuation">;</span> k<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+            <span class="token function">putchar</span><span class="token punctuation">(</span><span class="token string">'1'</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 输出 '1' 表示已占用</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> k <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> k <span class="token operator">&lt;</span> un_used<span class="token punctuation">;</span> k<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+            <span class="token function">putchar</span><span class="token punctuation">(</span><span class="token string">'0'</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 输出 '0' 表示未占用</span>
+        <span class="token punctuation">}</span>
+        <span class="token function">putchar</span><span class="token punctuation">(</span><span class="token string">'\n'</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 换行</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<div class="hljs-button {2}" data-title="复制"></div></code><div class="hide-preCode-box"><span class="hide-preCode-bt" data-report-view="{&quot;spm&quot;:&quot;1001.2101.3001.7365&quot;}"><img class="look-more-preCode contentImg-no-view" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newCodeMoreWhite.png" alt="" title=""></span></div><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li><li style="color: rgb(153, 153, 153);">2</li><li style="color: rgb(153, 153, 153);">3</li><li style="color: rgb(153, 153, 153);">4</li><li style="color: rgb(153, 153, 153);">5</li><li style="color: rgb(153, 153, 153);">6</li><li style="color: rgb(153, 153, 153);">7</li><li style="color: rgb(153, 153, 153);">8</li><li style="color: rgb(153, 153, 153);">9</li><li style="color: rgb(153, 153, 153);">10</li><li style="color: rgb(153, 153, 153);">11</li><li style="color: rgb(153, 153, 153);">12</li><li style="color: rgb(153, 153, 153);">13</li><li style="color: rgb(153, 153, 153);">14</li><li style="color: rgb(153, 153, 153);">15</li><li style="color: rgb(153, 153, 153);">16</li><li style="color: rgb(153, 153, 153);">17</li><li style="color: rgb(153, 153, 153);">18</li><li style="color: rgb(153, 153, 153);">19</li><li style="color: rgb(153, 153, 153);">20</li><li style="color: rgb(153, 153, 153);">21</li><li style="color: rgb(153, 153, 153);">22</li><li style="color: rgb(153, 153, 153);">23</li><li style="color: rgb(153, 153, 153);">24</li><li style="color: rgb(153, 153, 153);">25</li><li style="color: rgb(153, 153, 153);">26</li><li style="color: rgb(153, 153, 153);">27</li><li style="color: rgb(153, 153, 153);">28</li><li style="color: rgb(153, 153, 153);">29</li><li style="color: rgb(153, 153, 153);">30</li><li style="color: rgb(153, 153, 153);">31</li><li style="color: rgb(153, 153, 153);">32</li><li style="color: rgb(153, 153, 153);">33</li><li style="color: rgb(153, 153, 153);">34</li><li style="color: rgb(153, 153, 153);">35</li><li style="color: rgb(153, 153, 153);">36</li><li style="color: rgb(153, 153, 153);">37</li><li style="color: rgb(153, 153, 153);">38</li><li style="color: rgb(153, 153, 153);">39</li><li style="color: rgb(153, 153, 153);">40</li><li style="color: rgb(153, 153, 153);">41</li><li style="color: rgb(153, 153, 153);">42</li><li style="color: rgb(153, 153, 153);">43</li><li style="color: rgb(153, 153, 153);">44</li><li style="color: rgb(153, 153, 153);">45</li><li style="color: rgb(153, 153, 153);">46</li><li style="color: rgb(153, 153, 153);">47</li><li style="color: rgb(153, 153, 153);">48</li><li style="color: rgb(153, 153, 153);">49</li><li style="color: rgb(153, 153, 153);">50</li><li style="color: rgb(153, 153, 153);">51</li><li style="color: rgb(153, 153, 153);">52</li><li style="color: rgb(153, 153, 153);">53</li><li style="color: rgb(153, 153, 153);">54</li><li style="color: rgb(153, 153, 153);">55</li><li style="color: rgb(153, 153, 153);">56</li><li style="color: rgb(153, 153, 153);">57</li><li style="color: rgb(153, 153, 153);">58</li><li style="color: rgb(153, 153, 153);">59</li><li style="color: rgb(153, 153, 153);">60</li></ul></pre> 
+
+                </div><div data-report-view="{&quot;mod&quot;:&quot;1585297308_001&quot;,&quot;spm&quot;:&quot;1001.2101.3001.6548&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/banxia_frontend/article/details/143446526&quot;,&quot;extend1&quot;:&quot;pc&quot;,&quot;ab&quot;:&quot;new&quot;}"><div></div></div>
+                <link href="https://csdnimg.cn/release/blogv2/dist/mdeditor/css/editerView/markdown_views-f23dff6052.css" rel="stylesheet">
+                <link href="https://csdnimg.cn/release/blogv2/dist/mdeditor/css/style-e504d6a974.css" rel="stylesheet">
+        </div></html>

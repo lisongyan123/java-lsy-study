@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+    <!--.mvn/settings.xml（项目级）-->
+    <!--${user.home}/.m2/settings.xml（用户级）-->
+    <!--${maven.home}/conf/settings.xml（全局级）-->
+    <!--maven仓库jar包存放路径，改成你自己的路径-->
+    <localRepository>E:/maven/repository</localRepository>
+    <mirrors>
+        <mirror>
+            <id>aliyunmaven</id>
+            <mirrorOf>*</mirrorOf>
+            <name>aliyun public repository</name>
+            <url>https://maven.aliyun.com/repository/public</url>
+        </mirror>
+        <mirror>
+            <id>alimaven</id>
+            <name>aliyun maven</name>
+            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+            <mirrorOf>central</mirrorOf>
+        </mirror>
+        <mirror>
+            <id>tsinghua</id>
+            <name>tsinghua maven</name>
+            <url>https://mirrors.tuna.tsinghua.edu.cn/apache/</url>
+            <mirrorOf>central</mirrorOf>
+        </mirror>
+    </mirrors>
+
+</settings>

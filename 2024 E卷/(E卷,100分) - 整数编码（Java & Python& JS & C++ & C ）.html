@@ -1,0 +1,344 @@
+<html lang="zh-CN"><head><meta charset="UTF-8"><style>.nodata  main {width:1000px;margin: auto;}</style></head><body class="nodata " style=""><div class="main_father clearfix d-flex justify-content-center " style="height:100%;"> <div class="container clearfix " id="mainBox"><main><div class="blog-content-box"><div id="article_content" class="article_content clearfix">
+        <link rel="stylesheet" href="https://csdnimg.cn/release/blogv2/dist/mdeditor/css/editerView/kdoc_html_views-1a98987dfd.css">
+        <link rel="stylesheet" href="https://csdnimg.cn/release/blogv2/dist/mdeditor/css/editerView/ck_htmledit_views-704d5b9767.css">
+             
+                <div id="content_views" class="markdown_views prism-atom-one-light">
+                    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+                        <path stroke-linecap="round" d="M5,0 0,2.5 5,5z" id="raphael-marker-block" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path>
+                    </svg>
+                    <h2><a name="t0"></a><a id="OD_0"></a>最新华为OD机试</h2> 
+
+<h2><a name="t1"></a><a id="_4"></a>题目描述</h2> 
+<p>实现一种整数编码方法，使得待编码的数字越小，编码后所占用的字节数越小。</p> 
+<p>编码规则如下:</p> 
+<ol><li>编码时7位一组，每个字节的低7位用于存储待编码数字的补码</li><li>字节的最高位表示后续是否还有字节，置1表示后面还有更多的字节，置0表示当前字节为最后一个字节。</li><li>采用小端序编码，低位和低字节放在低地址上。</li><li>编码结果按16进制数的字符格式输出，小写字母需转换为大写字母</li></ol> 
+<p>​</p> 
+<h2><a name="t2"></a><a id="_17"></a>输入描述</h2> 
+<p>输入的为一个<a href="https://so.csdn.net/so/search?q=%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%A1%A8%E7%A4%BA&amp;spm=1001.2101.3001.7020" target="_blank" class="hl hl-1" data-report-click="{&quot;spm&quot;:&quot;1001.2101.3001.7020&quot;,&quot;dest&quot;:&quot;https://so.csdn.net/so/search?q=%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%A1%A8%E7%A4%BA&amp;spm=1001.2101.3001.7020&quot;,&quot;extra&quot;:&quot;{\&quot;searchword\&quot;:\&quot;字符串表示\&quot;}&quot;}" data-tit="字符串表示" data-pretit="字符串表示">字符串表示</a>的非负整数<br> 待编码的数字取值范围为[0，1&lt;&lt;64 - 1]</p> 
+<h2><a name="t3"></a><a id="_23"></a>输出描述</h2> 
+<p>输出一个<a href="https://so.csdn.net/so/search?q=%E5%AD%97%E7%AC%A6%E4%B8%B2&amp;spm=1001.2101.3001.7020" target="_blank" class="hl hl-1" data-report-click="{&quot;spm&quot;:&quot;1001.2101.3001.7020&quot;,&quot;dest&quot;:&quot;https://so.csdn.net/so/search?q=%E5%AD%97%E7%AC%A6%E4%B8%B2&amp;spm=1001.2101.3001.7020&quot;,&quot;extra&quot;:&quot;{\&quot;searchword\&quot;:\&quot;字符串\&quot;}&quot;}" data-tit="字符串" data-pretit="字符串">字符串</a>，表示整数编码的16进制码流</p> 
+<h2><a name="t4"></a><a id="1_27"></a>示例1</h2> 
+<p>输入</p> 
+<pre data-index="0" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">0
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre> 
+<p>输出</p> 
+<pre data-index="1" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">00
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre> 
+<p>说明</p> 
+<blockquote> 
+ <p>输出的16进制字符，不足两位的前面补0，如00、01、02。</p> 
+</blockquote> 
+<h2><a name="t5"></a><a id="2_46"></a>示例2</h2> 
+<p>输入</p> 
+<pre data-index="2" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">100
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre> 
+<p>输出</p> 
+<pre data-index="3" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">64
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre> 
+<p>说明</p> 
+<blockquote> 
+ <pre data-index="4" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">100的二进制表示为0110 0100，只需要一个字节进行编码;
+
+字节的最高位置0，剩余7位存储数字100的低7位 (110 0100) ，所以编码后的输出为64。
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li><li style="color: rgb(153, 153, 153);">2</li><li style="color: rgb(153, 153, 153);">3</li></ul></pre> 
+</blockquote> 
+<h2><a name="t6"></a><a id="3_66"></a>示例3</h2> 
+<p>输入</p> 
+<pre data-index="5" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">1000
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre> 
+<p>输出</p> 
+<pre data-index="6" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">E807
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre> 
+<p>说明</p> 
+<blockquote> 
+ <pre data-index="7" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">1000的二进制表示为0011 1110 1000，至少需要两个字节进行编码;
+
+第一个字节最高位置1，剩余的7位存储数字1000的第一个低7位 (1101000)，所以第一个字节的二进制为1110 1000，即E8;
+
+第二个字节最高位置0，剩余的7位存储数字1000的第二个低7位 (0000111)，所以第一个字节的二进制为0000 0111，即07;
+
+采用小端序编码，所以低字节E8输出在前，高字节07输出在后。
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li><li style="color: rgb(153, 153, 153);">2</li><li style="color: rgb(153, 153, 153);">3</li><li style="color: rgb(153, 153, 153);">4</li><li style="color: rgb(153, 153, 153);">5</li><li style="color: rgb(153, 153, 153);">6</li><li style="color: rgb(153, 153, 153);">7</li></ul></pre> 
+</blockquote> 
+<h2><a name="t7"></a><a id="_90"></a>解题思路</h2> 
+<h4><a name="t8"></a><a id="_92"></a>编码规则：</h4> 
+<ol><li> <p><strong>7位分组</strong>：</p> 
+  <ul><li>将待编码的数字每7位作为一组。每一组的7位信息用一个字节的低7位来存储。</li><li>如果数字需要多个字节进行编码（因为数字较大），则每个字节的最高位用来指示后续是否还有更多字节。如果最高位为1，表示后面还有更多字节；如果为0，表示当前字节是最后一个字节。</li></ul> </li><li> <p><strong>小端序</strong>：</p> 
+  <ul><li>小端序表示低位字节在前，高位字节在后。编码后的字节顺序按小端序输出，即字节顺序与通常从高位到低位的顺序相反。</li></ul> </li><li> <p><strong>输出格式</strong>：</p> 
+  <ul><li>最终输出结果为16进制格式的字符串，字母需要大写，并且不足两位的数字要补0，例如 <code>00</code>、<code>01</code> 等。</li></ul> </li></ol> 
+<h4><a name="t9"></a><a id="_103"></a>示例分析：</h4> 
+<h5><a id="1_104"></a>示例1：</h5> 
+<p>输入：<code>0</code></p> 
+<ul><li>二进制表示为：<code>00000000</code></li><li>只需要一个字节就能表示，因为最高位为0，所以输出为 <code>00</code>。</li></ul> 
+<h5><a id="2_110"></a>示例2：</h5> 
+<p>输入：<code>100</code></p> 
+<ul><li>二进制表示为：<code>0110 0100</code></li><li>由于数字小，只需要一个字节存储： 
+  <ul><li>最高位为0，表示这是最后一个字节。</li><li>剩余的7位存储数字100的低7位，即 <code>110 0100</code>。</li><li>所以编码后为：<code>64</code>。</li></ul> </li></ul> 
+<h5><a id="3_119"></a>示例3：</h5> 
+<p>输入：<code>1000</code></p> 
+<ul><li>二进制表示为：<code>0011 1110 1000</code></li><li>需要两个字节来存储： 
+  <ul><li>第一个字节存储数字的低7位，即 <code>110 1000</code>。最高位为1，表示后面还有字节，所以第一个字节为 <code>1110 1000</code>，即 <code>E8</code>。</li><li>第二个字节存储数字的高7位（剩下的部分），即 <code>0000 0111</code>。最高位为0，表示这是最后一个字节，得到 <code>07</code>。</li><li>因为是小端序，低字节（<code>E8</code>）输出在前，高字节（<code>07</code>）输出在后。</li><li>最终输出为 <code>E807</code>。</li></ul> </li></ul> 
+<h3><a name="t10"></a><a id="_129"></a>代码</h3> 
+<ol><li><strong>输入处理</strong>： 
+  <ul><li>将输入数字转换成其二进制表示的字符串形式，存储在 <code>binaryStr</code> 中。</li></ul> </li><li><strong>每7位一组进行编码</strong>： 
+  <ul><li>为了遵循题目的编码规则，每7位为一组进行编码。循环处理 <code>binaryStr</code>，从字符串的末尾开始，每次截取7位进行编码。</li><li>在每一轮循环中，计算当前组的二进制字符串 <code>currentBinaryStr</code>。如果不足7位，则取剩下的位数（比如最左侧的那一部分）。</li></ul> </li><li><strong>处理字节的最高位</strong>： 
+  <ul><li>根据编码规则，字节的最高位用来标记后续是否还有字节。 
+    <ul><li>如果当前组不是最后一组，设置 <code>flag</code> 为 ‘1’，表示后续还有字节；</li><li>否则，设置 <code>flag</code> 为 ‘0’，表示当前字节是最后一字节。</li></ul> </li><li>最高位 <code>flag</code> 加上当前的7位二进制数字组合，形成一个8位的二进制字符串。</li></ul> </li><li><strong>将当前字节转换成16进制</strong>： 
+  <ul><li>将这一字节的二进制字符串转换成对应的十进制数。</li><li>然后将其转换成16进制的字符串形式。</li><li>由于编码结果要求每个字节占两位，因此如果转换后的16进制字符串只有一位，则在前面补0。</li></ul> </li><li><strong>大写转换与结果拼接</strong>： 
+  <ul><li>将得到的16进制字符串全部转换为大写字母 。</li></ul> </li></ol> 
+<h4><a name="t11"></a><a id="_148"></a>示例流程分析：</h4> 
+<h5><a id="_1000_149"></a>输入 <code>1000</code>：</h5> 
+<ol><li>将 <code>1000</code> 转换成二进制表示：<code>1111101000</code>。</li><li>从右往左，先取低7位：<code>1101000</code>，加上标志位1：<code>11101000</code>，即为 <code>E8</code>。</li><li>剩余部分：<code>111</code>，加上标志位0：<code>00000111</code>，即为 <code>07</code>。</li><li>输出结果按小端序拼接为 <code>E807</code>。</li></ol> 
+<h2><a name="t12"></a><a id="Java_156"></a>Java</h2> 
+<pre data-index="8" class="set-code-hide prettyprint"><code class="prism language-java has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;"><span class="token keyword">import</span> <span class="token namespace">java<span class="token punctuation">.</span>util<span class="token punctuation">.</span></span><span class="token class-name">Scanner</span><span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Main</span> <span class="token punctuation">{<!-- --></span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+        <span class="token class-name">Scanner</span> scanner <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Scanner</span><span class="token punctuation">(</span><span class="token class-name">System</span><span class="token punctuation">.</span>in<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">long</span> num <span class="token operator">=</span> scanner<span class="token punctuation">.</span><span class="token function">nextLong</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// 将待编码数字转换成二进制字符串</span>
+        <span class="token class-name">String</span> binaryStr <span class="token operator">=</span> <span class="token class-name">Long</span><span class="token punctuation">.</span><span class="token function">toBinaryString</span><span class="token punctuation">(</span>num<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token class-name">StringBuilder</span> result <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">StringBuilder</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 每7位一组进行编码</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> end <span class="token operator">=</span> binaryStr<span class="token punctuation">.</span><span class="token function">length</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> end <span class="token operator">&gt;</span> <span class="token number">0</span><span class="token punctuation">;</span> end <span class="token operator">-=</span> <span class="token number">7</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+            <span class="token comment">// 取出当前组需要编码的二进制字符串</span>
+            <span class="token class-name">String</span> currentBinaryStr <span class="token operator">=</span> binaryStr<span class="token punctuation">.</span><span class="token function">substring</span><span class="token punctuation">(</span><span class="token class-name">Math</span><span class="token punctuation">.</span><span class="token function">max</span><span class="token punctuation">(</span>end <span class="token operator">-</span> <span class="token number">7</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">,</span> end<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment">// 判断当前字节是否为最后一个字节，设置最高位</span>
+            <span class="token keyword">char</span> flag <span class="token operator">=</span> <span class="token punctuation">(</span>end <span class="token operator">-</span> <span class="token number">7</span> <span class="token operator">&gt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">?</span> <span class="token string">'1'</span> <span class="token operator">:</span> <span class="token string">'0'</span><span class="token punctuation">;</span>
+            <span class="token comment">// 将当前字节转换成十进制数</span>
+            <span class="token keyword">int</span> decimal <span class="token operator">=</span> <span class="token class-name">Integer</span><span class="token punctuation">.</span><span class="token function">parseInt</span><span class="token punctuation">(</span>flag <span class="token operator">+</span> currentBinaryStr<span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment">// 将当前字节的十六进制字符串形式添加到结果中</span>
+            <span class="token class-name">String</span> hexStr <span class="token operator">=</span> <span class="token class-name">Integer</span><span class="token punctuation">.</span><span class="token function">toHexString</span><span class="token punctuation">(</span>decimal<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment">// 如果十六进制字符串长度为1，需要在前面补0</span>
+            hexStr <span class="token operator">=</span> <span class="token punctuation">(</span>hexStr<span class="token punctuation">.</span><span class="token function">length</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">?</span> <span class="token string">"0"</span> <span class="token operator">+</span> hexStr <span class="token operator">:</span> hexStr<span class="token punctuation">;</span>
+            <span class="token comment">// 将小写字母转换为大写字母，并将当前字节的十六进制字符串形式添加到结果中</span>
+            result<span class="token punctuation">.</span><span class="token function">append</span><span class="token punctuation">(</span>hexStr<span class="token punctuation">.</span><span class="token function">toUpperCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment">// 返回编码结果的十六进制字符串形式</span>
+        <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span> result<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+
+
+<div class="hljs-button {2}" data-title="复制"></div></code><div class="hide-preCode-box"><span class="hide-preCode-bt" data-report-view="{&quot;spm&quot;:&quot;1001.2101.3001.7365&quot;}"><img class="look-more-preCode contentImg-no-view" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newCodeMoreWhite.png" alt="" title=""></span></div><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li><li style="color: rgb(153, 153, 153);">2</li><li style="color: rgb(153, 153, 153);">3</li><li style="color: rgb(153, 153, 153);">4</li><li style="color: rgb(153, 153, 153);">5</li><li style="color: rgb(153, 153, 153);">6</li><li style="color: rgb(153, 153, 153);">7</li><li style="color: rgb(153, 153, 153);">8</li><li style="color: rgb(153, 153, 153);">9</li><li style="color: rgb(153, 153, 153);">10</li><li style="color: rgb(153, 153, 153);">11</li><li style="color: rgb(153, 153, 153);">12</li><li style="color: rgb(153, 153, 153);">13</li><li style="color: rgb(153, 153, 153);">14</li><li style="color: rgb(153, 153, 153);">15</li><li style="color: rgb(153, 153, 153);">16</li><li style="color: rgb(153, 153, 153);">17</li><li style="color: rgb(153, 153, 153);">18</li><li style="color: rgb(153, 153, 153);">19</li><li style="color: rgb(153, 153, 153);">20</li><li style="color: rgb(153, 153, 153);">21</li><li style="color: rgb(153, 153, 153);">22</li><li style="color: rgb(153, 153, 153);">23</li><li style="color: rgb(153, 153, 153);">24</li><li style="color: rgb(153, 153, 153);">25</li><li style="color: rgb(153, 153, 153);">26</li><li style="color: rgb(153, 153, 153);">27</li><li style="color: rgb(153, 153, 153);">28</li><li style="color: rgb(153, 153, 153);">29</li><li style="color: rgb(153, 153, 153);">30</li><li style="color: rgb(153, 153, 153);">31</li><li style="color: rgb(153, 153, 153);">32</li><li style="color: rgb(153, 153, 153);">33</li></ul></pre> 
+<h2><a name="t13"></a><a id="Python_194"></a>Python</h2> 
+<pre data-index="9" class="set-code-hide prettyprint"><code class="prism language-python has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">num <span class="token operator">=</span> <span class="token builtin">int</span><span class="token punctuation">(</span><span class="token builtin">input</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token comment"># 将待编码数字转换成二进制字符串</span>
+binaryStr <span class="token operator">=</span> <span class="token builtin">bin</span><span class="token punctuation">(</span>num<span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">:</span><span class="token punctuation">]</span>
+result <span class="token operator">=</span> <span class="token string">''</span>
+
+<span class="token comment"># 每7位一组进行编码</span>
+<span class="token keyword">for</span> end <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token builtin">len</span><span class="token punctuation">(</span>binaryStr<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">7</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token comment"># 取出当前组需要编码的二进制字符串</span>
+    currentBinaryStr <span class="token operator">=</span> binaryStr<span class="token punctuation">[</span><span class="token builtin">max</span><span class="token punctuation">(</span>end <span class="token operator">-</span> <span class="token number">7</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">:</span>end<span class="token punctuation">]</span>
+    <span class="token comment"># 判断当前字节是否为最后一个字节，设置最高位</span>
+    flag <span class="token operator">=</span> <span class="token string">'1'</span> <span class="token keyword">if</span> end <span class="token operator">-</span> <span class="token number">7</span> <span class="token operator">&gt;</span> <span class="token number">0</span> <span class="token keyword">else</span> <span class="token string">'0'</span>
+    <span class="token comment"># 将当前字节转换成十进制数</span>
+    decimal <span class="token operator">=</span> <span class="token builtin">int</span><span class="token punctuation">(</span>flag <span class="token operator">+</span> currentBinaryStr<span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span>
+    <span class="token comment"># 将当前字节的十六进制字符串形式添加到结果中</span>
+    hexStr <span class="token operator">=</span> <span class="token builtin">hex</span><span class="token punctuation">(</span>decimal<span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">:</span><span class="token punctuation">]</span><span class="token punctuation">.</span>upper<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token comment"># 如果十六进制字符串长度为1，需要在前面补0</span>
+    hexStr <span class="token operator">=</span> <span class="token string">'0'</span> <span class="token operator">+</span> hexStr <span class="token keyword">if</span> <span class="token builtin">len</span><span class="token punctuation">(</span>hexStr<span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">1</span> <span class="token keyword">else</span> hexStr
+    <span class="token comment"># 将当前字节的十六进制字符串形式添加到结果中</span>
+    result <span class="token operator">+=</span> hexStr
+
+<span class="token comment"># 返回编码结果的十六进制字符串形式</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span>
+
+<div class="hljs-button {2}" data-title="复制"></div></code><div class="hide-preCode-box"><span class="hide-preCode-bt" data-report-view="{&quot;spm&quot;:&quot;1001.2101.3001.7365&quot;}"><img class="look-more-preCode contentImg-no-view" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newCodeMoreWhite.png" alt="" title=""></span></div><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li><li style="color: rgb(153, 153, 153);">2</li><li style="color: rgb(153, 153, 153);">3</li><li style="color: rgb(153, 153, 153);">4</li><li style="color: rgb(153, 153, 153);">5</li><li style="color: rgb(153, 153, 153);">6</li><li style="color: rgb(153, 153, 153);">7</li><li style="color: rgb(153, 153, 153);">8</li><li style="color: rgb(153, 153, 153);">9</li><li style="color: rgb(153, 153, 153);">10</li><li style="color: rgb(153, 153, 153);">11</li><li style="color: rgb(153, 153, 153);">12</li><li style="color: rgb(153, 153, 153);">13</li><li style="color: rgb(153, 153, 153);">14</li><li style="color: rgb(153, 153, 153);">15</li><li style="color: rgb(153, 153, 153);">16</li><li style="color: rgb(153, 153, 153);">17</li><li style="color: rgb(153, 153, 153);">18</li><li style="color: rgb(153, 153, 153);">19</li><li style="color: rgb(153, 153, 153);">20</li><li style="color: rgb(153, 153, 153);">21</li><li style="color: rgb(153, 153, 153);">22</li><li style="color: rgb(153, 153, 153);">23</li></ul></pre> 
+<h2><a name="t14"></a><a id="JavaScript_221"></a><span class="words-blog hl-git-1" data-report-view="{&quot;spm&quot;:&quot;1001.2101.3001.10283&quot;,&quot;extra&quot;:&quot;{\&quot;words\&quot;:\&quot;JavaScript\&quot;}&quot;}" data-tit="JavaScript" data-pretit="javascript">JavaScript</span></h2> 
+<pre data-index="10" class="set-code-hide prettyprint"><code class="prism language-js has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;"><span class="token keyword">const</span> readline <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">"readline"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ 
+<span class="token comment">// 创建readline接口实例</span>
+<span class="token keyword">const</span> rl <span class="token operator">=</span> readline<span class="token punctuation">.</span><span class="token function">createInterface</span><span class="token punctuation">(</span><span class="token punctuation">{<!-- --></span>
+  input<span class="token operator">:</span> process<span class="token punctuation">.</span>stdin<span class="token punctuation">,</span>
+  output<span class="token operator">:</span> process<span class="token punctuation">.</span>stdout<span class="token punctuation">,</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ 
+<span class="token comment">// 监听line事件，当输入数据时触发回调函数</span>
+rl<span class="token punctuation">.</span><span class="token function">on</span><span class="token punctuation">(</span><span class="token string">"line"</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token parameter">line</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{<!-- --></span>
+  <span class="token comment">// 将输入的非负整数转换为二进制字符串</span>
+  <span class="token keyword">const</span> binStr <span class="token operator">=</span> <span class="token function">BigInt</span><span class="token punctuation">(</span>line<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ 
+  <span class="token comment">// 定义一个数组来存储编码结果</span>
+  <span class="token keyword">const</span> ans <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+  <span class="token comment">// 从二进制字符串的末尾开始，每七位一组进行编码</span>
+  <span class="token keyword">let</span> end <span class="token operator">=</span> binStr<span class="token punctuation">.</span>length<span class="token punctuation">;</span>
+  <span class="token keyword">while</span> <span class="token punctuation">(</span>end <span class="token operator">-</span> <span class="token number">7</span> <span class="token operator">&gt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+    <span class="token comment">// 将每一组转换为十六进制字符串，并添加到结果数组中</span>
+    ans<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token function">parseInt</span><span class="token punctuation">(</span><span class="token string">"1"</span> <span class="token operator">+</span> binStr<span class="token punctuation">.</span><span class="token function">substring</span><span class="token punctuation">(</span>end <span class="token operator">-</span> <span class="token number">7</span><span class="token punctuation">,</span> end<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">padStart</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token string">'0'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toUpperCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">// 更新末尾位置</span>
+    end <span class="token operator">-=</span> <span class="token number">7</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+ 
+  <span class="token comment">// 处理最后一组，如果有剩余的位数不足七位，则直接编码</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>end <span class="token operator">&gt;=</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+    ans<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span><span class="token function">parseInt</span><span class="token punctuation">(</span>binStr<span class="token punctuation">.</span><span class="token function">substring</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> end<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">padStart</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token string">'0'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">toUpperCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+ 
+  <span class="token comment">// 将编码结果数组拼接为一个字符串，并输出</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>ans<span class="token punctuation">.</span><span class="token function">join</span><span class="token punctuation">(</span><span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<div class="hljs-button {2}" data-title="复制"></div></code><div class="hide-preCode-box"><span class="hide-preCode-bt" data-report-view="{&quot;spm&quot;:&quot;1001.2101.3001.7365&quot;}"><img class="look-more-preCode contentImg-no-view" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newCodeMoreWhite.png" alt="" title=""></span></div><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li><li style="color: rgb(153, 153, 153);">2</li><li style="color: rgb(153, 153, 153);">3</li><li style="color: rgb(153, 153, 153);">4</li><li style="color: rgb(153, 153, 153);">5</li><li style="color: rgb(153, 153, 153);">6</li><li style="color: rgb(153, 153, 153);">7</li><li style="color: rgb(153, 153, 153);">8</li><li style="color: rgb(153, 153, 153);">9</li><li style="color: rgb(153, 153, 153);">10</li><li style="color: rgb(153, 153, 153);">11</li><li style="color: rgb(153, 153, 153);">12</li><li style="color: rgb(153, 153, 153);">13</li><li style="color: rgb(153, 153, 153);">14</li><li style="color: rgb(153, 153, 153);">15</li><li style="color: rgb(153, 153, 153);">16</li><li style="color: rgb(153, 153, 153);">17</li><li style="color: rgb(153, 153, 153);">18</li><li style="color: rgb(153, 153, 153);">19</li><li style="color: rgb(153, 153, 153);">20</li><li style="color: rgb(153, 153, 153);">21</li><li style="color: rgb(153, 153, 153);">22</li><li style="color: rgb(153, 153, 153);">23</li><li style="color: rgb(153, 153, 153);">24</li><li style="color: rgb(153, 153, 153);">25</li><li style="color: rgb(153, 153, 153);">26</li><li style="color: rgb(153, 153, 153);">27</li><li style="color: rgb(153, 153, 153);">28</li><li style="color: rgb(153, 153, 153);">29</li><li style="color: rgb(153, 153, 153);">30</li><li style="color: rgb(153, 153, 153);">31</li><li style="color: rgb(153, 153, 153);">32</li><li style="color: rgb(153, 153, 153);">33</li></ul></pre> 
+<h2><a name="t15"></a><a id="C_260"></a>C++</h2> 
+<pre data-index="11" class="set-code-hide prettyprint"><code class="prism language-c has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;iostream&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;string&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;bitset&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;sstream&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;algorithm&gt;</span></span>
+using namespace std<span class="token punctuation">;</span>
+
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+    <span class="token keyword">long</span> num<span class="token punctuation">;</span>
+    cin <span class="token operator">&gt;&gt;</span> num<span class="token punctuation">;</span>
+    <span class="token comment">// 将待编码数字转换成二进制字符串</span>
+    string binaryStr <span class="token operator">=</span> bitset<span class="token operator">&lt;</span><span class="token number">64</span><span class="token operator">&gt;</span><span class="token punctuation">(</span>num<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">to_string</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token class-name">size_t</span> start <span class="token operator">=</span> binaryStr<span class="token punctuation">.</span><span class="token function">find_first_not_of</span><span class="token punctuation">(</span><span class="token string">'0'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>start <span class="token operator">!=</span> string<span class="token operator">::</span>npos<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+        binaryStr <span class="token operator">=</span> binaryStr<span class="token punctuation">.</span><span class="token function">substr</span><span class="token punctuation">(</span>start<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{<!-- --></span>
+        binaryStr <span class="token operator">=</span> <span class="token string">"0"</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    stringstream result<span class="token punctuation">;</span>
+
+    <span class="token comment">// 每7位一组进行编码</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> end <span class="token operator">=</span> binaryStr<span class="token punctuation">.</span><span class="token function">length</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> end <span class="token operator">&gt;</span> <span class="token number">0</span><span class="token punctuation">;</span> end <span class="token operator">-=</span> <span class="token number">7</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+        <span class="token comment">// 取出当前组需要编码的二进制字符串</span>
+        string currentBinaryStr <span class="token operator">=</span> binaryStr<span class="token punctuation">.</span><span class="token function">substr</span><span class="token punctuation">(</span><span class="token function">max</span><span class="token punctuation">(</span>end <span class="token operator">-</span> <span class="token number">7</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">,</span> end <span class="token operator">-</span> <span class="token function">max</span><span class="token punctuation">(</span>end <span class="token operator">-</span> <span class="token number">7</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// 判断当前字节是否为最后一个字节，设置最高位</span>
+        <span class="token keyword">char</span> flag <span class="token operator">=</span> <span class="token punctuation">(</span>end <span class="token operator">-</span> <span class="token number">7</span> <span class="token operator">&gt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">?</span> <span class="token string">'1'</span> <span class="token operator">:</span> <span class="token string">'0'</span><span class="token punctuation">;</span>
+        <span class="token comment">// 将当前字节转换成十进制数</span>
+        <span class="token keyword">int</span> decimal <span class="token operator">=</span> <span class="token function">stoi</span><span class="token punctuation">(</span><span class="token function">string</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> flag<span class="token punctuation">)</span> <span class="token operator">+</span> currentBinaryStr<span class="token punctuation">,</span> nullptr<span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">// 将当前字节的十六进制字符串形式添加到结果中</span>
+        stringstream hexStr<span class="token punctuation">;</span>
+        hexStr <span class="token operator">&lt;&lt;</span> hex <span class="token operator">&lt;&lt;</span> decimal<span class="token punctuation">;</span>
+        <span class="token comment">// 如果十六进制字符串长度为1，需要在前面补0</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>hexStr<span class="token punctuation">.</span><span class="token function">str</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">length</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+            result <span class="token operator">&lt;&lt;</span> <span class="token string">"0"</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment">// 将小写字母转换为大写字母，并将当前字节的十六进制字符串形式添加到结果中</span>
+        result <span class="token operator">&lt;&lt;</span> hexStr<span class="token punctuation">.</span><span class="token function">str</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    string rt <span class="token operator">=</span> result<span class="token punctuation">.</span><span class="token function">str</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">transform</span><span class="token punctuation">(</span>rt<span class="token punctuation">.</span><span class="token function">begin</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> rt<span class="token punctuation">.</span><span class="token function">end</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> rt<span class="token punctuation">.</span><span class="token function">begin</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token operator">::</span>toupper<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">// 返回编码结果的十六进制字符串形式</span>
+    cout <span class="token operator">&lt;&lt;</span>  rt   <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+
+<div class="hljs-button {2}" data-title="复制"></div></code><div class="hide-preCode-box"><span class="hide-preCode-bt" data-report-view="{&quot;spm&quot;:&quot;1001.2101.3001.7365&quot;}"><img class="look-more-preCode contentImg-no-view" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newCodeMoreWhite.png" alt="" title=""></span></div><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li><li style="color: rgb(153, 153, 153);">2</li><li style="color: rgb(153, 153, 153);">3</li><li style="color: rgb(153, 153, 153);">4</li><li style="color: rgb(153, 153, 153);">5</li><li style="color: rgb(153, 153, 153);">6</li><li style="color: rgb(153, 153, 153);">7</li><li style="color: rgb(153, 153, 153);">8</li><li style="color: rgb(153, 153, 153);">9</li><li style="color: rgb(153, 153, 153);">10</li><li style="color: rgb(153, 153, 153);">11</li><li style="color: rgb(153, 153, 153);">12</li><li style="color: rgb(153, 153, 153);">13</li><li style="color: rgb(153, 153, 153);">14</li><li style="color: rgb(153, 153, 153);">15</li><li style="color: rgb(153, 153, 153);">16</li><li style="color: rgb(153, 153, 153);">17</li><li style="color: rgb(153, 153, 153);">18</li><li style="color: rgb(153, 153, 153);">19</li><li style="color: rgb(153, 153, 153);">20</li><li style="color: rgb(153, 153, 153);">21</li><li style="color: rgb(153, 153, 153);">22</li><li style="color: rgb(153, 153, 153);">23</li><li style="color: rgb(153, 153, 153);">24</li><li style="color: rgb(153, 153, 153);">25</li><li style="color: rgb(153, 153, 153);">26</li><li style="color: rgb(153, 153, 153);">27</li><li style="color: rgb(153, 153, 153);">28</li><li style="color: rgb(153, 153, 153);">29</li><li style="color: rgb(153, 153, 153);">30</li><li style="color: rgb(153, 153, 153);">31</li><li style="color: rgb(153, 153, 153);">32</li><li style="color: rgb(153, 153, 153);">33</li><li style="color: rgb(153, 153, 153);">34</li><li style="color: rgb(153, 153, 153);">35</li><li style="color: rgb(153, 153, 153);">36</li><li style="color: rgb(153, 153, 153);">37</li><li style="color: rgb(153, 153, 153);">38</li><li style="color: rgb(153, 153, 153);">39</li><li style="color: rgb(153, 153, 153);">40</li><li style="color: rgb(153, 153, 153);">41</li><li style="color: rgb(153, 153, 153);">42</li><li style="color: rgb(153, 153, 153);">43</li><li style="color: rgb(153, 153, 153);">44</li><li style="color: rgb(153, 153, 153);">45</li><li style="color: rgb(153, 153, 153);">46</li><li style="color: rgb(153, 153, 153);">47</li></ul></pre> 
+<h2><a name="t16"></a><a id="C_312"></a>C语言</h2> 
+<pre data-index="12" class="set-code-hide prettyprint"><code class="prism language-c has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;stdio.h&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;string.h&gt;</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;stdlib.h&gt;</span></span>
+
+<span class="token comment">// 辅助函数：将二进制字符串转换为十进制整数</span>
+<span class="token keyword">int</span> <span class="token function">binaryStringToDecimal</span><span class="token punctuation">(</span><span class="token keyword">const</span> <span class="token keyword">char</span><span class="token operator">*</span> binaryStr<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+    <span class="token keyword">int</span> decimal <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token operator">*</span>binaryStr <span class="token operator">!=</span> <span class="token string">'\0'</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+        decimal <span class="token operator">=</span> decimal <span class="token operator">*</span> <span class="token number">2</span> <span class="token operator">+</span> <span class="token punctuation">(</span><span class="token operator">*</span>binaryStr <span class="token operator">-</span> <span class="token string">'0'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        binaryStr<span class="token operator">++</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> decimal<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// 辅助函数：将整数转换为大写的十六进制字符串</span>
+<span class="token keyword">void</span> <span class="token function">toHexString</span><span class="token punctuation">(</span><span class="token keyword">int</span> decimal<span class="token punctuation">,</span> <span class="token keyword">char</span><span class="token operator">*</span> hexStr<span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+    <span class="token function">sprintf</span><span class="token punctuation">(</span>hexStr<span class="token punctuation">,</span> <span class="token string">"%X"</span><span class="token punctuation">,</span> decimal<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 使用 %X 转换为大写的16进制</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+    <span class="token keyword">long</span> num<span class="token punctuation">;</span>
+    <span class="token function">scanf</span><span class="token punctuation">(</span><span class="token string">"%ld"</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>num<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 输入一个长整型数</span>
+
+    <span class="token comment">// 将待编码数字转换成二进制字符串</span>
+    <span class="token keyword">char</span> binaryStr<span class="token punctuation">[</span><span class="token number">65</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">{<!-- --></span><span class="token number">0</span><span class="token punctuation">}</span><span class="token punctuation">;</span> <span class="token comment">// 64位加一个终止符</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">63</span><span class="token punctuation">;</span> i <span class="token operator">&gt;=</span> <span class="token number">0</span><span class="token punctuation">;</span> i<span class="token operator">--</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+        binaryStr<span class="token punctuation">[</span><span class="token number">63</span> <span class="token operator">-</span> i<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">(</span>num <span class="token operator">&amp;</span> <span class="token punctuation">(</span><span class="token number">1L</span> <span class="token operator">&lt;&lt;</span> i<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">?</span> <span class="token string">'1'</span> <span class="token operator">:</span> <span class="token string">'0'</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    binaryStr<span class="token punctuation">[</span><span class="token number">64</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">'\0'</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// 去掉前导的'0'</span>
+    <span class="token keyword">char</span><span class="token operator">*</span> binaryStart <span class="token operator">=</span> binaryStr<span class="token punctuation">;</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token operator">*</span>binaryStart <span class="token operator">==</span> <span class="token string">'0'</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">*</span><span class="token punctuation">(</span>binaryStart <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token string">'\0'</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+        binaryStart<span class="token operator">++</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">// 最终结果字符串</span>
+    <span class="token keyword">char</span> result<span class="token punctuation">[</span><span class="token number">128</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">{<!-- --></span><span class="token number">0</span><span class="token punctuation">}</span><span class="token punctuation">;</span> <span class="token comment">// 假设最终结果最多是128个字符</span>
+    <span class="token keyword">char</span> hexStr<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">;</span>         <span class="token comment">// 存储单个字节的十六进制字符串</span>
+
+    <span class="token comment">// 每7位一组进行编码</span>
+    <span class="token keyword">int</span> len <span class="token operator">=</span> <span class="token function">strlen</span><span class="token punctuation">(</span>binaryStart<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> end <span class="token operator">=</span> len<span class="token punctuation">;</span> end <span class="token operator">&gt;</span> <span class="token number">0</span><span class="token punctuation">;</span> end <span class="token operator">-=</span> <span class="token number">7</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+        <span class="token comment">// 取出当前组需要编码的二进制字符串</span>
+        <span class="token keyword">int</span> start <span class="token operator">=</span> <span class="token punctuation">(</span>end <span class="token operator">-</span> <span class="token number">7</span> <span class="token operator">&gt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">?</span> end <span class="token operator">-</span> <span class="token number">7</span> <span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">;</span>
+        <span class="token keyword">char</span> currentBinaryStr<span class="token punctuation">[</span><span class="token number">8</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">{<!-- --></span><span class="token number">0</span><span class="token punctuation">}</span><span class="token punctuation">;</span> <span class="token comment">// 存储当前的7位二进制字符串</span>
+        <span class="token function">strncpy</span><span class="token punctuation">(</span>currentBinaryStr<span class="token punctuation">,</span> binaryStart <span class="token operator">+</span> start<span class="token punctuation">,</span> end <span class="token operator">-</span> start<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        currentBinaryStr<span class="token punctuation">[</span>end <span class="token operator">-</span> start<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">'\0'</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 判断当前字节是否为最后一个字节，设置最高位</span>
+        <span class="token keyword">char</span> flag <span class="token operator">=</span> <span class="token punctuation">(</span>end <span class="token operator">-</span> <span class="token number">7</span> <span class="token operator">&gt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token operator">?</span> <span class="token string">'1'</span> <span class="token operator">:</span> <span class="token string">'0'</span><span class="token punctuation">;</span>
+        <span class="token keyword">char</span> fullBinaryStr<span class="token punctuation">[</span><span class="token number">9</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">{<!-- --></span><span class="token number">0</span><span class="token punctuation">}</span><span class="token punctuation">;</span> <span class="token comment">// 最高位 + 7位</span>
+        <span class="token function">sprintf</span><span class="token punctuation">(</span>fullBinaryStr<span class="token punctuation">,</span> <span class="token string">"%c%s"</span><span class="token punctuation">,</span> flag<span class="token punctuation">,</span> currentBinaryStr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 将当前字节转换成十进制数</span>
+        <span class="token keyword">int</span> decimal <span class="token operator">=</span> <span class="token function">binaryStringToDecimal</span><span class="token punctuation">(</span>fullBinaryStr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">// 将当前字节的十六进制字符串形式添加到结果中</span>
+        <span class="token function">toHexString</span><span class="token punctuation">(</span>decimal<span class="token punctuation">,</span> hexStr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">strlen</span><span class="token punctuation">(</span>hexStr<span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{<!-- --></span>
+            <span class="token function">strcat</span><span class="token punctuation">(</span>result<span class="token punctuation">,</span> <span class="token string">"0"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token function">strcat</span><span class="token punctuation">(</span>result<span class="token punctuation">,</span> hexStr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">// 输出编码结果的十六进制字符串形式</span>
+    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"%s\n"</span><span class="token punctuation">,</span> result<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<div class="hljs-button {2}" data-title="复制"></div></code><div class="hide-preCode-box"><span class="hide-preCode-bt" data-report-view="{&quot;spm&quot;:&quot;1001.2101.3001.7365&quot;}"><img class="look-more-preCode contentImg-no-view" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newCodeMoreWhite.png" alt="" title=""></span></div><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li><li style="color: rgb(153, 153, 153);">2</li><li style="color: rgb(153, 153, 153);">3</li><li style="color: rgb(153, 153, 153);">4</li><li style="color: rgb(153, 153, 153);">5</li><li style="color: rgb(153, 153, 153);">6</li><li style="color: rgb(153, 153, 153);">7</li><li style="color: rgb(153, 153, 153);">8</li><li style="color: rgb(153, 153, 153);">9</li><li style="color: rgb(153, 153, 153);">10</li><li style="color: rgb(153, 153, 153);">11</li><li style="color: rgb(153, 153, 153);">12</li><li style="color: rgb(153, 153, 153);">13</li><li style="color: rgb(153, 153, 153);">14</li><li style="color: rgb(153, 153, 153);">15</li><li style="color: rgb(153, 153, 153);">16</li><li style="color: rgb(153, 153, 153);">17</li><li style="color: rgb(153, 153, 153);">18</li><li style="color: rgb(153, 153, 153);">19</li><li style="color: rgb(153, 153, 153);">20</li><li style="color: rgb(153, 153, 153);">21</li><li style="color: rgb(153, 153, 153);">22</li><li style="color: rgb(153, 153, 153);">23</li><li style="color: rgb(153, 153, 153);">24</li><li style="color: rgb(153, 153, 153);">25</li><li style="color: rgb(153, 153, 153);">26</li><li style="color: rgb(153, 153, 153);">27</li><li style="color: rgb(153, 153, 153);">28</li><li style="color: rgb(153, 153, 153);">29</li><li style="color: rgb(153, 153, 153);">30</li><li style="color: rgb(153, 153, 153);">31</li><li style="color: rgb(153, 153, 153);">32</li><li style="color: rgb(153, 153, 153);">33</li><li style="color: rgb(153, 153, 153);">34</li><li style="color: rgb(153, 153, 153);">35</li><li style="color: rgb(153, 153, 153);">36</li><li style="color: rgb(153, 153, 153);">37</li><li style="color: rgb(153, 153, 153);">38</li><li style="color: rgb(153, 153, 153);">39</li><li style="color: rgb(153, 153, 153);">40</li><li style="color: rgb(153, 153, 153);">41</li><li style="color: rgb(153, 153, 153);">42</li><li style="color: rgb(153, 153, 153);">43</li><li style="color: rgb(153, 153, 153);">44</li><li style="color: rgb(153, 153, 153);">45</li><li style="color: rgb(153, 153, 153);">46</li><li style="color: rgb(153, 153, 153);">47</li><li style="color: rgb(153, 153, 153);">48</li><li style="color: rgb(153, 153, 153);">49</li><li style="color: rgb(153, 153, 153);">50</li><li style="color: rgb(153, 153, 153);">51</li><li style="color: rgb(153, 153, 153);">52</li><li style="color: rgb(153, 153, 153);">53</li><li style="color: rgb(153, 153, 153);">54</li><li style="color: rgb(153, 153, 153);">55</li><li style="color: rgb(153, 153, 153);">56</li><li style="color: rgb(153, 153, 153);">57</li><li style="color: rgb(153, 153, 153);">58</li><li style="color: rgb(153, 153, 153);">59</li><li style="color: rgb(153, 153, 153);">60</li><li style="color: rgb(153, 153, 153);">61</li><li style="color: rgb(153, 153, 153);">62</li><li style="color: rgb(153, 153, 153);">63</li><li style="color: rgb(153, 153, 153);">64</li><li style="color: rgb(153, 153, 153);">65</li><li style="color: rgb(153, 153, 153);">66</li><li style="color: rgb(153, 153, 153);">67</li><li style="color: rgb(153, 153, 153);">68</li><li style="color: rgb(153, 153, 153);">69</li><li style="color: rgb(153, 153, 153);">70</li><li style="color: rgb(153, 153, 153);">71</li></ul></pre> 
+ 
+<h4><a name="t17"></a><a id="_395"></a>完整用例</h4> 
+<h5><a id="1_396"></a>用例1</h5> 
+<pre data-index="13" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">0
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre> 
+<h5><a id="2_400"></a>用例2</h5> 
+<pre data-index="14" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">100
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre> 
+<h5><a id="3_406"></a>用例3</h5> 
+<pre data-index="15" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">1000
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre> 
+<h5><a id="4_410"></a>用例4</h5> 
+<pre data-index="16" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">127
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre> 
+<h5><a id="5_415"></a>用例5</h5> 
+<pre data-index="17" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">128
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre> 
+<h5><a id="6_420"></a>用例6</h5> 
+<pre data-index="18" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">255
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre> 
+<h5><a id="7_425"></a>用例7</h5> 
+<pre data-index="19" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">1000000
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre> 
+<h5><a id="8_429"></a>用例8</h5> 
+<pre data-index="20" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">9876543210
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre> 
+<h5><a id="9_434"></a>用例9</h5> 
+<pre data-index="21" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">9223372036854775807
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre> 
+<h5><a id="10_438"></a>用例10</h5> 
+<pre data-index="22" class="set-code-show prettyprint"><code class="has-numbering" onclick="mdcp.copyCode(event)" style="position: unset;">123456789
+<div class="hljs-button {2}" data-title="复制"></div></code><ul class="pre-numbering" style=""><li style="color: rgb(153, 153, 153);">1</li></ul></pre>
+                </div><div data-report-view="{&quot;mod&quot;:&quot;1585297308_001&quot;,&quot;spm&quot;:&quot;1001.2101.3001.6548&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/banxia_frontend/article/details/142877853&quot;,&quot;extend1&quot;:&quot;pc&quot;,&quot;ab&quot;:&quot;new&quot;}"><div></div></div>
+                <link href="https://csdnimg.cn/release/blogv2/dist/mdeditor/css/editerView/markdown_views-f23dff6052.css" rel="stylesheet">
+                <link href="https://csdnimg.cn/release/blogv2/dist/mdeditor/css/style-e504d6a974.css" rel="stylesheet">
+        </div></html>
