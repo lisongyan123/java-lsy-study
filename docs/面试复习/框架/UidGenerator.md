@@ -2,8 +2,6 @@
 
 # snowflake
 
-![](../images/SnowFlake.png)
-
 - sign(1bit) 固定1bit符号标识, 即生成的UID为正数
 - delta seconds (28 bits) 当前时间, 相对于时间基点"2016-05-20"的增量值, 单位: 秒, 最多可支持约8.7年
 - worker id (22 bits) 机器id, 最多可支持约420w次机器启动, 内置实现为在启动时由数据库分配, 默认分配策略为用后即弃, 后续可提供复用策略 

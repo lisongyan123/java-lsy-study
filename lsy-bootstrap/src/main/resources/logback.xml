@@ -16,9 +16,11 @@
     <conversionRule conversionWord="wEx" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
 
     <!-- 控制台输出 -->
-    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <property name="CONSOLE_LOG_PATTERN"
+              value="%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%5p) %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n%wEx"/>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss} %clr(%-5level) [%thread] %clr(%logger{36}){cyan} - %msg%n</pattern>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
         </encoder>
     </appender>
 
@@ -79,7 +81,7 @@
 
     <!--  日志输出级别 -->
     <root level="info">
-        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="STDOUT"/>
         <appender-ref ref="error"/>
         <appender-ref ref="info"/>
         <appender-ref ref="html"/>

@@ -6,10 +6,6 @@ import com.lsy.platform.async.wrapper.WorkerWrapper;
 
 import java.util.Map;
 
-/**
- * @author sjsdfg
- * @since 2020/6/14
- */
 public class LambdaTest {
     public static void main(String[] args) throws Exception {
         WorkerWrapper<WorkResult<User>, String> workerWrapper2 = new WorkerWrapper.Builder<WorkResult<User>, String>()
