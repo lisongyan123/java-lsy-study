@@ -149,7 +149,7 @@ pod 16G 16核 8 pod 多分点内存
 
 jstat -gcutil pid 2s 观察堆内存情况
 
-jmap pid 触发 full gc 假死的服务器就活了
+jmap pid 触发 fullgc 假死的服务器就活了
 
 或者 grep '异常' *.log 或者 直接 less *.log |grep '异常'
 

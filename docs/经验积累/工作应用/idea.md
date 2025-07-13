@@ -13,10 +13,3 @@
 11. code review 要加上 findbugs, checkstyle, fortify, sonarlite 这些插件, code coverage 90% 以上
 12. 多行光标: alt + shift + a 鼠标点击
 13. alt + f7 查看方法的所有引用 find usages
-14. 计算机技术
-```angular2html
-// 1. 此命令只会下载最后一次提交记录 (按需使用)
-git clone --depth=1 https://github.com/qtgolang/SunnyNet.git
-// 2. 此命令会下载所有提交记录,大小约 1.1GB - 1.3GB (按需使用)
-git clone https://github.com/qtgolang/SunnyNet.git
-```
