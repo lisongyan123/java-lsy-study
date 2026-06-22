@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-service
+  labels:
+    app: redis
+spec:
+  type: NodePort
+  ports:
+    - port: 6379
+      targetPort: 6379
+      nodePort: 30637  # 可选：固定 NodePort（范围 30000–32767）
+      protocol: TCP
+  selector:
+    app: redis
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-deployment
+  labels:
+    app: redis
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      # 设置 fsGroup 以确保 /data 目录对 Redis 用户（UID 1001）可写
+      securityContext:
+        fsGroup: 1001
+      containers:
+        - name: redis
+          image: bitnamilegacy/redis:8.2.1-debian-12-r0
+          imagePullPolicy: IfNotPresent
+          env:
+            # 允许空密码（仅限开发/测试！生产环境请设置 REDIS_PASSWORD）
+            - name: ALLOW_EMPTY_PASSWORD
+              value: "yes"
+          ports:
+            - containerPort: 6379
+              name: redis
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          volumeMounts:
+            - name: redis-storage
+              mountPath: /data
+      volumes:
+        - name: redis-storage
+          emptyDir: {}  # 临时存储，Pod 删除后数据丢失
