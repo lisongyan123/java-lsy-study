@@ -43,12 +43,12 @@ spec:
       volumes:
         - name: ik-plugin
           hostPath:
-            path: /run/desktop/mnt/host/c/Users/lisongyan/Desktop/project/java-lsy-study/k8s/elasticsearch-analysis-ik-9.1.2
+            path: /run/desktop/mnt/host/e/project/java-lsy-study/k8s/elasticsearch-analysis-ik-9.1.2
             type: Directory
         - name: es-data
           hostPath:
             # 数据持久化也放在你指定的目录下
-            path: /run/desktop/mnt/host/c/Users/lisongyan/Desktop/project/java-lsy-study/k8s/es-data
+            path: /run/desktop/mnt/host/e/project/java-lsy-study/k8s/elasticsearch-analysis-ik-9.1.2/es-data
             type: DirectoryOrCreate
 ---
 apiVersion: v1

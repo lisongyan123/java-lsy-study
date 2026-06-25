@@ -8,3 +8,5 @@ RUN curl -L -o /tmp/elasticsearch-analysis-ik-9.1.2.zip \
     mkdir -p /opt/bitnami/elasticsearch/plugins/analysis-ik && \
     unzip /tmp/elasticsearch-analysis-ik-9.1.2.zip -d /opt/bitnami/elasticsearch/plugins/analysis-ik && \
     rm -f /tmp/elasticsearch-analysis-ik-9.1.2.zip
+
+
