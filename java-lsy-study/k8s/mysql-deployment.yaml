@@ -1,0 +1,78 @@
+---
+# Secret: 存储 MySQL root 密码（Base64 编码）
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysql-secret
+type: Opaque
+data:
+  # ⚠️ 请务必替换为你自己的强密码的 Base64 编码！
+  # 示例：echo -n 'YourStrong!Pass123' | base64
+  root-password: bXlwYXNzd29yZDEyMw==  # ←←← 这是示例密码 "mypassword123"，请修改！
+
+---
+# PersistentVolumeClaim: 持久化 MySQL 数据
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  # 可选：根据你的集群 StorageClass 调整
+  # storageClassName: standard
+
+---
+# Deployment: 运行 MySQL 容器
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: bitnamilegacy/mysql:9.4.0-debian-12-r1
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: root-password
+          volumeMounts:
+            - name: mysql-storage
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-storage
+          persistentVolumeClaim:
+            claimName: mysql-pvc
+      restartPolicy: Always
+
+---
+# Service: 暴露 MySQL 端口到集群外部（使用 NodePort）
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+spec:
+  selector:
+    app: mysql
+  ports:
+    - protocol: TCP
+      port: 3306          # Service 内部端口
+      targetPort: 3306    # Pod 容器端口
+      nodePort: 30306     # ←←← 外部可通过 <NodeIP>:30306 访问（可选，范围 30000-32767）
+  type: NodePort          # 允许外部访问

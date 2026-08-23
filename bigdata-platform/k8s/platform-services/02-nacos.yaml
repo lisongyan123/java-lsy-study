@@ -1,0 +1,150 @@
+# 独立注册中心：单节点 Nacos 适用于开发、验证和非关键环境。
+# 生产环境应使用外部数据库和至少 3 个 Nacos 节点，并通过外部密钥系统管理鉴权信息。
+apiVersion: v1
+kind: Secret
+metadata:
+  name: nacos-auth
+  namespace: platform-services
+  labels:
+    app.kubernetes.io/name: nacos
+    app.kubernetes.io/part-of: platform-services
+type: Opaque
+stringData:
+  # 部署到共享或生产环境前必须替换。NACOS_AUTH_TOKEN 必须是 Base64 编码且原始密钥不少于 32 字节。
+  NACOS_AUTH_TOKEN: VGhpc0lzQVRlbXBvcmFyeU5hY29zVG9rZW5Gb3JEZXYxMjM0NTY3ODkw
+  NACOS_AUTH_IDENTITY_KEY: serverIdentity
+  NACOS_AUTH_IDENTITY_VALUE: change-me-before-production
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nacos-data
+  namespace: platform-services
+  labels:
+    app.kubernetes.io/name: nacos
+    app.kubernetes.io/part-of: platform-services
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nacos
+  namespace: platform-services
+  labels:
+    app.kubernetes.io/name: nacos
+    app.kubernetes.io/part-of: platform-services
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: nacos
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: nacos
+        app.kubernetes.io/part-of: platform-services
+    spec:
+      containers:
+        - name: nacos
+          image: nacos/nacos-server:v2.4.3
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: MODE
+              value: standalone
+            - name: PREFER_HOST_MODE
+              value: hostname
+            - name: NACOS_AUTH_ENABLE
+              value: "true"
+            - name: NACOS_AUTH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: nacos-auth
+                  key: NACOS_AUTH_TOKEN
+            - name: NACOS_AUTH_IDENTITY_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: nacos-auth
+                  key: NACOS_AUTH_IDENTITY_KEY
+            - name: NACOS_AUTH_IDENTITY_VALUE
+              valueFrom:
+                secretKeyRef:
+                  name: nacos-auth
+                  key: NACOS_AUTH_IDENTITY_VALUE
+            - name: JVM_XMS
+              value: 512m
+            - name: JVM_XMX
+              value: 512m
+            - name: JVM_XMN
+              value: 256m
+          ports:
+            - name: http
+              containerPort: 8848
+              protocol: TCP
+            - name: grpc-client
+              containerPort: 9848
+              protocol: TCP
+          startupProbe:
+            httpGet:
+              path: /nacos/v1/console/health/readiness
+              port: http
+            failureThreshold: 30
+            periodSeconds: 10
+            timeoutSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /nacos/v1/console/health/readiness
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 6
+          livenessProbe:
+            httpGet:
+              path: /nacos/v1/console/health/liveness
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 20
+            timeoutSeconds: 3
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 250m
+              memory: 768Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          volumeMounts:
+            - name: data
+              mountPath: /home/nacos/data
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: nacos-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nacos
+  namespace: platform-services
+  labels:
+    app.kubernetes.io/name: nacos
+    app.kubernetes.io/part-of: platform-services
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: nacos
+  ports:
+    - name: http
+      port: 8848
+      targetPort: http
+      protocol: TCP
+    - name: grpc-client
+      port: 9848
+      targetPort: grpc-client
+      protocol: TCP

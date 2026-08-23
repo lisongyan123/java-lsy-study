@@ -1,0 +1,5 @@
+services:
+  trino:
+    image: ${TRINO_PAIMON_IMAGE:?TRINO_PAIMON_IMAGE must contain a Trino 476 compatible Paimon plugin}
+    volumes:
+      - ./config/trino/catalog-options/paimon.real.properties:/etc/trino/catalog/paimon.properties:ro

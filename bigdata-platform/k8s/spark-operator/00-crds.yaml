@@ -1,0 +1,92 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: sparkapplications.sparkoperator.k8s.io
+  annotations:
+    api-approved.kubernetes.io: "unapproved, experimental-only"
+spec:
+  group: sparkoperator.k8s.io
+  scope: Namespaced
+  names:
+    plural: sparkapplications
+    singular: sparkapplication
+    kind: SparkApplication
+    shortNames:
+      - sparkapp
+  versions:
+    - name: v1beta2
+      served: true
+      storage: true
+      subresources:
+        status: {}
+      additionalPrinterColumns:
+        - name: State
+          type: string
+          jsonPath: .status.applicationState.state
+        - name: Age
+          type: date
+          jsonPath: .metadata.creationTimestamp
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            apiVersion:
+              type: string
+            kind:
+              type: string
+            metadata:
+              type: object
+            spec:
+              type: object
+              x-kubernetes-preserve-unknown-fields: true
+            status:
+              type: object
+              x-kubernetes-preserve-unknown-fields: true
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: scheduledsparkapplications.sparkoperator.k8s.io
+  annotations:
+    api-approved.kubernetes.io: "unapproved, experimental-only"
+spec:
+  group: sparkoperator.k8s.io
+  scope: Namespaced
+  names:
+    plural: scheduledsparkapplications
+    singular: scheduledsparkapplication
+    kind: ScheduledSparkApplication
+    shortNames:
+      - scheduledsparkapp
+  versions:
+    - name: v1beta2
+      served: true
+      storage: true
+      subresources:
+        status: {}
+      additionalPrinterColumns:
+        - name: Schedule
+          type: string
+          jsonPath: .spec.schedule
+        - name: Last Run
+          type: date
+          jsonPath: .status.lastRun
+        - name: Age
+          type: date
+          jsonPath: .metadata.creationTimestamp
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            apiVersion:
+              type: string
+            kind:
+              type: string
+            metadata:
+              type: object
+            spec:
+              type: object
+              x-kubernetes-preserve-unknown-fields: true
+            status:
+              type: object
+              x-kubernetes-preserve-unknown-fields: true

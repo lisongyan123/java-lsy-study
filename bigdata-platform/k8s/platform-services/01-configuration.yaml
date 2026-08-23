@@ -1,0 +1,27 @@
+# Kubernetes 原生配置中心：业务 Pod 通过 env 或 volume 挂载此 ConfigMap。
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: platform-config
+  namespace: platform-services
+  labels:
+    app.kubernetes.io/part-of: platform-services
+data:
+  APP_ENV: production
+  LOG_LEVEL: info
+  FEATURE_X_ENABLED: "false"
+  NACOS_SERVER_ADDR: nacos.platform-services.svc.cluster.local:8848
+  # 将业务服务的公共配置放在这里；非敏感配置可被 Pod 动态挂载读取。
+---
+# Kubernetes 原生敏感配置：请在实际部署前替换占位值，或改为外部密钥管理系统同步。
+apiVersion: v1
+kind: Secret
+metadata:
+  name: platform-secrets
+  namespace: platform-services
+  labels:
+    app.kubernetes.io/part-of: platform-services
+type: Opaque
+stringData:
+  # 供业务工作负载按需引用；不要将真实生产密钥提交到仓库。
+  EXAMPLE_SECRET: change-me

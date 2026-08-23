@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: spark-iceberg-config
+  namespace: bigdata-platform
+data:
+  MINIO_ENDPOINT: http://minio.example.internal:9000
+  MINIO_REGION: us-east-1
+  ICEBERG_CATALOG_DATABASE: iceberg_catalog
+  ICEBERG_CATALOG_URI: jdbc:mysql://mysql.example.internal:3306/iceberg_catalog?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+  ICEBERG_WAREHOUSE: s3://warehouse/iceberg

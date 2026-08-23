@@ -1,0 +1,1539 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AgentSpec 管理 · 卡片列表</title>
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f8fafc;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            color: #0f172a;
+        }
+
+        /* 模拟侧栏占位 — 实际页面中侧栏固定，这里仅做布局示意 */
+        .app-wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar-placeholder {
+            width: 256px;
+            flex-shrink: 0;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(16px);
+            border-right: 1px solid #e9edf4;
+            padding: 1rem 0.75rem;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-placeholder .logo-area {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 56px;
+            border-bottom: 1px solid #e9edf4;
+            margin-bottom: 0.75rem;
+        }
+
+        .sidebar-placeholder .logo-area svg {
+            height: 28px;
+            width: auto;
+        }
+
+        .sidebar-placeholder .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #475569;
+            transition: all 0.2s;
+            cursor: default;
+        }
+
+        .sidebar-placeholder .nav-item:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        .sidebar-placeholder .nav-item.active {
+            background: #f1f5f9;
+            color: #0f172a;
+            font-weight: 600;
+        }
+
+        .sidebar-placeholder .nav-item .badge-new {
+            background: #ef4444;
+            color: #fff;
+            font-size: 0.6rem;
+            padding: 0.05rem 0.45rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            margin-left: auto;
+        }
+
+        .sidebar-placeholder .nav-item .badge-beta {
+            background: #f59e0b;
+            color: #fff;
+            font-size: 0.6rem;
+            padding: 0.05rem 0.45rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            margin-left: auto;
+        }
+
+        .sidebar-placeholder .section-title {
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #94a3b8;
+            padding: 0.5rem 0.75rem 0.25rem;
+        }
+
+        .sidebar-placeholder .sub-nav {
+            margin-left: 1.25rem;
+            border-left: 1px solid #e9edf4;
+            padding-left: 0.75rem;
+        }
+
+        .sidebar-placeholder .sub-nav .nav-item {
+            font-size: 0.8rem;
+            padding: 0.35rem 0.5rem;
+            font-weight: 400;
+            color: #64748b;
+        }
+
+        .sidebar-placeholder .sub-nav .nav-item:hover {
+            background: transparent;
+            color: #0f172a;
+        }
+
+        .sidebar-placeholder .sub-nav .nav-item.active-sub {
+            color: #0f172a;
+            font-weight: 500;
+            background: transparent;
+        }
+
+        .sidebar-placeholder .divider {
+            height: 1px;
+            background: #e9edf4;
+            margin: 0.75rem 0.5rem;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            border-top: 1px solid #e9edf4;
+            padding-top: 0.75rem;
+        }
+
+        .sidebar-footer .nav-item {
+            font-size: 0.8rem;
+        }
+
+        /* 主内容区 */
+        .main-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        /* 顶栏 */
+        .top-bar {
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            display: flex;
+            height: 56px;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #e9edf4;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            padding: 0 1.5rem;
+        }
+
+        .top-bar .namespace-selector {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .top-bar .namespace-selector .ns-label {
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: #64748b;
+            display: none;
+        }
+
+        .top-bar .namespace-selector select {
+            height: 32px;
+            padding: 0 2rem 0 0.75rem;
+            border-radius: 0.375rem;
+            border: 1px solid #e2e8f0;
+            background: transparent;
+            font-size: 0.75rem;
+            color: #0f172a;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.5rem center;
+            background-size: 12px;
+            cursor: pointer;
+            width: 150px;
+        }
+
+        .top-bar .top-nav {
+            display: none;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .top-bar .top-nav a {
+            padding: 0.25rem 0.75rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #64748b;
+            border-radius: 0.375rem;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .top-bar .top-nav a:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        .top-bar .top-nav a .hot {
+            background: #ef4444;
+            color: #fff;
+            font-size: 0.55rem;
+            padding: 0.05rem 0.4rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            margin-left: 0.25rem;
+        }
+
+        .top-bar .right-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .top-bar .right-actions .btn-icon {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.375rem;
+            color: #94a3b8;
+            transition: all 0.2s;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .top-bar .right-actions .btn-icon:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        .top-bar .right-actions .btn-legacy {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0 0.75rem;
+            height: 32px;
+            border-radius: 0.375rem;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: #475569;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .top-bar .right-actions .btn-legacy:hover {
+            background: #f8fafc;
+        }
+
+        .top-bar .right-actions .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 9999px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            font-weight: 600;
+            margin-left: 0.25rem;
+        }
+
+        /* 主内容 padding */
+        .content-area {
+            padding: 1.5rem;
+        }
+
+        /* 页面头部 */
+        .page-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .page-header .title-area h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .page-header .title-area h1 .beta-badge {
+            background: #f59e0b;
+            color: #fff;
+            font-size: 0.55rem;
+            padding: 0.1rem 0.5rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .page-header .title-area p {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: 0.1rem;
+        }
+
+        .page-header .actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .page-header .actions .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0 0.9rem;
+            height: 32px;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+            cursor: pointer;
+            background: #fff;
+            color: #475569;
+            border-color: #e2e8f0;
+        }
+
+        .page-header .actions .btn:hover {
+            background: #f8fafc;
+        }
+
+        .page-header .actions .btn-primary {
+            background: #0f172a;
+            color: #fff;
+            border-color: #0f172a;
+        }
+
+        .page-header .actions .btn-primary:hover {
+            background: #1e293b;
+        }
+
+        /* 过滤栏 */
+        .filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .filter-bar .search-box {
+            position: relative;
+            flex: 1;
+            min-width: 200px;
+            max-width: 320px;
+        }
+
+        .filter-bar .search-box input {
+            width: 100%;
+            height: 32px;
+            padding: 0 0.75rem 0 2rem;
+            border-radius: 0.375rem;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            font-size: 0.8rem;
+            color: #0f172a;
+            transition: all 0.2s;
+            outline: none;
+        }
+
+        .filter-bar .search-box input:focus {
+            border-color: #94a3b8;
+            box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.05);
+        }
+
+        .filter-bar .search-box i {
+            position: absolute;
+            left: 0.65rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 0.75rem;
+        }
+
+        .filter-bar .btn-search {
+            height: 32px;
+            padding: 0 0.9rem;
+            border-radius: 0.375rem;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-bar .btn-search:hover {
+            background: #e2e8f0;
+        }
+
+        .filter-bar .filter-input {
+            height: 32px;
+            padding: 0 0.75rem;
+            border-radius: 0.375rem;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            font-size: 0.75rem;
+            color: #0f172a;
+            outline: none;
+            width: 140px;
+        }
+
+        .filter-bar .filter-input:focus {
+            border-color: #94a3b8;
+            box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.05);
+        }
+
+        .filter-bar .select-filter {
+            height: 32px;
+            padding: 0 2rem 0 0.75rem;
+            border-radius: 0.375rem;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            font-size: 0.75rem;
+            color: #0f172a;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.5rem center;
+            background-size: 12px;
+            cursor: pointer;
+            width: 130px;
+        }
+
+        .filter-bar .select-filter:focus {
+            border-color: #94a3b8;
+            box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.05);
+        }
+
+        .filter-bar .batch-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-left: auto;
+        }
+
+        .filter-bar .batch-actions .selected-count {
+            font-size: 0.7rem;
+            color: #94a3b8;
+        }
+
+        .filter-bar .batch-actions .btn-batch {
+            height: 32px;
+            padding: 0 0.9rem;
+            border-radius: 0.375rem;
+            font-size: 0.7rem;
+            font-weight: 500;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #fef2f2;
+            color: #dc2626;
+            border-color: #fecaca;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .filter-bar .batch-actions .btn-batch:hover {
+            background: #fee2e2;
+        }
+
+        .filter-bar .batch-actions .btn-cancel {
+            height: 32px;
+            padding: 0 0.9rem;
+            border-radius: 0.375rem;
+            font-size: 0.7rem;
+            font-weight: 500;
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-bar .batch-actions .btn-cancel:hover {
+            color: #475569;
+        }
+
+        /* 卡片网格 */
+        .card-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        @media (min-width: 640px) {
+            .card-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .card-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (min-width: 1280px) {
+            .card-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        .card-item {
+            background: #fff;
+            border-radius: 0.75rem;
+            border: 1px solid #e9edf4;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+            transition: all 0.2s;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .card-item:hover {
+            border-color: #c7d2fe;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+        }
+
+        .card-item.selected {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+        }
+
+        .card-item .card-body {
+            padding: 0.875rem 1rem 0.5rem;
+            flex: 1;
+        }
+
+        .card-item .card-top {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            position: relative;
+        }
+
+        .card-item .card-top .checkbox-wrap {
+            position: absolute;
+            top: 0.1rem;
+            right: 0;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .card-item:hover .card-top .checkbox-wrap {
+            opacity: 1;
+        }
+
+        .card-item.selected .card-top .checkbox-wrap {
+            opacity: 1;
+        }
+
+        .card-item .card-top .checkbox-wrap input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            border-radius: 0.2rem;
+            border: 1px solid #6366f1;
+            accent-color: #6366f1;
+            cursor: pointer;
+        }
+
+        .card-item .card-top .icon-box {
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
+            border-radius: 0.75rem;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.1rem;
+        }
+
+        .card-item .card-top .info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .card-item .card-top .info .name {
+            font-weight: 600;
+            font-size: 0.85rem;
+            line-height: 1.3;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-item .card-top .info .meta {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-top: 0.2rem;
+            flex-wrap: wrap;
+        }
+
+        .card-item .card-top .info .meta .status {
+            font-size: 0.6rem;
+            font-weight: 600;
+            padding: 0.05rem 0.5rem;
+            border-radius: 9999px;
+            background: #ecfdf5;
+            color: #065f46;
+            border: 1px solid transparent;
+        }
+
+        .card-item .card-top .info .meta .scope {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.15rem;
+            font-size: 0.6rem;
+            color: #94a3b8;
+        }
+
+        .card-item .card-top .info .meta .scope i {
+            font-size: 0.5rem;
+        }
+
+        .card-item .card-top .info .meta .version {
+            font-size: 0.6rem;
+            font-family: monospace;
+            color: #94a3b8;
+            background: #f1f5f9;
+            padding: 0.05rem 0.4rem;
+            border-radius: 0.2rem;
+        }
+
+        .card-item .description {
+            font-size: 0.75rem;
+            color: #64748b;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-top: 0.35rem;
+        }
+
+        .card-item .tags {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-top: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .card-item .tags .tag {
+            font-size: 0.6rem;
+            font-weight: 500;
+            padding: 0.1rem 0.5rem;
+            border-radius: 0.25rem;
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .card-item .tags .tag-scope {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.2rem;
+            font-size: 0.6rem;
+            font-weight: 500;
+            padding: 0.1rem 0.5rem;
+            border-radius: 0.25rem;
+            background: #ecfdf5;
+            color: #065f46;
+        }
+
+        .card-item .tags .tag-scope i {
+            font-size: 0.5rem;
+        }
+
+        .card-item .tags .download-count {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.2rem;
+            font-size: 0.6rem;
+            font-weight: 500;
+            padding: 0.1rem 0.5rem;
+            border-radius: 0.25rem;
+            background: #f1f5f9;
+            color: #94a3b8;
+            margin-left: auto;
+        }
+
+        .card-item .tags .download-count i {
+            font-size: 0.5rem;
+        }
+
+        .card-item .card-footer {
+            padding: 0.35rem 1rem;
+            border-top: 1px solid #f1f5f9;
+            background: #fafbfc;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-item .card-footer .time {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.6rem;
+            color: #94a3b8;
+        }
+
+        .card-item .card-footer .time i {
+            font-size: 0.6rem;
+        }
+
+        .card-item .card-footer .actions {
+            display: flex;
+            align-items: center;
+            margin-right: -0.25rem;
+        }
+
+        .card-item .card-footer .actions button {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.25rem;
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.7rem;
+        }
+
+        .card-item .card-footer .actions button:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        .card-item .card-footer .actions button.danger:hover {
+            color: #dc2626;
+            background: #fef2f2;
+        }
+
+        /* 分页 */
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            padding-top: 0.75rem;
+            margin-top: 0.25rem;
+        }
+
+        .pagination .select-page-size {
+            height: 32px;
+            padding: 0 2rem 0 0.75rem;
+            border-radius: 0.375rem;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            font-size: 0.75rem;
+            color: #0f172a;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.5rem center;
+            background-size: 12px;
+            cursor: pointer;
+            width: 100px;
+        }
+
+        .pagination .pagination-btn {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.375rem;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.75rem;
+        }
+
+        .pagination .pagination-btn:hover:not(:disabled) {
+            background: #f1f5f9;
+        }
+
+        .pagination .pagination-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .pagination .page-info {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            padding: 0 0.25rem;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .sidebar-placeholder {
+                display: none;
+            }
+
+            .top-bar .top-nav {
+                display: none;
+            }
+
+            .top-bar .namespace-selector .ns-label {
+                display: none;
+            }
+
+            .filter-bar .batch-actions {
+                margin-left: 0;
+                width: 100%;
+                justify-content: flex-end;
+            }
+
+            .page-header .title-area h1 {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .top-bar .top-nav {
+                display: flex;
+            }
+            .top-bar .namespace-selector .ns-label {
+                display: inline;
+            }
+        }
+
+        /* 滚动条美化 */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 9999px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
+        }
+
+        /* 小工具 */
+        .text-ellipsis {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* 选中高亮 */
+        .card-item.selected .card-top .checkbox-wrap {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-wrapper">
+
+        <!-- ===== 侧栏占位 ===== -->
+        <aside class="sidebar-placeholder">
+            <div class="logo-area">
+                <!-- Nacos Logo 占位 -->
+                <svg viewBox="0 0 120 32" fill="none" xmlns="http://www.w3.org/2000/svg" style="height:28px;">
+                    <rect x="0" y="4" width="32" height="24" rx="4" fill="#1e293b" />
+                    <text x="6" y="22" font-size="12" fill="white" font-weight="700">N</text>
+                    <text x="38" y="22" font-size="14" fill="#1e293b" font-weight="700" letter-spacing="0.5">Nacos</text>
+                    <text x="80" y="22" font-size="8" fill="#94a3b8" font-weight="400">v3.2.2</text>
+                </svg>
+            </div>
+
+            <div class="section-title">核心功能</div>
+
+            <!-- AI 注册中心 展开 -->
+            <div class="nav-item">
+                <i class="fa-regular fa-robot"></i>
+                <span>AI 注册中心</span>
+                <span class="badge-new">new</span>
+                <i class="fa-solid fa-chevron-down" style="font-size:0.6rem;margin-left:auto;color:#94a3b8;"></i>
+            </div>
+            <div class="sub-nav">
+                <div class="nav-item"><i class="fa-regular fa-wrench" style="font-size:0.7rem;opacity:0.7;"></i> Skill 管理 <span class="badge-new" style="font-size:0.5rem;">new</span></div>
+                <div class="nav-item"><i class="fa-regular fa-message" style="font-size:0.7rem;opacity:0.7;"></i> Prompt 管理 <span class="badge-new" style="font-size:0.5rem;">new</span></div>
+                <div class="nav-item"><i class="fa-regular fa-robot" style="font-size:0.7rem;opacity:0.7;"></i> Agent 管理</div>
+                <div class="nav-item active-sub"><i class="fa-regular fa-box" style="font-size:0.7rem;opacity:0.7;"></i> AgentSpec 管理 <span class="badge-beta">Beta</span></div>
+                <div class="nav-item"><i class="fa-regular fa-microchip" style="font-size:0.7rem;opacity:0.7;"></i> MCP 管理</div>
+            </div>
+
+            <div class="nav-item" style="margin-top:0.25rem;">
+                <i class="fa-regular fa-file-lines"></i>
+                <span>配置管理</span>
+                <i class="fa-solid fa-chevron-down" style="font-size:0.6rem;margin-left:auto;color:#94a3b8;"></i>
+            </div>
+            <div class="nav-item" style="margin-top:0.1rem;">
+                <i class="fa-regular fa-server"></i>
+                <span>服务管理</span>
+                <i class="fa-solid fa-chevron-down" style="font-size:0.6rem;margin-left:auto;color:#94a3b8;"></i>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="section-title">平台管理</div>
+            <div class="nav-item"><i class="fa-regular fa-globe"></i> 命名空间</div>
+            <div class="nav-item"><i class="fa-regular fa-network-wired"></i> 集群管理</div>
+            <div class="nav-item"><i class="fa-regular fa-puzzle-piece"></i> 插件管理</div>
+            <div class="nav-item">
+                <i class="fa-regular fa-shield"></i>
+                <span>权限控制</span>
+                <i class="fa-solid fa-chevron-down" style="font-size:0.6rem;margin-left:auto;color:#94a3b8;"></i>
+            </div>
+            <div class="sub-nav">
+                <div class="nav-item"><i class="fa-regular fa-users"></i> 用户列表</div>
+                <div class="nav-item"><i class="fa-regular fa-key"></i> 角色管理</div>
+                <div class="nav-item"><i class="fa-regular fa-lock"></i> 权限管理</div>
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="nav-item" style="justify-content:center;font-size:0.6rem;color:#94a3b8;cursor:default;">v3.2.2 · standalone</div>
+                <div class="nav-item"><i class="fa-regular fa-gear"></i> 设置中心</div>
+                <div class="nav-item" style="justify-content:center;gap:0.5rem;color:#94a3b8;">
+                    <i class="fa-regular fa-panel-left-close"></i>
+                    <span style="font-size:0.7rem;">收起侧栏</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ===== 主内容 ===== -->
+        <div class="main-content">
+
+            <!-- ===== 顶栏 ===== -->
+            <header class="top-bar">
+                <div class="namespace-selector">
+                    <i class="fa-regular fa-layer-group" style="color:#6366f1;font-size:0.9rem;"></i>
+                    <span class="ns-label">命名空间</span>
+                    <select>
+                        <option>public</option>
+                        <option>default</option>
+                        <option>prod</option>
+                    </select>
+                </div>
+
+                <nav class="top-nav">
+                    <a href="#">首页</a>
+                    <a href="#">Nacos企业版 <span class="hot">HOT</span></a>
+                    <a href="#">MCP市场 <span class="hot">HOT</span></a>
+                    <a href="#">文档</a>
+                    <a href="#">博客</a>
+                    <a href="#">社区</a>
+                </nav>
+
+                <div class="right-actions">
+                    <button class="btn-legacy">
+                        <i class="fa-regular fa-arrow-left-right"></i> 旧版控制台
+                    </button>
+                    <span style="width:1px;height:20px;background:#e2e8f0;margin:0 0.25rem;"></span>
+                    <button class="btn-icon"><i class="fa-regular fa-language"></i></button>
+                    <button class="btn-icon"><i class="fa-regular fa-moon"></i></button>
+                    <div class="avatar">N</div>
+                </div>
+            </header>
+
+            <!-- ===== 内容区 ===== -->
+            <div class="content-area">
+
+                <!-- 页面头部 -->
+                <div class="page-header">
+                    <div class="title-area">
+                        <h1>
+                            AgentSpec 管理
+                            <span class="beta-badge">Beta</span>
+                        </h1>
+                        <p>共 186 个 AgentSpec</p>
+                    </div>
+                    <div class="actions">
+                        <button class="btn"><i class="fa-regular fa-upload"></i> 上传</button>
+                        <button class="btn btn-primary"><i class="fa-regular fa-plus"></i> 创建 AgentSpec</button>
+                    </div>
+                </div>
+
+                <!-- 过滤栏 -->
+                <div class="filter-bar">
+                    <div class="search-box">
+                        <i class="fa-regular fa-magnifying-glass"></i>
+                        <input type="text" placeholder="搜索 AgentSpec 名称" />
+                    </div>
+                    <button class="btn-search">搜索</button>
+                    <input class="filter-input" type="text" placeholder="输入创建者名称" title="按创建者过滤" />
+                    <select class="select-filter">
+                        <option>所有范围</option>
+                        <option>公开</option>
+                        <option>私有</option>
+                    </select>
+                    <select class="select-filter">
+                        <option>默认排序</option>
+                        <option>按名称</option>
+                        <option>按时间</option>
+                    </select>
+
+                    <div class="batch-actions">
+                        <span class="selected-count">已选择 1 项</span>
+                        <button class="btn-batch"><i class="fa-regular fa-trash-can"></i> 批量删除</button>
+                        <button class="btn-cancel">取消</button>
+                    </div>
+                </div>
+
+                <!-- 统计 + 卡片网格 -->
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;">
+                    <span style="font-size:0.75rem;color:#94a3b8;">共 12 个 AgentSpec</span>
+                </div>
+
+                <div class="card-grid">
+
+                    <!-- ===== 卡片 1 (选中) ===== -->
+                    <div class="card-item selected">
+                        <div class="card-body">
+                            <div class="card-top">
+                                <div class="checkbox-wrap">
+                                    <input type="checkbox" checked />
+                                </div>
+                                <div class="icon-box">
+                                    <i class="fa-regular fa-box"></i>
+                                </div>
+                                <div class="info">
+                                    <div class="name">zk-steward</div>
+                                    <div class="meta">
+                                        <span class="status">已启用</span>
+                                        <span class="scope"><i class="fa-regular fa-globe"></i> 公开</span>
+                                        <span class="version">0.0.1</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="description">
+                                秉承 Niklas Luhmann 卡片盒笔记法精神的知识库管家。默认视角为 Luhmann；按任务切换领域专家（Feynman、Munger、Ogilvy 等）。强制原子笔记、连接性和验证闭环。
+                            </div>
+                            <div class="tags">
+                                <span class="tag">specialized</span>
+                                <span class="tag-scope"><i class="fa-regular fa-globe"></i> 已上线版本数：1</span>
+                                <span class="download-count"><i class="fa-regular fa-download"></i> 0</span>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <span class="time"><i class="fa-regular fa-clock"></i> 2026-06-23 19:09</span>
+                            <div class="actions">
+                                <button><i class="fa-regular fa-arrow-up-right-from-square"></i></button>
+                                <button class="danger"><i class="fa-regular fa-trash-can"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ===== 卡片 2 ===== -->
+                    <div class="card-item">
+                        <div class="card-body">
+                            <div class="card-top">
+                                <div class="checkbox-wrap">
+                                    <input type="checkbox" />
+                                </div>
+                                <div class="icon-box">
+                                    <i class="fa-regular fa-box"></i>
+                                </div>
+                                <div class="info">
+                                    <div class="name">xr-interface-architect</div>
+                                    <div class="meta">
+                                        <span class="status">已启用</span>
+                                        <span class="scope"><i class="fa-regular fa-globe"></i> 公开</span>
+                                        <span class="version">0.0.1</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="description">
+                                空间交互设计师和沉浸式 AR/VR/XR 环境的界面策略专家
+                            </div>
+                            <div class="tags">
+                                <span class="tag">spatial-computing</span>
+                                <span class="tag-scope"><i class="fa-regular fa-globe"></i> 已上线版本数：1</span>
+                                <span class="download-count"><i class="fa-regular fa-download"></i> 0</span>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <span class="time"><i class="fa-regular fa-clock"></i> 2026-06-23 19:09</span>
+                            <div class="actions">
+                                <button><i class="fa-regular fa-arrow-up-right-from-square"></i></button>
+                                <button class="danger"><i class="fa-regular fa-trash-can"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ===== 卡片 3 ===== -->
+                    <div class="card-item">
+                        <div class="card-body">
+                            <div class="card-top">
+                                <div class="checkbox-wrap">
+                                    <input type="checkbox" />
+                                </div>
+                                <div class="icon-box">
+                                    <i class="fa-regular fa-box"></i>
+                                </div>
+                                <div class="info">
+                                    <div class="name">xr-immersive-developer</div>
+                                    <div class="meta">
+                                        <span class="status">已启用</span>
+                                        <span class="scope"><i class="fa-regular fa-globe"></i> 公开</span>
+                                        <span class="version">0.0.1</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="description">
+                                WebXR 和沉浸式技术专家，专注浏览器端 AR/VR/XR 应用开发
+                            </div>
+                            <div class="tags">
+                                <span class="tag">spatial-computing</span>
+                                <span class="tag-scope"><i class="fa-regular fa-globe"></i> 已上线版本数：1</span>
+                                <span class="download-count"><i class="fa-regular fa-download"></i> 0</span>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <span class="time"><i class="fa-regular fa-clock"></i> 2026-06-23 19:09</span>
+                            <div class="actions">
+                                <button><i class="fa-regular fa-arrow-up-right-from-square"></i></button>
+                                <button class="danger"><i class="fa-regular fa-trash-can"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ===== 卡片 4 ===== -->
+                    <div class="card-item">
+                        <div class="card-body">
+                            <div class="card-top">
+                                <div class="checkbox-wrap">
+                                    <input type="checkbox" />
+                                </div>
+                                <div class="icon-box">
+                                    <i class="fa-regular fa-box"></i>
+                                </div>
+                                <div class="info">
+                                    <div class="name">xr-cockpit-interaction-specialist</div>
+                                    <div class="meta">
+                                        <span class="status">已启用</span>
+                                        <span class="scope"><i class="fa-regular fa-globe"></i> 公开</span>
+                                        <span class="version">0.0.1</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="description">
+                                专注设计和开发 XR 环境中沉浸式座舱控制系统
+                            </div>
+                            <div class="tags">
+                                <span class="tag">spatial-computing</span>
+                                <span class="tag-scope"><i class="fa-regular fa-globe"></i> 已上线版本数：1</span>
+                                <span class="download-count"><i class="fa-regular fa-download"></i> 0</span>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <span class="time"><i class="fa-regular fa-clock"></i> 2026-06-23 19:09</span>
+                            <div class="actions">
+                                <button><i class="fa-regular fa-arrow-up-right-from-square"></i></button>
+                                <button class="danger"><i class="fa-regular fa-trash-can"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ===== 卡片 5 ===== -->
+                    <div class="card-item">
+                        <div class="card-body">
+                            <div class="card-top">
+                                <div class="checkbox-wrap">
+                                    <input type="checkbox" />
+                                </div>
+                                <div class="icon-box">
+                                    <i class="fa-regular fa-box"></i>
+                                </div>
+                                <div class="info">
+                                    <div class="name">visionos-spatial-engineer</div>
+                                    <div class="meta">
+                                        <span class="status">已启用</span>
+                                        <span class="scope"><i class="fa-regular fa-globe"></i> 公开</span>
+                                        <span class="version">0.0.1</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="description">
+                                原生 visionOS 空间计算、SwiftUI 体积式界面和 Liquid Glass 设计实现
+                            </div>
+                            <div class="tags">
+                                <span class="tag">spatial-computing</span>
+                                <span class="tag-scope"><i class="fa-regular fa-globe"></i> 已上线版本数：1</span>
+                                <span class="download-count"><i class="fa-regular fa-download"></i> 0</span>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <span class="time"><i class="fa-regular fa-clock"></i> 2026-06-23 19:09</span>
+                            <div class="actions">
+                                <button><i class="fa-regular fa-arrow-up-right-from-square"></i></button>
+                                <button class="danger"><i class="fa-regular fa-trash-can"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ===== 卡片 6 ===== -->
+                    <div class="card-item">
+                        <div class="card-body">
+                            <div class="card-top">
+                                <div class="checkbox-wrap">
+                                    <input type="checkbox" />
+                                </div>
+                                <div class="icon-box">
+                                    <i class="fa-regular fa-box"></i>
+                                </div>
+                                <div class="info">
+                                    <div class="name">unreal-world-builder</div>
+                                    <div class="meta">
+                                        <span class="status">已启用</span>
+                                        <span class="scope"><i class="fa-regular fa-globe"></i> 公开</span>
+                                        <span class="version">0.0.1</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="description">
+                                开放世界与环境专家——精通 UE5 World Partition、Landscape、程序化植被、HLOD 和大规模关卡流式加载，打造无缝开放世界体验
+                            </div>
+                            <div class="tags">
+                                <span class="tag">game-development</span>
+                                <span class="tag">unreal-engine</span>
+                                <span class="tag-scope"><i class="fa-regular fa-globe"></i> 已上线版本数：1</span>
+                                <span class="download-count"><i class="fa-regular fa-download"></i> 0</span>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <span class="time"><i class="fa-regular fa-clock"></i> 2026-06-23 19:09</span>
+                            <div class="actions">
+                                <button><i class="fa-regular fa-arrow-up-right-from-square"></i></button>
+                                <button class="danger"><i class="fa-regular fa-trash-can"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ===== 卡片 7 ===== -->
+                    <div class="card-item">
+                        <div class="card-body">
+                            <div class="card-top">
+                                <div class="checkbox-wrap">
+                                    <input type="checkbox" />
+                                </div>
+                                <div class="icon-box">
+                                    <i class="fa-regular fa-box"></i>
+                                </div>
+                                <div class="info">
+                                    <div class="name">unreal-technical-artist</div>
+                                    <div class="meta">
+                                        <span class="status">已启用</span>
+                                        <span class="scope"><i class="fa-regular fa-globe"></i> 公开</span>
+                                        <span class="version">0.0.1</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="description">
+                                Unreal Engine 视觉管线专家——精通材质编辑器、Niagara 特效、程序化内容生成和 UE5 项目的美术到引擎管线
+                            </div>
+                            <div class="tags">
+                                <span class="tag">game-development</span>
+                                <span class="tag">unreal-engine</span>
+                                <span class="tag-scope"><i class="fa-regular fa-globe"></i> 已上线版本数：1</span>
+                                <span class="download-count"><i class="fa-regular fa-download"></i> 0</span>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <span class="time"><i class="fa-regular fa-clock"></i> 2026-06-23 19:09</span>
+                            <div class="actions">
+                                <button><i class="fa-regular fa-arrow-up-right-from-square"></i></button>
+                                <button class="danger"><i class="fa-regular fa-trash-can"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ===== 卡片 8 ===== -->
+                    <div class="card-item">
+                        <div class="card-body">
+                            <div class="card-top">
+                                <div class="checkbox-wrap">
+                                    <input type="checkbox" />
+                                </div>
+                                <div class="icon-box">
+                                    <i class="fa-regular fa-box"></i>
+                                </div>
+                                <div class="info">
+                                    <div class="name">unreal-systems-engineer</div>
+                                    <div class="meta">
+                                        <span class="status">已启用</span>
+                                        <span class="scope"><i class="fa-regular fa-globe"></i> 公开</span>
+                                        <span class="version">0.0.1</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="description">
+                                性能与混合架构专家——精通 C++/Blueprint 边界、Nanite 几何体、Lumen GI 和 Gameplay Ability System，面向 AAA 级 Unreal Engine 项目
+                            </div>
+                            <div class="tags">
+                                <span class="tag">game-development</span>
+                                <span class="tag">unreal-engine</span>
+                                <span class="tag-scope"><i class="fa-regular fa-globe"></i> 已上线版本数：1</span>
+                                <span class="download-count"><i class="fa-regular fa-download"></i> 0</span>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <span class="time"><i class="fa-regular fa-clock"></i> 2026-06-23 19:09</span>
+                            <div class="actions">
+                                <button><i class="fa-regular fa-arrow-up-right-from-square"></i></button>
+                                <button class="danger"><i class="fa-regular fa-trash-can"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ===== 卡片 9 ===== -->
+                    <div class="card-item">
+                        <div class="card-body">
+                            <div class="card-top">
+                                <div class="checkbox-wrap">
+                                    <input type="checkbox" />
+                                </div>
+                                <div class="icon-box">
+                                    <i class="fa-regular fa-box"></i>
+                                </div>
+                                <div class="info">
+                                    <div class="name">unreal-multiplayer-architect</div>
+                                    <div class="meta">
+                                        <span class="status">已启用</span>
+                                        <span class="scope"><i class="fa-regular fa-globe"></i> 公开</span>
+                                        <span class="version">0.0.1</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="description">
+                                Unreal Engine 网络专家——精通 Actor 复制、GameMode/GameState 架构、服务端权威玩法、网络预测和 UE5 专用服务器配置
+                            </div>
+                            <div class="tags">
+                                <span class="tag">game-development</span>
+                                <span class="tag">unreal-engine</span>
+                                <span class="tag-scope"><i class="fa-regular fa-globe"></i> 已上线版本数：1</span>
+                                <span class="download-count"><i class="fa-regular fa-download"></i> 0</span>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <span class="time"><i class="fa-regular fa-clock"></i> 2026-06-23 19:09</span>
+                            <div class="actions">
+                                <button><i class="fa-regular fa-arrow-up-right-from-square"></i></button>
+                                <button class="danger"><i class="fa-regular fa-trash-can"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ===== 卡片 10 ===== -->
+                    <div class="card-item">
+                        <div class="card-body">
+                            <div class="card-top">
+                                <div class="checkbox-wrap">
+                                    <input type="checkbox" />
+                                </div>
+                                <div class="icon-box">
+                                    <i class="fa-regular fa-box"></i>
+                                </div>
+                                <div class="info">
+                                    <div class="name">unity-shader-graph-artist</div>
+                                    <div class="meta">
+                                        <span class="status">已启用</span>
+                                        <span class="scope"><i class="fa-regular fa-globe"></i> 公开</span>
+                                        <span class="version">0.0.1</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="description">
+                                视觉效果与材质专家——精通 Unity Shader Graph、HLSL、URP/HDRP 渲染管线和自定义渲染 Pass，打造实时视觉效果
+                            </div>
+                            <div class="tags">
+                                <span class="tag">game-development</span>
+                                <span class="tag">unity</span>
+                                <span class="tag-scope"><i class="fa-regular fa-globe"></i> 已上线版本数：1</span>
+                                <span class="download-count"><i class="fa-regular fa-download"></i> 0</span>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <span class="time"><i class="fa-regular fa-clock"></i> 2026-06-23 19:09</span>
+                            <div class="actions">
+                                <button><i class="fa-regular fa-arrow-up-right-from-square"></i></button>
+                                <button class="danger"><i class="fa-regular fa-trash-can"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ===== 卡片 11 ===== -->
+                    <div class="card-item">
+                        <div class="card-body">
+                            <div class="card-top">
+                                <div class="checkbox-wrap">
+                                    <input type="checkbox" />
+                                </div>
+                                <div class="icon-box">
+                                    <i class="fa-regular fa-box"></i>
+                                </div>
+                                <div class="info">
+                                    <div class="name">unity-multiplayer-engineer</div>
+                                    <div class="meta">
+                                        <span class="status">已启用</span>
+                                        <span class="scope"><i class="fa-regular fa-globe"></i> 公开</span>
+                                        <span class="version">0.0.1</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="description">
+                                联网游戏专家——精通 Netcode for GameObjects、Unity Gaming Services（Relay/Lobby）、客户端-服务端权威、延迟补偿和状态同步
+                            </div>
+                            <div class="tags">
+                                <span class="tag">game-development</span>
+                                <span class="tag">unity</span>
+                                <span class="tag-scope"><i class="fa-regular fa-globe"></i> 已上线版本数：1</span>
+                                <span class="download-count"><i class="fa-regular fa-download"></i> 0</span>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <span class="time"><i class="fa-regular fa-clock"></i> 2026-06-23 19:09</span>
+                            <div class="actions">
+                                <button><i class="fa-regular fa-arrow-up-right-from-square"></i></button>
+                                <button class="danger"><i class="fa-regular fa-trash-can"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ===== 卡片 12 ===== -->
+                    <div class="card-item">
+                        <div class="card-body">
+                            <div class="card-top">
+                                <div class="checkbox-wrap">
+                                    <input type="checkbox" />
+                                </div>
+                                <div class="icon-box">
+                                    <i class="fa-regular fa-box"></i>
+                                </div>
+                                <div class="info">
+                                    <div class="name">unity-editor-tool-developer</div>
+                                    <div class="meta">
+                                        <span class="status">已启用</span>
+                                        <span class="scope"><i class="fa-regular fa-globe"></i> 公开</span>
+                                        <span class="version">0.0.1</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="description">
+                                Unity 编辑器自动化专家——精通自定义 EditorWindow、PropertyDrawer、AssetPostprocessor、ScriptedImporter 和管线自动化，每周为团队节省数小时
+                            </div>
+                            <div class="tags">
+                                <span class="tag">game-development</span>
+                                <span class="tag">unity</span>
+                                <span class="tag-scope"><i class="fa-regular fa-globe"></i> 已上线版本数：1</span>
+                                <span class="download-count"><i class="fa-regular fa-download"></i> 0</span>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <span class="time"><i class="fa-regular fa-clock"></i> 2026-06-23 19:09</span>
+                            <div class="actions">
+                                <button><i class="fa-regular fa-arrow-up-right-from-square"></i></button>
+                                <button class="danger"><i class="fa-regular fa-trash-can"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- 分页 -->
+                <div class="pagination">
+                    <select class="select-page-size">
+                        <option>12 / 每页条数</option>
+                        <option>24 / 每页条数</option>
+                        <option>48 / 每页条数</option>
+                    </select>
+                    <button class="pagination-btn" disabled><i class="fa-regular fa-chevron-left"></i></button>
+                    <span class="page-info">1 / 16</span>
+                    <button class="pagination-btn"><i class="fa-regular fa-chevron-right"></i></button>
+                </div>
+
+            </div><!-- /content-area -->
+        </div><!-- /main-content -->
+    </div><!-- /app-wrapper -->
+
+</body>
+</html>

@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elasticsearch
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elasticsearch
+  template:
+    metadata:
+      labels:
+        app: elasticsearch
+    spec:
+      # Bitnami 镜像默认以非 root 用户(1001)运行，需确保挂载目录权限正确
+      securityContext:
+        fsGroup: 1001
+      containers:
+        - name: elasticsearch
+          image: bitnamilegacy/elasticsearch:9.1.2-debian-12-r0
+          ports:
+            - containerPort: 9200
+              name: http
+            - containerPort: 9300
+              name: transport
+          env:
+            # 设置 JVM 内存，防止 OOM
+            - name: ES_JAVA_OPTS
+              value: "-Xms512m -Xmx512m"
+            # 单节点模式
+            - name: discovery.type
+              value: "single-node"
+            # 允许外部访问并关闭安全认证(测试环境适用)
+            - name: ELASTICSEARCH_ENABLE_SECURITY
+              value: "false"
+          volumeMounts:
+            # 1. 挂载 IK 分词器
+            - name: ik-plugin
+              mountPath: /opt/bitnami/elasticsearch/plugins/elasticsearch-analysis-ik
+            # 2. 挂载数据持久化目录
+            - name: es-data
+              mountPath: /opt/bitnami/elasticsearch/data
+      volumes:
+        - name: ik-plugin
+          hostPath:
+            path: /run/desktop/mnt/host/e/project/java-lsy-study/k8s/elasticsearch-analysis-ik-9.1.2
+            type: Directory
+        - name: es-data
+          hostPath:
+            # 数据持久化也放在你指定的目录下
+            path: /run/desktop/mnt/host/e/project/java-lsy-study/k8s/elasticsearch-analysis-ik-9.1.2/es-data
+            type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch-svc
+spec:
+  type: NodePort
+  selector:
+    app: elasticsearch
+  ports:
+    - name: http
+      port: 9200
+      targetPort: 9200
+      nodePort: 30920  # 你指定的外部访问端口
+    - name: transport
+      port: 9300
+      targetPort: 9300

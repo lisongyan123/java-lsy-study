@@ -1,4 +1,3 @@
-# promtail-config.yml
 server:
   http_listen_port: 9080
   grpc_listen_port: 0
@@ -15,11 +14,18 @@ scrape_configs:
       - host: unix:///var/run/docker.sock
         refresh_interval: 5s
     relabel_configs:
+      # 强制设置 job 标签为 docker-promtail
+      - target_label: "job"
+        replacement: "docker-promtail"
+      # 保留容器名
       - source_labels: ["__meta_docker_container_name"]
         target_label: "container"
+      # 保留日志流类型（stdout/stderr）
       - source_labels: ["__meta_docker_container_log_stream"]
         target_label: "stream"
+      # 保留镜像名
       - source_labels: ["__meta_docker_container_image"]
         target_label: "image"
+      # 保留 compose 服务名
       - source_labels: ["__meta_docker_container_label_com_docker_compose_service"]
         target_label: "compose_service"

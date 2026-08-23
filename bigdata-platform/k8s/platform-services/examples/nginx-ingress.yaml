@@ -1,0 +1,27 @@
+# Kubernetes 原生 Ingress 示例，不包含在默认 Kustomize 部署中。
+# 使用前必须安装 Ingress Controller，并将 IngressClass、Service 名称和端口改为实际值。
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: platform-gateway
+  namespace: platform-services
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+  labels:
+    app.kubernetes.io/name: platform-gateway
+    app.kubernetes.io/part-of: platform-services
+spec:
+  # 按目标集群修改，例如 nginx 或 traefik。
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+          - path: /orders(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                # 请替换为已注册的业务 Service 名称与端口。
+                name: orders
+                port:
+                  number: 8080

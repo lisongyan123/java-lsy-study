@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AgentSpec &amp; 配置管理 · Nacos</title>
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <style>
+        * {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', Roboto, sans-serif;
+        }
+        body {
+            background-color: #f5f7fb;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 240px;
+            background-color: #ffffff;
+            border-right: 1px solid #eef1f5;
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        .main-wrap {
+            margin-left: 240px;
+            min-height: 100vh;
+            padding: 20px 28px 32px 28px;
+            background-color: #f5f7fb;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #3d4a5a;
+            cursor: pointer;
+            transition: none;
+            position: relative;
+        }
+        .nav-item:hover {
+            background-color: #f0f3f8;
+        }
+        .nav-item.active {
+            background-color: #eef2ff;
+            color: #1e3a8a;
+            font-weight: 500;
+        }
+        .nav-item .badge {
+            font-size: 10px;
+            font-weight: 600;
+            padding: 1px 8px;
+            border-radius: 999px;
+            margin-left: auto;
+        }
+        .badge-beta {
+            background-color: #f97316;
+            color: #fff;
+        }
+        .badge-new {
+            background-color: #ef4444;
+            color: #fff;
+        }
+        .badge-hot {
+            background-color: #f59e0b;
+            color: #fff;
+        }
+
+        .sub-item {
+            padding-left: 44px;
+            font-size: 13px;
+            color: #4b5a6a;
+            cursor: pointer;
+            padding-top: 4px;
+            padding-bottom: 4px;
+            border-radius: 6px;
+        }
+        .sub-item:hover {
+            background-color: #f0f3f8;
+        }
+        .sub-item.active {
+            background-color: #eef2ff;
+            color: #1e3a8a;
+            font-weight: 500;
+        }
+
+        .top-bar {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 16px 22px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            margin-bottom: 18px;
+        }
+
+        .btn-primary {
+            background: #1677ff;
+            color: #fff;
+            padding: 0 18px;
+            height: 36px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: none;
+        }
+        .btn-primary:hover {
+            background: #0f66e0;
+        }
+        .btn-outline {
+            background: transparent;
+            color: #3d4a5a;
+            padding: 0 16px;
+            height: 36px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            border: 1px solid #d9e1ea;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: none;
+        }
+        .btn-outline:hover {
+            background: #f0f3f8;
+        }
+        .btn-ghost {
+            background: transparent;
+            color: #5a6a7a;
+            padding: 0 12px;
+            height: 36px;
+            border-radius: 8px;
+            font-size: 13px;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+        }
+        .btn-ghost:hover {
+            background: #f0f3f8;
+        }
+
+        .search-input {
+            border: 1px solid #e6edf4;
+            border-radius: 8px;
+            padding: 0 14px;
+            height: 36px;
+            font-size: 13px;
+            background: #fff;
+            color: #1f2a3a;
+            width: 200px;
+            transition: none;
+        }
+        .search-input:focus {
+            outline: none;
+            border-color: #1677ff;
+            box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.12);
+        }
+        .search-input::placeholder {
+            color: #b0beca;
+        }
+
+        .select-sm {
+            border: 1px solid #e6edf4;
+            border-radius: 6px;
+            padding: 0 24px 0 10px;
+            height: 30px;
+            font-size: 12px;
+            background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b7a8a'/%3E%3C/svg%3E") no-repeat right 8px center;
+            appearance: none;
+            -webkit-appearance: none;
+            color: #1f2a3a;
+            cursor: pointer;
+        }
+        .select-sm:focus {
+            outline: none;
+            border-color: #1677ff;
+            box-shadow: 0 0 0 2px rgba(22, 119, 255, 0.15);
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .table-wrap table {
+            min-width: 720px;
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table-wrap th {
+            background: #f9fafb;
+            font-weight: 400;
+            font-size: 13px;
+            color: #4b5563;
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .table-wrap td {
+            padding: 12px 12px;
+            font-size: 13px;
+            color: #1f2937;
+            border-bottom: 1px solid #f0f3f8;
+        }
+        .table-wrap tr:hover td {
+            background-color: #f9fafb;
+        }
+
+        .format-tag {
+            background: #e6f4ff;
+            color: #1677ff;
+            padding: 2px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .action-link {
+            cursor: pointer;
+            font-size: 13px;
+            margin-right: 12px;
+        }
+        .action-link.detail {
+            color: #1f2937;
+        }
+        .action-link.detail:hover {
+            text-decoration: underline;
+        }
+        .action-link.edit {
+            color: #1677ff;
+        }
+        .action-link.edit:hover {
+            text-decoration: underline;
+        }
+        .action-link.delete {
+            color: #f53f3f;
+        }
+        .action-link.delete:hover {
+            text-decoration: underline;
+        }
+        .action-link.more {
+            color: #9ca3af;
+            font-weight: bold;
+            letter-spacing: 1px;
+            cursor: pointer;
+        }
+        .action-link.more:hover {
+            color: #6b7280;
+        }
+
+        .truncate-cell {
+            max-width: 160px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .page-btn {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            border: 1px solid #e6edf4;
+            background: #fff;
+            color: #3d4a5a;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        .page-btn.active {
+            background: #1677ff;
+            color: #fff;
+            border-color: #1677ff;
+        }
+        .page-btn.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .page-btn:hover:not(.disabled):not(.active) {
+            background: #f0f3f8;
+        }
+
+        .text-muted {
+            color: #6b7b8b;
+        }
+
+        .divider-light {
+            height: 1px;
+            background: #eef1f5;
+            margin: 8px 0;
+        }
+
+        .nacos-brand {
+            font-weight: 700;
+            font-size: 18px;
+            letter-spacing: 0.3px;
+            color: #0b1a2f;
+        }
+        .nacos-brand span {
+            color: #1677ff;
+        }
+        .namespace-badge {
+            background: #f0f4fc;
+            border-radius: 16px;
+            padding: 2px 14px 2px 10px;
+            font-size: 12px;
+            color: #1f3a5f;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            border: 1px solid #e6edf4;
+        }
+
+        .filter-bar {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 16px 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            border: 1px solid #f0f3f8;
+            margin-bottom: 16px;
+        }
+
+        .search-mode-btn {
+            padding: 0 14px;
+            height: 32px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid #1677ff;
+            background: #fff;
+            color: #1677ff;
+            transition: none;
+        }
+        .search-mode-btn.active {
+            background: #1677ff;
+            color: #fff;
+            border-color: #1677ff;
+        }
+        .search-mode-btn.inactive:hover {
+            background: #f0f7ff;
+        }
+
+        .view-toggle-btn {
+            padding: 0.3rem 0.9rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: none;
+        }
+        .view-toggle-btn.active {
+            background-color: #1677ff;
+            color: #fff;
+            border-color: #1677ff;
+        }
+        .view-toggle-btn.inactive {
+            background-color: #fff;
+            color: #4b5563;
+            border-color: #d1d5db;
+        }
+        .view-toggle-btn.inactive:hover {
+            background-color: #f3f4f6;
+        }
+
+        .hidden-view {
+            display: none !important;
+        }
+
+        /* 卡片样式 */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 16px;
+        }
+        @media (min-width: 640px) {
+            .card-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (min-width: 768px) {
+            .card-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        @media (min-width: 1024px) {
+            .card-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        @media (min-width: 1280px) {
+            .card-grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
+        }
+
+        .spec-card {
+            background: #ffffff;
+            border-radius: 14px;
+            padding: 16px 16px 14px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+            border: 1px solid #f0f3f8;
+            transition: none;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .spec-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        .card-title {
+            font-weight: 600;
+            font-size: 14px;
+            color: #0b1a2f;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-top: 6px;
+        }
+        .tag {
+            font-size: 10px;
+            font-weight: 500;
+            padding: 2px 10px;
+            border-radius: 999px;
+            background: #f0f4fc;
+            color: #2a4b7a;
+        }
+        .tag-green {
+            background: #e6f7e6;
+            color: #1a6e3a;
+        }
+        .tag-blue {
+            background: #e8f0fe;
+            color: #1a5bbf;
+        }
+        .tag-gray {
+            background: #f2f4f8;
+            color: #4e5f6e;
+        }
+
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px solid #f0f3f8;
+            font-size: 11px;
+            color: #8a9aa8;
+        }
+
+        .status-dot {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 999px;
+            background: #22c55e;
+            margin-right: 4px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+            .main-wrap {
+                margin-left: 200px;
+                padding: 16px;
+            }
+            .search-input {
+                width: 140px;
+            }
+        }
+        @media (max-width: 480px) {
+            .sidebar {
+                width: 56px;
+                padding: 0 8px;
+            }
+            .sidebar .nav-item span,
+            .sidebar .badge,
+            .sidebar .sub-item {
+                display: none;
+            }
+            .sidebar .logo-text {
+                display: none;
+            }
+            .main-wrap {
+                margin-left: 56px;
+                padding: 12px;
+            }
+            .top-bar {
+                flex-wrap: wrap;
+            }
+            .filter-bar {
+                flex-wrap: wrap;
+            }
+            .search-input {
+                width: 100%;
+            }
+            .card-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== 侧边栏 ===== -->
+    <aside class="sidebar no-scrollbar">
+        <div class="px-4 py-5 flex items-center gap-2">
+            <span class="nacos-brand">NACOS<span>.</span></span>
+        </div>
+
+        <div class="px-3 mb-3 flex items-center gap-2">
+            <span class="namespace-badge">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#3d5a7a" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>
+                命名空间
+            </span>
+            <span class="text-sm font-medium text-gray-700">public</span>
+        </div>
+
+        <nav class="flex-1 px-2 space-y-0.5 overflow-y-auto no-scrollbar">
+            <div class="nav-item"><span>🏠</span><span>首页</span></div>
+            <div class="nav-item"><span>🔥</span><span>Nacos企业版</span><span class="badge badge-hot">HOT</span></div>
+            <div class="nav-item"><span>🧩</span><span>MCP市场</span><span class="badge badge-hot">HOT</span></div>
+            <div class="nav-item"><span>📄</span><span>文档</span></div>
+            <div class="nav-item"><span>📰</span><span>博客</span></div>
+            <div class="nav-item"><span>👥</span><span>社区</span></div>
+            <div class="nav-item"><span>🖥️</span><span>旧版控制台</span></div>
+
+            <div class="divider-light"></div>
+            <div class="nav-item"><span>🧭</span><span>核心功能</span></div>
+
+            <div class="nav-item"><span>🤖</span><span>AI注册中心</span><span class="badge badge-new">new</span></div>
+            <div class="nav-item"><span>⚙️</span><span>Skill管理</span><span class="badge badge-new">new</span></div>
+            <div class="nav-item"><span>📌</span><span>Prompt管理</span><span class="badge badge-new">new</span></div>
+            <div class="nav-item"><span>👤</span><span>Agent管理</span></div>
+
+            <div class="nav-item active">
+                <span>📋</span><span>AgentSpec管理</span>
+                <span class="badge badge-beta">Beta</span>
+            </div>
+
+            <div class="nav-item"><span>🔌</span><span>MCP管理</span></div>
+
+            <div class="mt-1">
+                <div class="nav-item">
+                    <span>📂</span><span>配置管理</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                </div>
+                <div class="sub-item active">配置列表</div>
+                <div class="sub-item">历史版本</div>
+                <div class="sub-item">监听查询</div>
+            </div>
+
+            <div class="nav-item"><span>📡</span><span>服务管理</span></div>
+            <div class="nav-item"><span>📊</span><span>平台管理</span></div>
+
+            <div class="divider-light"></div>
+            <div class="nav-item"><span>📦</span><span>命名空间</span></div>
+            <div class="nav-item"><span>🖥️</span><span>集群管理</span></div>
+            <div class="nav-item"><span>🧩</span><span>插件管理</span></div>
+            <div class="nav-item"><span>🔐</span><span>权限控制</span></div>
+            <div class="nav-item"><span>⚙️</span><span>设置中心</span></div>
+
+            <div class="mt-4 mb-2 px-2">
+                <button class="btn-outline w-full justify-center text-sm" style="border-color:#d9e1ea;color:#3d4a5a;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg>
+                    收起侧栏
+                </button>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- ===== 主区域 ===== -->
+    <div class="main-wrap">
+
+        <!-- 顶部栏 -->
+        <div class="top-bar flex items-center justify-between flex-wrap gap-3">
+            <div class="flex items-center gap-3">
+                <span class="text-lg font-semibold text-gray-900" id="pageTitle">AgentSpec 管理</span>
+                <span class="bg-blue-50 text-blue-700 text-xs px-2.5 py-1 rounded-full border border-blue-100">Beta</span>
+                <span class="text-sm text-gray-400" id="countLabel">共 12 个</span>
+            </div>
+            <div class="flex items-center gap-2 flex-wrap">
+                <!-- 视图切换按钮组 -->
+                <div class="flex items-center border border-gray-200 rounded-full overflow-hidden shadow-sm">
+                    <button id="viewCardBtn" class="view-toggle-btn active" data-view="card">卡片</button>
+                    <button id="viewTableBtn" class="view-toggle-btn inactive" data-view="table">列表</button>
+                </div>
+                <button class="btn-outline text-sm gap-1">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    导入
+                </button>
+                <button class="btn-primary text-sm gap-1">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    新建配置
+                </button>
+            </div>
+        </div>
+
+        <!-- 搜索筛选栏（卡片和表格共用） -->
+        <div class="filter-bar" id="searchFilterBar">
+            <div class="flex flex-wrap items-end gap-3">
+                <div class="flex flex-col gap-0.5">
+                    <label class="text-xs text-gray-500">Data ID</label>
+                    <input class="search-input" placeholder="Data ID" style="width:180px;" id="searchDataId" />
+                </div>
+                <div class="flex flex-col gap-0.5">
+                    <label class="text-xs text-gray-500">Group</label>
+                    <input class="search-input" placeholder="Group" style="width:160px;" id="searchGroup" />
+                </div>
+                <div class="flex flex-col gap-0.5">
+                    <label class="text-xs text-gray-500">归属应用</label>
+                    <input class="search-input" placeholder="归属应用" style="width:150px;" id="searchApp" />
+                </div>
+
+                <div class="flex items-center gap-1" style="height:36px;padding-bottom:2px;">
+                    <button class="search-mode-btn active" id="fuzzyBtn">模糊搜索</button>
+                    <button class="search-mode-btn inactive" id="exactBtn">精确搜索</button>
+                </div>
+
+                <div class="flex items-center gap-2" style="height:36px;padding-bottom:2px;">
+                    <button class="btn-primary text-sm gap-1" style="height:34px;padding:0 16px;" id="searchBtn">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        搜索
+                    </button>
+                    <button class="btn-outline text-sm gap-1" style="height:34px;padding:0 16px;" id="resetBtn">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                        重置
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== 视图容器 ===== -->
+        <div id="viewContainer">
+
+            <!-- ===== 卡片视图 ===== -->
+            <div id="cardView" class="block">
+                <div class="card-grid" id="cardGrid">
+                    <!-- 由 JS 动态渲染 -->
+                </div>
+            </div>
+
+            <!-- ===== 表格视图 ===== -->
+            <div id="tableView" class="hidden-view">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-50 overflow-hidden">
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width:40px;text-align:center;">
+                                        <input type="checkbox" class="rounded border-gray-300" id="selectAll" />
+                                    </th>
+                                    <th>Data ID</th>
+                                    <th>Group</th>
+                                    <th style="text-align:center;">配置格式</th>
+                                    <th>归属应用</th>
+                                    <th style="text-align:right;">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                                <!-- 由 JS 动态渲染 -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- 分页 -->
+                    <div class="flex items-center justify-between flex-wrap gap-3 px-4 py-3 border-t border-gray-100">
+                        <div class="text-sm text-gray-500" id="totalCount">共 0 条配置</div>
+                        <div class="flex items-center gap-3 flex-wrap">
+                            <div class="flex items-center gap-2 text-sm text-gray-500">
+                                <span>每页条数</span>
+                                <select class="select-sm" style="width:60px;height:28px;font-size:12px;" id="pageSizeSelect">
+                                    <option value="5">5</option>
+                                    <option value="10" selected>10</option>
+                                    <option value="20">20</option>
+                                    <option value="50">50</option>
+                                </select>
+                            </div>
+                            <div class="flex items-center gap-1" id="paginationControls">
+                                <!-- 由 JS 渲染 -->
+                            </div>
+                            <span class="text-sm text-gray-500" id="pageInfo">1 / 1</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部版本信息 -->
+        <div class="mt-3 text-right text-xs text-gray-400">v3.2.2 · standalone</div>
+
+    </div>
+
+    <script>
+        // ============================================================
+        //  数据
+        // ============================================================
+
+        var CONFIG_DATA = [{
+            id: 1,
+            dataId: 'manifest.json',
+            group: 'agentspec_enc.61636164656d69632...',
+            format: 'JSON',
+            app: 'zk-steward',
+            name: 'zk-steward',
+            description: 'ZooKeeper 集群健康巡检与故障自愈 Agent',
+            status: 'enabled',
+            visibility: 'public',
+            version: '0.0.1',
+            tags: ['zookeeper', 'health-check'],
+            activeTag: 'core',
+            timestamp: '2026-06-23 19:09'
+        }, {
+            id: 2,
+            dataId: 'resource_tool-analysis_tool-analysis_json.json',
+            group: 'agentspec_enc.61636164656d69632...',
+            format: 'JSON',
+            app: 'xr-interface',
+            name: 'xr-interface-architect',
+            description: '空间交互设计师和沉浸式AR/VR/XR环境的界面策略专家',
+            status: 'enabled',
+            visibility: 'public',
+            version: '0.0.1',
+            tags: ['xr', 'interface'],
+            activeTag: 'design',
+            timestamp: '2026-06-23 19:09'
+        }, {
+            id: 3,
+            dataId: 'manifest.json',
+            group: 'agentspec_enc.61636164656d69632...',
+            format: 'JSON',
+            app: 'spatial-core',
+            name: 'spatial-computing-core',
+            description: '空间计算核心引擎 Agent，处理 SLAM 与三维重建数据流',
+            status: 'enabled',
+            visibility: 'private',
+            version: '0.0.1',
+            tags: ['spatial', 'slam'],
+            activeTag: 'core',
+            timestamp: '2026-06-23 19:00'
+        }, {
+            id: 4,
+            dataId: 'manifest.json',
+            group: 'agentspec_enc.61636164656d69632...',
+            format: 'JSON',
+            app: 'prompt-opt',
+            name: 'prompt-optimizer',
+            description: '基于强化学习的 Prompt 自动优化 Agent，提升 LLM 输出质量',
+            status: 'enabled',
+            visibility: 'public',
+            version: '0.0.1',
+            tags: ['prompt', 'llm'],
+            activeTag: 'ai',
+            timestamp: '2026-06-23 19:09'
+        }, {
+            id: 5,
+            dataId: 'resource_config_IDENTITY_md.json',
+            group: 'agentspec_enc.61636164656d69632...',
+            format: 'JSON',
+            app: 'mcp-gateway',
+            name: 'mcp-gateway',
+            description: 'MCP 协议网关 Agent，统一管理与转发 Model Context Protocol 请求',
+            status: 'enabled',
+            visibility: 'public',
+            version: '0.0.1',
+            tags: ['mcp', 'gateway'],
+            activeTag: 'infra',
+            timestamp: '2026-06-23 19:09'
+        }, {
+            id: 6,
+            dataId: 'resource_config_IDENTITY_md.json',
+            group: 'agentspec_enc.61636164656d69632...',
+            format: 'JSON',
+            app: 'skill-orch',
+            name: 'skill-orchestrator',
+            description: 'Skill 编排引擎 Agent，支持 DAG 任务流与动态并行调度',
+            status: 'enabled',
+            visibility: 'private',
+            version: '0.0.1',
+            tags: ['skill', 'orchestration'],
+            activeTag: 'core',
+            timestamp: '2026-06-23 19:09'
+        }, {
+            id: 7,
+            dataId: 'resource_crons_jobs_json.json',
+            group: 'agentspec_enc.61636164656d69632...',
+            format: 'JSON',
+            app: 'config-syncer',
+            name: 'config-syncer',
+            description: '多环境配置同步 Agent，支持 Nacos 与 Apollo 双向同步',
+            status: 'enabled',
+            visibility: 'public',
+            version: '0.0.1',
+            tags: ['config', 'sync'],
+            activeTag: 'infra',
+            timestamp: '2026-06-23 19:00'
+        }, {
+            id: 8,
+            dataId: 'resource_config_IDENTITY_md.json',
+            group: 'agentspec_enc.61636164656d69632...',
+            format: 'JSON',
+            app: 'trace-analyzer',
+            name: 'trace-analyzer',
+            description: '分布式链路追踪分析 Agent，自动识别慢调用与异常根因',
+            status: 'enabled',
+            visibility: 'public',
+            version: '0.0.1',
+            tags: ['trace', 'analyzer'],
+            activeTag: 'core',
+            timestamp: '2026-06-23 19:09'
+        }, {
+            id: 9,
+            dataId: 'resource_crons_jobs_json.json',
+            group: 'agentspec_enc.61636164656d69632...',
+            format: 'JSON',
+            app: 'authz-policy',
+            name: 'authz-policy-manager',
+            description: '细粒度授权策略管理 Agent，支持 RBAC 与 ABAC 混合模型',
+            status: 'enabled',
+            visibility: 'private',
+            version: '0.0.1',
+            tags: ['authz', 'policy'],
+            activeTag: 'security',
+            timestamp: '2026-06-23 19:09'
+        }, {
+            id: 10,
+            dataId: 'resource_config_IDENTITY_md.json',
+            group: 'agentspec_enc.61636164656d69632...',
+            format: 'JSON',
+            app: 'data-mesh',
+            name: 'data-mesh-orchestrator',
+            description: '数据网格编排 Agent，实现跨域数据联邦查询与治理',
+            status: 'enabled',
+            visibility: 'public',
+            version: '0.0.1',
+            tags: ['data-mesh', 'federation'],
+            activeTag: 'data',
+            timestamp: '2026-06-23 19:09'
+        }, {
+            id: 11,
+            dataId: 'resource_config_IDENTITY_md.json',
+            group: 'agentspec_enc.61636164656d69632...',
+            format: 'JSON',
+            app: 'incident-responder',
+            name: 'incident-responder',
+            description: '智能故障响应 Agent，基于因果推理快速定位根因并推荐修复方案',
+            status: 'enabled',
+            visibility: 'public',
+            version: '0.0.1',
+            tags: ['incident', 'aiops'],
+            activeTag: 'aiops',
+            timestamp: '2026-06-23 19:09'
+        }, {
+            id: 12,
+            dataId: 'resource_config_IDENTITY_md.json',
+            group: 'agentspec_enc.61636164656d69632...',
+            format: 'JSON',
+            app: 'ui-automation',
+            name: 'ui-automation-driver',
+            description: 'UI 自动化驱动 Agent，支持跨端应用界面交互测试与录制',
+            status: 'enabled',
+            visibility: 'private',
+            version: '0.0.1',
+            tags: ['ui', 'automation'],
+            activeTag: 'qa',
+            timestamp: '2026-06-23 19:00'
+        }];
+
+        // ============================================================
+        //  状态
+        // ============================================================
+        var currentView = 'card';
+        var currentPage = 1;
+        var pageSize = 10;
+        var searchMode = 'fuzzy';
+        var filteredData = CONFIG_DATA.slice();
+
+        // DOM
+        var cardViewEl = document.getElementById('cardView');
+        var tableViewEl = document.getElementById('tableView');
+        var cardGridEl = document.getElementById('cardGrid');
+        var tableBodyEl = document.getElementById('tableBody');
+        var viewCardBtn = document.getElementById('viewCardBtn');
+        var viewTableBtn = document.getElementById('viewTableBtn');
+        var pageSizeSelect = document.getElementById('pageSizeSelect');
+        var paginationControlsEl = document.getElementById('paginationControls');
+        var totalCountEl = document.getElementById('totalCount');
+        var pageInfoEl = document.getElementById('pageInfo');
+        var selectAll = document.getElementById('selectAll');
+        var searchDataId = document.getElementById('searchDataId');
+        var searchGroup = document.getElementById('searchGroup');
+        var searchApp = document.getElementById('searchApp');
+        var fuzzyBtn = document.getElementById('fuzzyBtn');
+        var exactBtn = document.getElementById('exactBtn');
+        var searchBtn = document.getElementById('searchBtn');
+        var resetBtn = document.getElementById('resetBtn');
+        var pageTitle = document.getElementById('pageTitle');
+        var countLabel = document.getElementById('countLabel');
+
+        // ============================================================
+        //  渲染
+        // ============================================================
+
+        function renderCards() {
+            var data = filteredData;
+            if (data.length === 0) {
+                cardGridEl.innerHTML = '<div class="empty-state col-span-full text-center py-10 text-gray-400 text-sm">没有匹配的 AgentSpec</div>';
+                return;
+            }
+            var html = '';
+            data.forEach(function(item) {
+                var statusLabel = item.status === 'enabled' ? '✅ 已启用' : '⛔ 已禁用';
+                var visibilityLabel = item.visibility === 'public' ? '🔓 公开' : '🔒 私有';
+
+                var tagsHtml = item.tags.map(function(t) {
+                    return '<span class="tag tag-gray">' + t + '</span>';
+                }).join(' ');
+                var activeTagHtml = item.activeTag ?
+                    '<span class="tag tag-green">' + item.activeTag + '</span>' :
+                    '';
+
+                html += '<div class="spec-card">';
+                html += '<div class="flex items-start gap-2">';
+                html += '<div class="w-7 h-7 rounded-lg bg-indigo-100 flex items-center justify-center text-indigo-700 text-xs font-bold flex-shrink-0">' +
+                    item.name.charAt(0).toUpperCase() + '</div>';
+                html += '<div class="flex-1 min-w-0">';
+                html += '<div class="card-title">' + item.name + '</div>';
+                html += '<div class="flex items-center gap-1 text-[10px] text-muted mt-0.5 flex-wrap">';
+                html += '<span class="status-dot"></span>' + statusLabel;
+                html += '<span class="ml-1">' + visibilityLabel + '</span>';
+                html += '<span class="ml-1 font-mono">' + item.version + '</span>';
+                html += '</div>';
+                html += '</div>';
+                html += '</div>';
+                html += '<p class="text-[12px] text-gray-500 leading-relaxed mt-1.5 line-clamp-3">' + item.description +
+                    '</p>';
+                html += '<div class="card-tags">' + tagsHtml + activeTagHtml + '</div>';
+                html += '<div class="card-footer">';
+                html += '<span>' + item.timestamp + '</span>';
+                html +=
+                    '<div class="flex items-center gap-1"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8a9aa8" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8a9aa8" stroke-width="2"><path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"/><polygon points="18 2 22 6 12 16 8 16 8 12 18 2"/></svg></div>';
+                html += '</div>';
+                html += '</div>';
+            });
+            cardGridEl.innerHTML = html;
+            countLabel.textContent = '共 ' + data.length + ' 个';
+        }
+
+        function renderTable() {
+            var data = filteredData;
+            var total = data.length;
+            var start = (currentPage - 1) * pageSize;
+            var end = Math.min(start + pageSize, total);
+            var pageData = data.slice(start, end);
+
+            var html = '';
+            pageData.forEach(function(item) {
+                html += '<tr>';
+                html += '<td style="text-align:center;"><input type="checkbox" class="rounded border-gray-300 row-checkbox" data-id="' +
+                    item.id + '" /></td>';
+                html += '<td><span class="truncate-cell" title="' + item.dataId + '">' + item.dataId + '</span></td>';
+                html += '<td><span class="truncate-cell" title="' + item.group + '">' + item.group + '</span></td>';
+                html += '<td style="text-align:center;"><span class="format-tag">' + item.format + '</span></td>';
+                html += '<td><span class="truncate-cell" title="' + item.app + '">' + item.app + '</span></td>';
+                html += '<td style="text-align:right;">';
+                html += '<span class="action-link detail">详情</span>';
+                html += '<span class="action-link edit">编辑</span>';
+                html += '<span class="action-link delete">删除</span>';
+                html += '<span class="action-link more">⋯</span>';
+                html += '</td>';
+                html += '</tr>';
+            });
+
+            if (pageData.length === 0) {
+                html = '<tr><td colspan="6" class="px-3 py-8 text-center text-gray-400 text-sm">暂无配置数据</td></tr>';
+            }
+
+            tableBodyEl.innerHTML = html;
+            totalCountEl.textContent = '共 ' + total + ' 条配置';
+            countLabel.textContent = '共 ' + total + ' 个';
+
+            renderPagination();
+            updateSelectAllState();
+        }
+
+        function renderPagination() {
+            var total = filteredData.length;
+            var totalPages = Math.ceil(total / pageSize) || 1;
+            if (currentPage > totalPages) currentPage = totalPages;
+            if (currentPage < 1) currentPage = 1;
+
+            var html = '';
+            var prevDisabled = currentPage <= 1;
+            html += '<button class="page-btn ' + (prevDisabled ? 'disabled' : '') + '" data-page="prev" ' + (prevDisabled ?
+                'disabled' : '') + '>';
+            html +=
+                '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>';
+            html += '</button>';
+
+            var maxShow = 5;
+            var half = Math.floor(maxShow / 2);
+            var startPage = Math.max(1, currentPage - half);
+            var endPage = Math.min(totalPages, startPage + maxShow - 1);
+            if (endPage - startPage < maxShow - 1) {
+                startPage = Math.max(1, endPage - maxShow + 1);
+            }
+
+            if (startPage > 1) {
+                html += '<button class="page-btn" data-page="1">1</button>';
+                if (startPage > 2) html += '<span class="px-1 text-gray-400">…</span>';
+            }
+            for (var i = startPage; i <= endPage; i++) {
+                var active = i === currentPage ? 'active' : '';
+                html += '<button class="page-btn ' + active + '" data-page="' + i + '">' + i + '</button>';
+            }
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) html += '<span class="px-1 text-gray-400">…</span>';
+                html += '<button class="page-btn" data-page="' + totalPages + '">' + totalPages + '</button>';
+            }
+
+            var nextDisabled = currentPage >= totalPages;
+            html += '<button class="page-btn ' + (nextDisabled ? 'disabled' : '') + '" data-page="next" ' + (nextDisabled ?
+                'disabled' : '') + '>';
+            html +=
+                '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>';
+            html += '</button>';
+
+            paginationControlsEl.innerHTML = html;
+            pageInfoEl.textContent = currentPage + ' / ' + totalPages;
+
+            paginationControlsEl.querySelectorAll('.page-btn:not(.disabled)').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var page = this.dataset.page;
+                    if (page === 'prev') {
+                        if (currentPage > 1) currentPage--;
+                    } else if (page === 'next') {
+                        if (currentPage < totalPages) currentPage++;
+                    } else {
+                        currentPage = parseInt(page, 10);
+                    }
+                    renderTable();
+                });
+            });
+        }
+
+        function updateSelectAllState() {
+            var checkboxes = document.querySelectorAll('.row-checkbox');
+            var checked = document.querySelectorAll('.row-checkbox:checked');
+            if (checkboxes.length > 0 && checked.length === checkboxes.length) {
+                selectAll.checked = true;
+            } else {
+                selectAll.checked = false;
+            }
+        }
+
+        // ============================================================
+        //  视图切换
+        // ============================================================
+
+        function switchView(view) {
+            currentView = view;
+            if (view === 'card') {
+                cardViewEl.classList.remove('hidden-view');
+                cardViewEl.classList.add('block');
+                tableViewEl.classList.add('hidden-view');
+                tableViewEl.classList.remove('block');
+                viewCardBtn.className = 'view-toggle-btn active';
+                viewTableBtn.className = 'view-toggle-btn inactive';
+                pageTitle.textContent = 'AgentSpec 管理';
+                renderCards();
+            } else {
+                cardViewEl.classList.add('hidden-view');
+                cardViewEl.classList.remove('block');
+                tableViewEl.classList.remove('hidden-view');
+                tableViewEl.classList.add('block');
+                viewTableBtn.className = 'view-toggle-btn active';
+                viewCardBtn.className = 'view-toggle-btn inactive';
+                pageTitle.textContent = '配置列表';
+                renderTable();
+            }
+        }
+
+        // ============================================================
+        //  搜索过滤
+        // ============================================================
+
+        function applyFilter() {
+            var keywordDataId = searchDataId.value.trim().toLowerCase();
+            var keywordGroup = searchGroup.value.trim().toLowerCase();
+            var keywordApp = searchApp.value.trim().toLowerCase();
+
+            filteredData = CONFIG_DATA.filter(function(item) {
+                var matchDataId = true,
+                    matchGroup = true,
+                    matchApp = true;
+                if (keywordDataId) {
+                    var target = (item.dataId || '').toLowerCase();
+                    matchDataId = searchMode === 'fuzzy' ? target.includes(keywordDataId) : target === keywordDataId;
+                }
+                if (keywordGroup) {
+                    var targetG = (item.group || '').toLowerCase();
+                    matchGroup = searchMode === 'fuzzy' ? targetG.includes(keywordGroup) : targetG === keywordGroup;
+                }
+                if (keywordApp) {
+                    var targetA = (item.app || '').toLowerCase();
+                    matchApp = searchMode === 'fuzzy' ? targetA.includes(keywordApp) : targetA === keywordApp;
+                }
+                return matchDataId && matchGroup && matchApp;
+            });
+
+            currentPage = 1;
+            if (currentView === 'card') {
+                renderCards();
+            } else {
+                renderTable();
+            }
+        }
+
+        function resetFilter() {
+            searchDataId.value = '';
+            searchGroup.value = '';
+            searchApp.value = '';
+            filteredData = CONFIG_DATA.slice();
+            currentPage = 1;
+            if (currentView === 'card') {
+                renderCards();
+            } else {
+                renderTable();
+            }
+        }
+
+        // ============================================================
+        //  事件绑定
+        // ============================================================
+
+        viewCardBtn.addEventListener('click', function() {
+            if (currentView !== 'card') switchView('card');
+        });
+        viewTableBtn.addEventListener('click', function() {
+            if (currentView !== 'table') switchView('table');
+        });
+
+        fuzzyBtn.addEventListener('click', function() {
+            if (searchMode === 'fuzzy') return;
+            searchMode = 'fuzzy';
+            fuzzyBtn.className = 'search-mode-btn active';
+            exactBtn.className = 'search-mode-btn inactive';
+        });
+        exactBtn.addEventListener('click', function() {
+            if (searchMode === 'exact') return;
+            searchMode = 'exact';
+            exactBtn.className = 'search-mode-btn active';
+            fuzzyBtn.className = 'search-mode-btn inactive';
+        });
+
+        searchBtn.addEventListener('click', applyFilter);
+        resetBtn.addEventListener('click', resetFilter);
+
+        [searchDataId, searchGroup, searchApp].forEach(function(input) {
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') applyFilter();
+            });
+        });
+
+        pageSizeSelect.addEventListener('change', function() {
+            pageSize = parseInt(this.value, 10);
+            currentPage = 1;
+            renderTable();
+        });
+
+        selectAll.addEventListener('change', function() {
+            var checked = this.checked;
+            document.querySelectorAll('.row-checkbox').forEach(function(cb) {
+                cb.checked = checked;
+            });
+        });
+
+        document.addEventListener('change', function(e) {
+            if (e.target.classList && e.target.classList.contains('row-checkbox')) {
+                updateSelectAllState();
+            }
+        });
+
+        // ============================================================
+        //  初始化
+        // ============================================================
+
+        function init() {
+            filteredData = CONFIG_DATA.slice();
+            currentView = 'card';
+            cardViewEl.classList.remove('hidden-view');
+            cardViewEl.classList.add('block');
+            tableViewEl.classList.add('hidden-view');
+            tableViewEl.classList.remove('block');
+            viewCardBtn.className = 'view-toggle-btn active';
+            viewTableBtn.className = 'view-toggle-btn inactive';
+            pageTitle.textContent = 'AgentSpec 管理';
+            renderCards();
+            renderTable();
+        }
+
+        init();
+    </script>
+
+</body>
+</html>

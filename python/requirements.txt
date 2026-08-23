@@ -1,0 +1,36 @@
+# ========== 核心数据处理 ==========
+numpy==1.26.4              # 数值计算基础库
+pandas==2.2.2              # 数据分析和处理
+scipy==1.13.1              # 科学计算
+
+
+# ========== OCR 相关（PaddleOCR）==========
+paddlepaddle==3.0.0b2      # PaddlePaddle 核心框架（CPU版本）
+paddleocr==2.8.1           # PaddleOCR 工具库
+sqlalchemy==2.0.30           # SQLAlchemy（SQLite Catalog 需要）
+
+# 如果有 GPU：paddlepaddle-gpu==3.0.0b2
+
+
+# ========== 文件读取和数据处理 ==========
+openpyxl==3.1.5            # Excel 文件读写
+pdfplumber==0.11.0         # PDF 文本提取
+PyPDF2==3.0.1              # PDF 处理
+
+
+# ========== 文本处理 ==========
+jieba==0.42.1              # 中文分词
+nltk==3.8.1                # 自然语言处理工具包
+regex==2024.5.15           # 正则表达式增强版
+
+
+# ========== 工具库 ==========
+tqdm==4.66.4               # 进度条显示
+pyyaml==6.0.1              # YAML 配置文件解析
+click==8.1.7               # 命令行工具
+loguru==0.7.2              # 更好的日志输出
+
+
+# ========== Iceberg 相关（新增）==========
+pyiceberg[s3fs]==0.7.0     # Iceberg Python 客户端（含 S3 支持）
+pyarrow==17.0.0            # Apache Arrow（Iceberg 数据读写依赖，固定版本避免冲突）

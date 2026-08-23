@@ -1,0 +1,16 @@
+CREATE CATALOG iceberg WITH (
+	'type' = 'iceberg',
+	'catalog-impl' = 'org.apache.iceberg.jdbc.JdbcCatalog',
+	'uri' = 'jdbc:mysql://mysql-cdc:3306/iceberg_catalog?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC',
+	'jdbc.user' = 'iceberg',
+	'jdbc.password' = 'iceberg',
+	'warehouse' = 's3://warehouse/iceberg',
+	'io-impl' = 'org.apache.iceberg.aws.s3.S3FileIO',
+	's3.endpoint' = 'http://minio:9000',
+	's3.path-style-access' = 'true',
+	's3.access-key-id' = 'minioadmin',
+	's3.secret-access-key' = 'minioadmin',
+	's3.region' = 'us-east-1'
+);
+
+SELECT * FROM iceberg.demo.iceberg_orders;

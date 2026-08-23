@@ -1,0 +1,549 @@
+name: ${COMPOSE_PROJECT_NAME:-bigdata-platform}
+
+x-spark-environment: &spark-environment
+  AWS_ACCESS_KEY_ID: ${MINIO_ROOT_USER:-minioadmin}
+  AWS_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD:-minioadmin}
+  AWS_REGION: ${MINIO_REGION:-us-east-1}
+  AWS_DEFAULT_REGION: ${MINIO_REGION:-us-east-1}
+  MINIO_ENDPOINT: ${MINIO_ENDPOINT:-http://minio:9000}
+  MINIO_REGION: ${MINIO_REGION:-us-east-1}
+  ICEBERG_CATALOG_DATABASE: ${ICEBERG_CATALOG_DATABASE:-iceberg_catalog}
+  ICEBERG_CATALOG_USER: ${ICEBERG_CATALOG_USER:-iceberg}
+  ICEBERG_CATALOG_PASSWORD: ${ICEBERG_CATALOG_PASSWORD:-iceberg}
+  ICEBERG_WAREHOUSE: ${ICEBERG_WAREHOUSE:-s3://warehouse/iceberg}
+  HIVE_METASTORE_URI: ${HIVE_METASTORE_URI:-thrift://hive-metastore:9083}
+  HUDI_WAREHOUSE: ${HUDI_WAREHOUSE:-s3a://warehouse/hudi}
+
+x-spark-common: &spark-common
+  image: ${SPARK_IMAGE:-apache/spark:3.5.5}
+  restart: unless-stopped
+  environment: *spark-environment
+  volumes:
+    - ./config/spark/spark-defaults.conf:/opt/spark/conf/spark-defaults.conf:ro
+    - ${JAR_ROOT:?JAR_ROOT must point to the external JAR directory}/common:/opt/spark/jars-common:ro
+    - ${JAR_ROOT:?JAR_ROOT must point to the external JAR directory}/spark:/opt/spark/jars-extra:ro
+  networks:
+    - bigdata-net
+
+x-flink-environment: &flink-environment
+  AWS_ACCESS_KEY_ID: ${MINIO_ROOT_USER:-minioadmin}
+  AWS_SECRET_ACCESS_KEY: ${MINIO_ROOT_PASSWORD:-minioadmin}
+  AWS_REGION: ${MINIO_REGION:-us-east-1}
+  ICEBERG_CATALOG_DATABASE: ${ICEBERG_CATALOG_DATABASE:-iceberg_catalog}
+  ICEBERG_CATALOG_USER: ${ICEBERG_CATALOG_USER:-iceberg}
+  ICEBERG_CATALOG_PASSWORD: ${ICEBERG_CATALOG_PASSWORD:-iceberg}
+  ICEBERG_WAREHOUSE: ${ICEBERG_WAREHOUSE:-s3://warehouse/iceberg}
+  HIVE_METASTORE_URI: ${HIVE_METASTORE_URI:-thrift://hive-metastore:9083}
+  HUDI_WAREHOUSE: ${HUDI_WAREHOUSE:-s3a://warehouse/hudi}
+  FLINK_PROPERTIES: |
+    jobmanager.rpc.address: flink-jobmanager
+    rest.address: flink-jobmanager
+    rest.port: 8081
+    execution.target: remote
+    parallelism.default: ${FLINK_PARALLELISM:-2}
+    table.local-time-zone: UTC
+    state.backend: hashmap
+    execution.checkpointing.interval: 60s
+    execution.checkpointing.mode: EXACTLY_ONCE
+    state.checkpoints.num-retained: 3
+    state.checkpoints.dir: s3://${MINIO_CHECKPOINT_BUCKET:-checkpoints}/flink/checkpoints
+    state.savepoints.dir: s3://${MINIO_CHECKPOINT_BUCKET:-checkpoints}/flink/savepoints
+    s3.endpoint: ${MINIO_ENDPOINT:-http://minio:9000}
+    s3.region: ${MINIO_REGION:-us-east-1}
+    s3.path.style.access: true
+    s3.access-key: ${MINIO_ROOT_USER:-minioadmin}
+    s3.secret-key: ${MINIO_ROOT_PASSWORD:-minioadmin}
+
+x-flink-volumes: &flink-volumes
+  - ${JAR_ROOT:?JAR_ROOT must point to the external JAR directory}/flink:/opt/flink/usrlib:ro
+  - ${JAR_ROOT:?JAR_ROOT must point to the external JAR directory}/common:/opt/flink/common-jars:ro
+  - ./config/flink/hive-site.xml:/opt/flink/conf/hive-site.xml:ro
+
+services:
+  minio:
+    image: ${MINIO_IMAGE:-minio/minio:RELEASE.2025-04-22T22-12-26Z}
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+      MINIO_WAREHOUSE_BUCKET: ${MINIO_WAREHOUSE_BUCKET:-warehouse}
+      MINIO_CHECKPOINT_BUCKET: ${MINIO_CHECKPOINT_BUCKET:-checkpoints}
+      MINIO_DOMAIN: minio
+    ports:
+      - "${MINIO_API_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
+    volumes:
+      - minio-data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+    networks:
+      bigdata-net:
+        aliases:
+          - warehouse.minio
+          - checkpoints.minio
+
+  datalake-init:
+    image: ${MINIO_CLIENT_IMAGE:-minio/mc:RELEASE.2025-04-16T18-13-26Z}
+    restart: "no"
+    depends_on:
+      minio:
+        condition: service_healthy
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+      MINIO_WAREHOUSE_BUCKET: ${MINIO_WAREHOUSE_BUCKET:-warehouse}
+      MINIO_CHECKPOINT_BUCKET: ${MINIO_CHECKPOINT_BUCKET:-checkpoints}
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        set -eu
+        mc alias set local http://minio:9000 "$${MINIO_ROOT_USER}" "$${MINIO_ROOT_PASSWORD}"
+        mc mb --ignore-existing "local/$${MINIO_WAREHOUSE_BUCKET}"
+        mc mb --ignore-existing "local/$${MINIO_CHECKPOINT_BUCKET}"
+    networks:
+      - bigdata-net
+
+  mysql-cdc:
+    image: ${MYSQL_IMAGE:-mysql:8.4}
+    restart: unless-stopped
+    command:
+      - --server-id=1
+      - --log-bin=mysql-bin
+      - --binlog-format=ROW
+      - --binlog-row-image=FULL
+      - --gtid_mode=ON
+      - --enforce_gtid_consistency=ON
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-cdc_db}
+      MYSQL_USER: ${MYSQL_USER:-cdc}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-cdc}
+      ICEBERG_CATALOG_DATABASE: ${ICEBERG_CATALOG_DATABASE:-iceberg_catalog}
+      ICEBERG_CATALOG_USER: ${ICEBERG_CATALOG_USER:-iceberg}
+      ICEBERG_CATALOG_PASSWORD: ${ICEBERG_CATALOG_PASSWORD:-iceberg}
+      HIVE_METASTORE_DATABASE: ${HIVE_METASTORE_DATABASE:-hive_metastore}
+      HIVE_METASTORE_USER: ${HIVE_METASTORE_USER:-hive}
+      HIVE_METASTORE_PASSWORD: ${HIVE_METASTORE_PASSWORD:-hive}
+      OPENMETADATA_DATABASE: ${OPENMETADATA_DATABASE:-openmetadata_db}
+      OPENMETADATA_DB_USER: ${OPENMETADATA_DB_USER:-openmetadata}
+      OPENMETADATA_DB_PASSWORD: ${OPENMETADATA_DB_PASSWORD:-openmetadata}
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -p$${MYSQL_ROOT_PASSWORD} --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./init/mysql/00-create-service-databases.sh:/docker-entrypoint-initdb.d/00-create-service-databases.sh:ro
+      - ./init/mysql/01-init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+    networks:
+      - bigdata-net
+
+  catalog-db-init:
+    image: ${MYSQL_IMAGE:-mysql:8.4}
+    restart: "no"
+    depends_on:
+      mysql-cdc:
+        condition: service_healthy
+    environment:
+      MYSQL_HOST: mysql-cdc
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      ICEBERG_CATALOG_DATABASE: ${ICEBERG_CATALOG_DATABASE:-iceberg_catalog}
+      ICEBERG_CATALOG_USER: ${ICEBERG_CATALOG_USER:-iceberg}
+      ICEBERG_CATALOG_PASSWORD: ${ICEBERG_CATALOG_PASSWORD:-iceberg}
+      HIVE_METASTORE_DATABASE: ${HIVE_METASTORE_DATABASE:-hive_metastore}
+      HIVE_METASTORE_USER: ${HIVE_METASTORE_USER:-hive}
+      HIVE_METASTORE_PASSWORD: ${HIVE_METASTORE_PASSWORD:-hive}
+      OPENMETADATA_DATABASE: ${OPENMETADATA_DATABASE:-openmetadata_db}
+      OPENMETADATA_DB_USER: ${OPENMETADATA_DB_USER:-openmetadata}
+      OPENMETADATA_DB_PASSWORD: ${OPENMETADATA_DB_PASSWORD:-openmetadata}
+    entrypoint: ["/bin/bash", "/workspace/00-create-service-databases.sh"]
+    volumes:
+      - ./init/mysql/00-create-service-databases.sh:/workspace/00-create-service-databases.sh:ro
+    networks:
+      - bigdata-net
+
+  hive-metastore:
+    image: ${HIVE_METASTORE_IMAGE:-apache/hive:4.0.1}
+    restart: unless-stopped
+    depends_on:
+      catalog-db-init:
+        condition: service_completed_successfully
+    environment:
+      SERVICE_NAME: metastore
+      DB_DRIVER: mysql
+      SERVICE_OPTS: >-
+        -Djavax.jdo.option.ConnectionDriverName=com.mysql.cj.jdbc.Driver
+        -Djavax.jdo.option.ConnectionURL=jdbc:mysql://mysql-cdc:3306/${HIVE_METASTORE_DATABASE:-hive_metastore}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+        -Djavax.jdo.option.ConnectionUserName=${HIVE_METASTORE_USER:-hive}
+        -Djavax.jdo.option.ConnectionPassword=${HIVE_METASTORE_PASSWORD:-hive}
+    ports:
+      - "${HIVE_METASTORE_PORT:-9083}:9083"
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/127.0.0.1/9083'"]
+      interval: 15s
+      timeout: 5s
+      retries: 30
+      start_period: 60s
+    volumes:
+      - ${JAR_ROOT:?JAR_ROOT must point to the external JAR directory}/common/mysql-connector-j-9.2.0.jar:/opt/hive/lib/mysql-connector-j-9.2.0.jar:ro
+    networks:
+      - bigdata-net
+
+  postgres-sink:
+    image: ${POSTGRES_IMAGE:-postgres:16-alpine}
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-sink_db}
+      POSTGRES_USER: ${POSTGRES_USER:-sink}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-sink}
+    ports:
+      - "${POSTGRES_PORT:-5433}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 20s
+    volumes:
+      - postgres-sink-data:/var/lib/postgresql/data
+    networks:
+      - bigdata-net
+
+  kafka:
+    image: ${KAFKA_IMAGE:-apache/kafka:4.1.0}
+    restart: unless-stopped
+    ports:
+      - "${KAFKA_INTERNAL_PORT:-9092}:9092"
+      - "${KAFKA_EXTERNAL_PORT:-29092}:29092"
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,EXTERNAL://${KAFKA_ADVERTISED_HOST:-localhost}:${KAFKA_EXTERNAL_PORT:-29092}
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_NUM_PARTITIONS: ${KAFKA_NUM_PARTITIONS:-3}
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+      CLUSTER_ID: ${KAFKA_CLUSTER_ID:-MkU3OEVBNTcwNTJENDM2Qk}
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9092 >/dev/null 2>&1"]
+      interval: 15s
+      timeout: 10s
+      retries: 20
+      start_period: 30s
+    volumes:
+      - kafka-data:/var/lib/kafka/data
+    networks:
+      - bigdata-net
+
+  spark-master:
+    <<: *spark-common
+    depends_on:
+      minio:
+        condition: service_healthy
+      datalake-init:
+        condition: service_completed_successfully
+      mysql-cdc:
+        condition: service_healthy
+      hive-metastore:
+        condition: service_healthy
+    command: ["/opt/spark/bin/spark-class", "org.apache.spark.deploy.master.Master"]
+    ports:
+      - "${SPARK_MASTER_PORT:-7077}:7077"
+      - "${SPARK_MASTER_UI_PORT:-8080}:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/$$(hostname -i)/7077'"]
+      interval: 15s
+      timeout: 5s
+      retries: 20
+      start_period: 20s
+
+  spark-worker:
+    <<: *spark-common
+    depends_on:
+      spark-master:
+        condition: service_healthy
+    command: ["/opt/spark/bin/spark-class", "org.apache.spark.deploy.worker.Worker", "spark://spark-master:7077"]
+    environment:
+      <<: *spark-environment
+      SPARK_WORKER_MEMORY: ${SPARK_WORKER_MEMORY:-4G}
+      SPARK_WORKER_CORES: ${SPARK_WORKER_CORES:-2}
+    ports:
+      - "${SPARK_WORKER_UI_PORT:-8081}:8081"
+
+  spark-sql:
+    <<: *spark-common
+    depends_on:
+      spark-master:
+        condition: service_healthy
+    command: ["/bin/bash", "-lc", "sleep infinity"]
+    environment:
+      <<: *spark-environment
+      HOME: /tmp
+      SPARK_SUBMIT_OPTS: -Duser.home=/tmp -Divy.cache.dir=/tmp/.ivy2/cache -Divy.home=/tmp/.ivy2
+    volumes:
+      - ./config/spark/spark-defaults.conf:/opt/spark/conf/spark-defaults.conf:ro
+      - ${JAR_ROOT:?JAR_ROOT must point to the external JAR directory}/common:/opt/spark/jars-common:ro
+      - ${JAR_ROOT:?JAR_ROOT must point to the external JAR directory}/spark:/opt/spark/jars-extra:ro
+      - ./examples/spark:/workspace/sql:ro
+      - ./config/spark:/workspace/config/spark:ro
+    networks:
+      - bigdata-net
+
+  trino:
+    image: ${TRINO_IMAGE:-trinodb/trino:476}
+    restart: unless-stopped
+    stop_grace_period: 1m
+    depends_on:
+      mysql-cdc:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      datalake-init:
+        condition: service_completed_successfully
+      hive-metastore:
+        condition: service_healthy
+    ports:
+      - "${TRINO_PORT:-8088}:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "trino --execute 'SELECT 1' >/dev/null 2>&1"]
+      interval: 30s
+      timeout: 15s
+      retries: 10
+      start_period: 60s
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+      MINIO_ENDPOINT: ${MINIO_ENDPOINT:-http://minio:9000}
+      MINIO_REGION: ${MINIO_REGION:-us-east-1}
+      ICEBERG_CATALOG_DATABASE: ${ICEBERG_CATALOG_DATABASE:-iceberg_catalog}
+      ICEBERG_CATALOG_USER: ${ICEBERG_CATALOG_USER:-iceberg}
+      ICEBERG_CATALOG_PASSWORD: ${ICEBERG_CATALOG_PASSWORD:-iceberg}
+      ICEBERG_WAREHOUSE: ${ICEBERG_WAREHOUSE:-s3://warehouse/iceberg}
+      HIVE_METASTORE_URI: ${HIVE_METASTORE_URI:-thrift://hive-metastore:9083}
+      HUDI_WAREHOUSE: ${HUDI_WAREHOUSE:-s3a://warehouse/hudi}
+      PAIMON_WAREHOUSE: ${PAIMON_WAREHOUSE:-s3://warehouse/paimon}
+      MYSQL_USER: ${MYSQL_USER:-cdc}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-cdc}
+    volumes:
+      - ./config/trino:/etc/trino:ro
+      - ./examples/trino:/workspace/sql:ro
+      - ${JAR_ROOT:?JAR_ROOT must point to the external JAR directory}/common/mysql-connector-j-9.2.0.jar:/usr/lib/trino/plugin/iceberg/mysql-connector-j-9.2.0.jar:ro
+    ulimits:
+      nofile:
+        soft: 131072
+        hard: 131072
+    networks:
+      - bigdata-net
+
+  flink-jobmanager:
+    image: ${FLINK_IMAGE:-flink:1.20.1-scala_2.12-java17}
+    restart: unless-stopped
+    depends_on:
+      kafka:
+        condition: service_healthy
+      mysql-cdc:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      datalake-init:
+        condition: service_completed_successfully
+      hive-metastore:
+        condition: service_healthy
+    command:
+      - bash
+      - -lc
+      - >-
+        mkdir -p /opt/flink/plugins/s3 &&
+        cp /opt/flink/opt/flink-s3-fs-hadoop-*.jar /opt/flink/plugins/s3/ &&
+        for jar in /opt/flink/usrlib/*.jar /opt/flink/common-jars/*.jar; do
+          if [ -f "$${jar}" ]; then cp "$${jar}" /opt/flink/lib/; fi;
+        done &&
+        exec /docker-entrypoint.sh jobmanager
+    ports:
+      - "${FLINK_UI_PORT:-8082}:8081"
+    environment: *flink-environment
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/127.0.0.1/8081'"]
+      interval: 15s
+      timeout: 5s
+      retries: 20
+      start_period: 20s
+    volumes:
+      - ${JAR_ROOT:?JAR_ROOT must point to the external JAR directory}/flink:/opt/flink/usrlib:ro
+      - ${JAR_ROOT:?JAR_ROOT must point to the external JAR directory}/common:/opt/flink/common-jars:ro
+      - ./config/flink/hive-site.xml:/opt/flink/conf/hive-site.xml:ro
+      - ./examples/flink:/workspace/sql:ro
+      - ./config/flink:/workspace/config/flink:ro
+    networks:
+      - bigdata-net
+
+  flink-taskmanager:
+    image: ${FLINK_IMAGE:-flink:1.20.1-scala_2.12-java17}
+    restart: unless-stopped
+    depends_on:
+      flink-jobmanager:
+        condition: service_healthy
+    command:
+      - bash
+      - -lc
+      - >-
+        mkdir -p /opt/flink/plugins/s3 &&
+        cp /opt/flink/opt/flink-s3-fs-hadoop-*.jar /opt/flink/plugins/s3/ &&
+        for jar in /opt/flink/usrlib/*.jar /opt/flink/common-jars/*.jar; do
+          if [ -f "$${jar}" ]; then cp "$${jar}" /opt/flink/lib/; fi;
+        done &&
+        exec /docker-entrypoint.sh taskmanager
+    environment:
+      <<: *flink-environment
+      FLINK_PROPERTIES: |
+        jobmanager.rpc.address: flink-jobmanager
+        rest.address: flink-jobmanager
+        rest.port: 8081
+        execution.target: remote
+        taskmanager.numberOfTaskSlots: ${FLINK_TASK_SLOTS:-4}
+        parallelism.default: ${FLINK_PARALLELISM:-2}
+        table.local-time-zone: UTC
+        state.backend: hashmap
+        execution.checkpointing.interval: 60s
+        execution.checkpointing.mode: EXACTLY_ONCE
+        state.checkpoints.num-retained: 3
+        state.checkpoints.dir: s3://${MINIO_CHECKPOINT_BUCKET:-checkpoints}/flink/checkpoints
+        state.savepoints.dir: s3://${MINIO_CHECKPOINT_BUCKET:-checkpoints}/flink/savepoints
+        s3.endpoint: ${MINIO_ENDPOINT:-http://minio:9000}
+        s3.region: ${MINIO_REGION:-us-east-1}
+        s3.path.style.access: true
+        s3.access-key: ${MINIO_ROOT_USER:-minioadmin}
+        s3.secret-key: ${MINIO_ROOT_PASSWORD:-minioadmin}
+    volumes: *flink-volumes
+    networks:
+      - bigdata-net
+
+  flink-sql-client:
+    image: ${FLINK_IMAGE:-flink:1.20.1-scala_2.12-java17}
+    restart: unless-stopped
+    depends_on:
+      flink-jobmanager:
+        condition: service_healthy
+    command:
+      - bash
+      - -lc
+      - >-
+        for jar in /opt/flink/usrlib/*.jar /opt/flink/common-jars/*.jar; do
+          if [ -f "$${jar}" ]; then cp "$${jar}" /opt/flink/lib/; fi;
+        done &&
+        sleep infinity
+    environment: *flink-environment
+    volumes:
+      - ${JAR_ROOT:?JAR_ROOT must point to the external JAR directory}/flink:/opt/flink/usrlib:ro
+      - ${JAR_ROOT:?JAR_ROOT must point to the external JAR directory}/common:/opt/flink/common-jars:ro
+      - ./config/flink/hive-site.xml:/opt/flink/conf/hive-site.xml:ro
+      - ./examples/flink:/workspace/sql:ro
+      - ./config/flink:/workspace/config/flink:ro
+    networks:
+      - bigdata-net
+
+  elasticsearch:
+    image: ${ELASTICSEARCH_IMAGE:-docker.elastic.co/elasticsearch/elasticsearch:8.13.4}
+    profiles: [metadata]
+    restart: unless-stopped
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: ${ELASTICSEARCH_JAVA_OPTS:--Xms1g -Xmx1g}
+    ports:
+      - "${ELASTICSEARCH_PORT:-9200}:9200"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:9200/_cluster/health >/dev/null || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 20
+      start_period: 30s
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    networks:
+      - bigdata-net
+
+  openmetadata-migrate:
+    image: ${OPENMETADATA_IMAGE:-openmetadata/server:1.5.9}
+    profiles: [metadata]
+    restart: "no"
+    depends_on:
+      mysql-cdc:
+        condition: service_healthy
+    entrypoint: ["/bin/bash", "/opt/openmetadata/bootstrap/openmetadata-ops.sh"]
+    command: ["migrate"]
+    environment:
+      OM_DATABASE_TYPE: mysql
+      DB_HOST: mysql-cdc
+      DB_PORT: 3306
+      DB_USER: ${OPENMETADATA_DB_USER:-openmetadata}
+      DB_USER_PASSWORD: ${OPENMETADATA_DB_PASSWORD:-openmetadata}
+      OM_DATABASE: ${OPENMETADATA_DATABASE:-openmetadata_db}
+    networks:
+      - bigdata-net
+
+  openmetadata-server:
+    image: ${OPENMETADATA_IMAGE:-openmetadata/server:1.5.9}
+    profiles: [metadata]
+    restart: unless-stopped
+    depends_on:
+      mysql-cdc:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+      openmetadata-migrate:
+        condition: service_completed_successfully
+    ports:
+      - "${OPENMETADATA_PORT:-8585}:8585"
+      - "${OPENMETADATA_ADMIN_PORT:-8586}:8586"
+    environment:
+      OPENMETADATA_CLUSTER_NAME: ${OPENMETADATA_CLUSTER_NAME:-docker-openmetadata}
+      SERVER_PORT: 8585
+      OM_DATABASE_TYPE: mysql
+      DB_HOST: mysql-cdc
+      DB_PORT: 3306
+      DB_USER: ${OPENMETADATA_DB_USER:-openmetadata}
+      DB_USER_PASSWORD: ${OPENMETADATA_DB_PASSWORD:-openmetadata}
+      OM_DATABASE: ${OPENMETADATA_DATABASE:-openmetadata_db}
+      ELASTICSEARCH_HOST: elasticsearch
+      ELASTICSEARCH_PORT: 9200
+      AUTHORIZER_CLASS_NAME: org.openmetadata.service.security.DefaultAuthorizer
+      AUTHORIZER_REQUEST_FILTER: org.openmetadata.service.security.JwtFilter
+      AUTHORIZER_ADMIN_PRINCIPALS: "[admin]"
+      AUTHORIZER_ALLOWED_REGISTRATION_DOMAIN: "[all]"
+      AUTHENTICATION_PROVIDER: basic
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/127.0.0.1/8585'"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 90s
+    networks:
+      - bigdata-net
+
+networks:
+  bigdata-net:
+    driver: bridge
+
+volumes:
+  minio-data:
+  mysql-data:
+  postgres-sink-data:
+  kafka-data:
+  elasticsearch-data:

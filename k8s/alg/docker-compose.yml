@@ -16,10 +16,11 @@ services:
     networks:
       - observability
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3100/ready"]
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3100/ready || exit 1"]
       interval: 10s
-      timeout: 5s
-      retries: 5
+      timeout: 10s
+      retries: 10
+      start_period: 30s
 
   # ==================== Promtail ====================
   promtail:
@@ -41,6 +42,29 @@ services:
     networks:
       - observability
 
+  # ==================== Alloy ====================
+  alloy:
+    image: grafana/alloy:v1.9.2
+    container_name: alloy
+    restart: unless-stopped
+    ports:
+      - "12345:12345"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - ./alloy-config.alloy:/etc/alloy/config.alloy:ro
+      - alloy_data:/var/lib/alloy/data
+    command:
+      - "run"
+      - "--server.http.listen-addr=0.0.0.0:12345"
+      - "--storage.path=/var/lib/alloy/data"
+      - "/etc/alloy/config.alloy"
+    depends_on:
+      loki:
+        condition: service_healthy
+    networks:
+      - observability
+
   # ==================== Grafana ====================
   grafana:
     image: grafana/grafana:12.0.2
@@ -50,20 +74,12 @@ services:
       - "3000:3000"
     volumes:
       - grafana_data:/var/lib/grafana
+      - ./datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml:ro
     environment:
       GF_SECURITY_ADMIN_USER: admin
       GF_SECURITY_ADMIN_PASSWORD: admin123
       GF_USERS_ALLOW_SIGN_UP: "false"
       GF_DEFAULT_LOCALE: zh-CN
-      GF_PROVISIONING_DATASOURCES_YAML: |
-        apiVersion: 1
-        datasources:
-          - name: Loki
-            type: loki
-            access: proxy
-            url: http://loki:3100
-            isDefault: true
-            editable: false
     depends_on:
       loki:
         condition: service_healthy
@@ -73,6 +89,7 @@ services:
 volumes:
   loki_data:
   grafana_data:
+  alloy_data:
 
 networks:
   observability:

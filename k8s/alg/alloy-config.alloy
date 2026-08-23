@@ -1,0 +1,36 @@
+// 定义 Loki 写入组件
+loki.write "default" {
+  endpoint {
+    url = "http://loki:3100/loki/api/v1/push"
+  }
+}
+
+// Docker 服务发现
+discovery.docker "containers" {
+  host = "unix:///var/run/docker.sock"
+}
+
+// 重标签配置
+discovery.relabel "docker_labels" {
+  targets = discovery.docker.containers.targets
+
+  rule {
+    source_labels = ["__meta_docker_container_name"]
+    target_label  = "container"
+  }
+
+  rule {
+    source_labels = ["__meta_docker_container_image"]
+    target_label  = "image"
+  }
+}
+
+// Docker 日志采集
+loki.source.docker "containers" {
+  host       = "unix:///var/run/docker.sock"
+  forward_to = [loki.write.default.receiver]
+  labels     = {
+    job = "docker-alloy",
+  }
+  targets    = discovery.relabel.docker_labels.output
+}

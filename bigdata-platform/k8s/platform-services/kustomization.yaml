@@ -1,0 +1,9 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - 00-namespace.yaml
+  - 01-configuration.yaml
+  - 02-nacos.yaml
+
+# Ingress 依赖具体集群的 IngressClass 和真实业务 Service，默认不部署。
+# 示例位于 examples/nginx-ingress.yaml。

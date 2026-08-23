@@ -1,0 +1,134 @@
+apiVersion: sparkoperator.k8s.io/v1beta2
+kind: SparkApplication
+metadata:
+  name: iceberg-k8s-verify
+  namespace: bigdata-platform
+spec:
+  type: Python
+  pythonVersion: "3"
+  mode: cluster
+  image: registry.example.com/bigdata/spark-lakehouse:3.5.5-iceberg-1.8.1-hudi-1.0.2
+  imagePullPolicy: IfNotPresent
+  mainApplicationFile: local:///opt/spark/work-dir/iceberg_k8s_verify.py
+  sparkVersion: 3.5.5
+  restartPolicy:
+    type: Never
+  timeToLiveSeconds: 300
+  sparkConf:
+    spark.sql.extensions: org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions
+    spark.sql.defaultCatalog: iceberg
+    spark.sql.catalog.iceberg: org.apache.iceberg.spark.SparkCatalog
+    spark.sql.catalog.iceberg.type: jdbc
+    spark.sql.catalog.iceberg.uri: ${env:ICEBERG_CATALOG_URI}
+    spark.sql.catalog.iceberg.jdbc.user: ${env:ICEBERG_CATALOG_USER}
+    spark.sql.catalog.iceberg.jdbc.password: ${env:ICEBERG_CATALOG_PASSWORD}
+    spark.sql.catalog.iceberg.warehouse: ${env:ICEBERG_WAREHOUSE}
+    spark.sql.catalog.iceberg.io-impl: org.apache.iceberg.aws.s3.S3FileIO
+    spark.sql.catalog.iceberg.s3.endpoint: ${env:MINIO_ENDPOINT}
+    spark.sql.catalog.iceberg.s3.path-style-access: "true"
+    spark.sql.catalog.iceberg.client.region: ${env:MINIO_REGION}
+    spark.kubernetes.executor.deleteOnTermination: "true"
+  driver:
+    serviceAccount: spark
+    cores: 1
+    memory: 1g
+    labels:
+      app.kubernetes.io/part-of: bigdata-platform
+    env:
+      - name: MINIO_ENDPOINT
+        valueFrom:
+          configMapKeyRef:
+            name: spark-iceberg-config
+            key: MINIO_ENDPOINT
+      - name: MINIO_REGION
+        valueFrom:
+          configMapKeyRef:
+            name: spark-iceberg-config
+            key: MINIO_REGION
+      - name: ICEBERG_CATALOG_URI
+        valueFrom:
+          configMapKeyRef:
+            name: spark-iceberg-config
+            key: ICEBERG_CATALOG_URI
+      - name: ICEBERG_WAREHOUSE
+        valueFrom:
+          configMapKeyRef:
+            name: spark-iceberg-config
+            key: ICEBERG_WAREHOUSE
+      - name: AWS_REGION
+        valueFrom:
+          configMapKeyRef:
+            name: spark-iceberg-config
+            key: MINIO_REGION
+      - name: AWS_ACCESS_KEY_ID
+        valueFrom:
+          secretKeyRef:
+            name: spark-iceberg-secret
+            key: MINIO_ROOT_USER
+      - name: AWS_SECRET_ACCESS_KEY
+        valueFrom:
+          secretKeyRef:
+            name: spark-iceberg-secret
+            key: MINIO_ROOT_PASSWORD
+      - name: ICEBERG_CATALOG_USER
+        valueFrom:
+          secretKeyRef:
+            name: spark-iceberg-secret
+            key: ICEBERG_CATALOG_USER
+      - name: ICEBERG_CATALOG_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: spark-iceberg-secret
+            key: ICEBERG_CATALOG_PASSWORD
+  executor:
+    instances: 2
+    cores: 1
+    memory: 1g
+    labels:
+      app.kubernetes.io/part-of: bigdata-platform
+    env:
+      - name: MINIO_ENDPOINT
+        valueFrom:
+          configMapKeyRef:
+            name: spark-iceberg-config
+            key: MINIO_ENDPOINT
+      - name: MINIO_REGION
+        valueFrom:
+          configMapKeyRef:
+            name: spark-iceberg-config
+            key: MINIO_REGION
+      - name: ICEBERG_CATALOG_URI
+        valueFrom:
+          configMapKeyRef:
+            name: spark-iceberg-config
+            key: ICEBERG_CATALOG_URI
+      - name: ICEBERG_WAREHOUSE
+        valueFrom:
+          configMapKeyRef:
+            name: spark-iceberg-config
+            key: ICEBERG_WAREHOUSE
+      - name: AWS_REGION
+        valueFrom:
+          configMapKeyRef:
+            name: spark-iceberg-config
+            key: MINIO_REGION
+      - name: AWS_ACCESS_KEY_ID
+        valueFrom:
+          secretKeyRef:
+            name: spark-iceberg-secret
+            key: MINIO_ROOT_USER
+      - name: AWS_SECRET_ACCESS_KEY
+        valueFrom:
+          secretKeyRef:
+            name: spark-iceberg-secret
+            key: MINIO_ROOT_PASSWORD
+      - name: ICEBERG_CATALOG_USER
+        valueFrom:
+          secretKeyRef:
+            name: spark-iceberg-secret
+            key: ICEBERG_CATALOG_USER
+      - name: ICEBERG_CATALOG_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: spark-iceberg-secret
+            key: ICEBERG_CATALOG_PASSWORD
