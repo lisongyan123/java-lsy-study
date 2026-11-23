@@ -29,6 +29,7 @@ InspectPopups(once) {
         LogLine("Auto-click active: Allow once, Allow all, Turn on.")
         LogLine("Best-effort UIA candidates, not guaranteed coverage. Ctrl+C or tray Exit to stop.")
         loop {
+            scanStart := A_TickCount
             matched := 0
             windows := 0
             failures := 0
@@ -49,7 +50,7 @@ InspectPopups(once) {
             LogLine("windows=" windows " candidates=" matched " failed_windows=" failures)
             if once
                 ExitApp(failures ? 1 : 0)
-            Sleep(2000)
+            Sleep(Max(1, 2000 - (A_TickCount - scanStart)))
         }
     } finally {
         ObjRelease(condition)
@@ -92,6 +93,10 @@ InspectWindow(uia, condition, hwnd) {
                         candidates.Push("hwnd=" hwnd " snapshot_node=" A_Index
                             . " kind=prompt-label label=" label " control_type=" controlType
                             . " enabled=" ReadProperty(element, 30010))
+                    }
+                    if RegExMatch(ReadProperty(element, 30012), "i)(chat-confirmation-widget-container|chat-question|chat-elicitation|chat-carousel)") {
+                        if HandleBooleanForm(element, condition)
+                            return candidates.Length
                     }
                     if kind != ""
                         candidates.Push("hwnd=" hwnd " snapshot_node=" A_Index " kind=" kind)
@@ -175,11 +180,7 @@ LogLine(text, isError := false) {
         FileAppend(text "`n", isError ? "**" : "*", "UTF-8")
         return
     }
-    if !DllCall("GetConsoleWindow", "ptr") {
-        if !DllCall("AllocConsole", "int")
-            throw OSError(A_LastError, , "Cannot create output console.")
-    }
-    FileAppend(text "`n", "CONOUT$", "UTF-8")
+    return
 }
 
 InvokeOnce(uia, element, label, previous) {
@@ -229,4 +230,75 @@ ClickVisibleButton(element, label) {
     Click(x, y)
     LogLine("Clicked: " label)
     return true
+}
+HandleBooleanForm(form, condition) {
+    controls := BooleanControls(form, condition)
+    if !controls.Has("true") || !controls.Has("false") 
+        return false
+    choice := controls["true"]
+    state := ReadProperty(choice, 30102)
+    selected := ReadProperty(choice, 30079) || ReadProperty(choice, 30086) = 1
+        || RegExMatch(state, "i)(^|;)\s*(checked|selected|pressed)=true(;|$)")
+    if !selected {
+        pattern := 0
+        try ComCall(16, choice, "int", 10010, "ptr*", &pattern)
+        if pattern {
+            try {
+                select := ComObjQuery(pattern, "{A8EFA66A-0FDA-421A-9194-38021F3578EA}")
+                ComCall(3, select)
+            } finally {
+                ObjRelease(pattern)
+            }
+        } else if !InvokeOnce(0, choice, "true", [])
+            return false
+    }
+    ; Copilot may draw its checkmark without exposing a UIA selection state.
+    loop 8 {
+        Sleep(100)
+        controls := BooleanControls(form, condition)
+        if controls.Has("true") && controls.Has("false") && controls.Has("submit")
+            && ReadProperty(controls["submit"], 30010)
+            break
+        if A_Index = 8
+            return false
+    }
+    submit := controls["submit"]
+    return ReadProperty(submit, 30010) && InvokeOnce(0, submit, "Submit", [])
+}
+
+BooleanControls(form, condition) {
+    result := Map()
+    nodes := 0
+    ComCall(6, form, "int", 4, "ptr", condition, "ptr*", &nodes)
+    try {
+        count := 0
+        ComCall(3, nodes, "int*", &count)
+        loop count {
+            ptr := 0
+            ComCall(4, nodes, "int", A_Index - 1, "ptr*", &ptr)
+            node := ComValue(13, ptr, 1)
+            if ReadProperty(node, 30022)
+                continue
+            type := ReadProperty(node, 30003)
+            className := ReadProperty(node, 30012)
+            if !(className ~= "(^|\s)chat-question-(list-item|submit-button)(\s|$)" || type ~= "^(50000|50002|50005|50007|50011|50013|50019|50024)$")
+                continue
+            name := StrLower(Trim(ReadProperty(node, 30005)))
+            name := RegExReplace(name, "i)^\s*(?:option\s*|选项\s*|選項\s*)?[12][.、):：\s]+", "")
+            if name = "yes"
+                name := "true"
+            else if name = "no"
+                name := "false"
+            if name ~= "^(submit|提交)(答案|回答| answers?)?(\s*[(（].*?[)）])?$"
+                name := "submit"
+            if !(name ~= "^(true|false|submit)$")
+                continue
+            if result.Has(name)
+                return Map()
+            result[name] := node
+        }
+    } finally {
+        ObjRelease(nodes)
+    }
+    return result
 }
