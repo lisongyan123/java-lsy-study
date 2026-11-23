@@ -58,24 +58,40 @@ $class = [Windows.Automation.AutomationElement]::ClassNameProperty
 $type = [Windows.Automation.AutomationElement]::ControlTypeProperty
 $card = [Windows.Automation.PropertyCondition]::new($class,'chat-confirmation-widget-container')
 $button = [Windows.Automation.PropertyCondition]::new($type,[Windows.Automation.ControlType]::Button)
-$labels = '允许一次','Allow once','启用','开启','打开','Turn on','全部允许','允许所有','Allow all'
+$allowOnce = '^(?:Allow\s+once|允许一次|仅允许一次)(?:\s*[(（][^()（）]*[)）])?$'
+$allowAll = '^(?:Allow\s+all|全部允许|允许所有|允许全部)(?:\s*[(（][^()（）]*[)）])?$'
+$turnOn = '^(?:Turn\s+on|开启|启用|打开)(?:\s*[(（][^()（）]*[)）])?$'
 $count = 0
-    foreach ($hwnd in $handles) {
-        try {
-            $window = [Windows.Automation.AutomationElement]::FromHandle([IntPtr]$hwnd)
-            foreach ($panel in $window.FindAll(4,$card)) {
-                $buttons = $panel.FindAll(4,$button)
-                foreach ($label in $labels) {
-                    $match = $buttons | Where-Object {($_.Current.Name -eq $label -or ($label -eq 'Turn on' -and $_.Current.Name.StartsWith('Turn On (',[StringComparison]::OrdinalIgnoreCase))) -and $_.Current.IsEnabled -and !$_.Current.IsOffscreen} | Select-Object -First 1
-                    if ($match) {
-                        $match.GetCurrentPattern([Windows.Automation.InvokePattern]::Pattern).Invoke()
+foreach ($hwnd in $handles) {
+    try {
+        $window = [Windows.Automation.AutomationElement]::FromHandle([IntPtr]$hwnd)
+        $panels = $window.FindAll(4,$card)
+        $groups = @($panels | ForEach-Object { $_ })
+        $groups += $window
+        $handledCard = $false
+        foreach ($group in $groups) {
+            $wholeWindow = $group -eq $window
+            if ($wholeWindow -and $handledCard) { continue }
+            $patterns = if ($wholeWindow) { $allowOnce,$allowAll } else { $allowOnce,$turnOn,$allowAll }
+            $buttons = $group.FindAll(4,$button)
+            foreach ($pattern in $patterns) {
+                $invoked = $false
+                foreach ($item in $buttons) {
+                    try {
+                        $state = $item.Current
+                        if (!$state.IsEnabled -or $state.IsOffscreen -or $state.Name.Trim() -notmatch $pattern) { continue }
+                        $item.GetCurrentPattern([Windows.Automation.InvokePattern]::Pattern).Invoke()
                         $count++
+                        $invoked = $true
+                        if (!$wholeWindow) { $handledCard = $true }
                         break
-                    }
+                    } catch { continue }
                 }
+                if ($invoked) { break }
             }
-        } catch { continue }
-    }
+        }
+    } catch { continue }
+}
 exit ([Math]::Min($count,100))
 )"
 
@@ -93,3 +109,4 @@ if !DllCall(encode, "Ptr", StrPtr(script), "UInt", byteCount, "UInt", flags,
 return RunWait(A_WinDir "\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile -NonInteractive -WindowStyle Hidden -EncodedCommand "
     StrGet(encoded, "UTF-16"), , "Hide")
 }
+
