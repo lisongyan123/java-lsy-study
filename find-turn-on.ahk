@@ -1,5 +1,5 @@
 #Requires AutoHotkey v2.0
-#SingleInstance Off
+#SingleInstance Force
 #Warn All, StdOut
 
 try {
@@ -15,7 +15,7 @@ try {
         LogLine("ERROR: " fatalError.Message, true)
     } catch Error as logError {
         MsgBox(fatalError.Message "`nOutput error: " logError.Message,
-            "VS Code read-only inspector", "Iconx")
+            "VS Code auto-click", "Iconx")
     }
     ExitApp(1)
 }
@@ -26,7 +26,7 @@ InspectPopups(once) {
     condition := 0
     ComCall(21, uia, "ptr*", &condition)
     try {
-        LogLine("READ ONLY. No clicks or approvals. Only fixed labels are reported, not arbitrary text.")
+        LogLine("Auto-click active: Allow once, Allow all, Turn on.")
         LogLine("Best-effort UIA candidates, not guaranteed coverage. Ctrl+C or tray Exit to stop.")
         loop {
             matched := 0
@@ -57,6 +57,8 @@ InspectPopups(once) {
 }
 
 InspectWindow(uia, condition, hwnd) {
+    static previous := Map()
+    held := []
     root := 0
     ComCall(6, uia, "ptr", hwnd, "ptr*", &root)
     try {
@@ -79,10 +81,14 @@ InspectWindow(uia, condition, hwnd) {
                     kind := ClassifyPopup(controlType,
                         ReadProperty(element, 30012), ReadProperty(element, 30101))
                     label := ""
-                    if controlType = 50000 || controlType = 50011 || controlType = 50005
+                    if controlType = 50000 || controlType = 50011 || controlType = 50005 || controlType = 50031 || ReadProperty(element, 30101) = "button"
                         label := MatchPromptLabel(ReadProperty(element, 30005))
                     if label != "" {
                         buttonLabels[label] := true
+                        if ReadProperty(element, 30010) && InvokeOnce(uia, element, label, previous.Get(hwnd, [])) {
+                            ObjAddRef(element)
+                            held.Push({ptr: element, label: label})
+                        }
                         candidates.Push("hwnd=" hwnd " snapshot_node=" A_Index
                             . " kind=prompt-label label=" label " control_type=" controlType
                             . " enabled=" ReadProperty(element, 30010))
@@ -107,6 +113,9 @@ InspectWindow(uia, condition, hwnd) {
             ObjRelease(elements)
         }
     } finally {
+        for item in previous.Get(hwnd, [])
+            ObjRelease(item.ptr)
+        previous[hwnd] := held
         ObjRelease(root)
     }
 }
@@ -153,7 +162,7 @@ ReadProperty(element, id) {
                 address := NumGet(value, 8, "ptr")
                 return address ? StrGet(address, "UTF-16") : ""
             case 11: return NumGet(value, 8, "short") != 0
-            default: throw Error("Unsupported UIA property type for id " id)
+            default: return ""
         }
     } finally {
         DllCall("OleAut32\VariantClear", "ptr", value, "int")
@@ -171,4 +180,53 @@ LogLine(text, isError := false) {
             throw OSError(A_LastError, , "Cannot create output console.")
     }
     FileAppend(text "`n", "CONOUT$", "UTF-8")
+}
+
+InvokeOnce(uia, element, label, previous) {
+    try {
+        for item in previous {
+            if item.label = label {
+                same := 0
+                ComCall(3, uia, "ptr", item.ptr, "ptr", element, "int*", &same)
+                if same
+                    return true
+            }
+        }
+        pattern := 0
+        try ComCall(16, element, "int", 10000, "ptr*", &pattern)
+        if !pattern
+            return ClickVisibleButton(element, label)
+        try {
+            invoke := ComObjQuery(pattern, "{FB377FBE-8EA6-46D5-9C73-6499642D3059}")
+            try ComCall(3, invoke)
+            catch
+                return ClickVisibleButton(element, label)
+            LogLine("Invoked: " label)
+            return true
+        } finally {
+            ObjRelease(pattern)
+        }
+    } catch Error as err {
+        LogLine("Invoke failed for " label ": " err.Message, true)
+        return false
+    }
+}
+ClickVisibleButton(element, label) {
+    point := Buffer(8)
+    available := 0
+    ComCall(84, element, "ptr", point, "int*", &available)
+    if !available
+        return false
+    x := NumGet(point, 0, "int")
+    y := NumGet(point, 4, "int")
+    target := DllCall("WindowFromPoint", "int64", NumGet(point, 0, "int64"), "ptr")
+    owner := DllCall("GetAncestor", "ptr", target, "uint", 2, "ptr")
+    if !owner || !WinActive("ahk_id " owner)
+        return false
+    if !(WinGetProcessName("ahk_id " owner) ~= "i)^(Code|Code - Insiders|VSCodium)\.exe$")
+        return false
+    CoordMode("Mouse", "Screen")
+    Click(x, y)
+    LogLine("Clicked: " label)
+    return true
 }
