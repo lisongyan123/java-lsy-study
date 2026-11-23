@@ -1,149 +1,64 @@
 #Requires AutoHotkey v2.0
 #SingleInstance Force
-DetectHiddenWindows(false)
-enabled := true
-busy := false
-A_IconTip := "VS Code 自动确认"
-A_TrayMenu.Add("暂停 / 恢复扫描", ToggleScan)
-A_TrayMenu.Add("立即扫描", ScanAll)
-SetTimer(ScanAll, 3000)
-SetTimer(ScanAllAtStart, -1)
-^!a::ToggleScan()
-^!s::ScanAll()
-^!d::Diagnose()
+CoordMode("Mouse", "Screen")
+points := Map()
+A_IconTip := "VS Code 按钮位置点击"
+#HotIf WinActive("ahk_exe Code.exe") || WinActive("ahk_exe Code - Insiders.exe")
+^!+j::Remember("once", "允许一次")
+^!+k::Remember("all", "全部允许")
+^!+u::Remember("on", "启用")
+^!j::PressAt("once")
+^!k::PressAt("all")
+^!u::PressAt("on")
+#HotIf
 
-Diagnose(*) {
+Remember(key, label) {
+    global points
     hwnd := WinExist("A")
-    path := A_Temp "\vscode-allow-" A_Now ".txt"
-    name := WinGetProcessName("ahk_id " hwnd)
-    cls := WinGetClass("ahk_id " hwnd)
-    FileAppend("process=" name " class=" cls "`r`n", path, "UTF-8")
-    EnvSet("AHK_ALLOW_REPORT", path)
-    try {
-        code := ScanWindows(hwnd, true)
-        FileAppend("exit=" code "`r`n", path, "UTF-8")
-    } catch Error as err {
-        FileAppend("launch error=" err.Message "`r`n", path, "UTF-8")
-    }
-    Run('notepad.exe "' path '"')
-}
-
-ScanAllAtStart() => ScanAll()
-
-ToggleScan(*) {
-    global enabled
-    enabled := !enabled
-    SetTimer(ScanAll, enabled ? 3000 : 0)
-    ShowTip(enabled ? "已恢复扫描" : "已暂停扫描")
-}
-
-ShowTip(message) {
-    ToolTip(message)
-    SetTimer(() => ToolTip(), -1200)
-}
-
-ScanAll(*) {
-    global busy
-    if busy
+    MouseGetPos(&x, &y, &under)
+    if under != hwnd {
+        Tip("请把鼠标放在当前 VS Code 窗口内")
         return
-    busy := true
-    try {
-        handles := ""
-        for hwnd in WinGetList("ahk_class Chrome_WidgetWin_1") {
-            try name := WinGetProcessName("ahk_id " hwnd)
-            catch
-                continue
-            if name = "Code.exe" || name = "Code - Insiders.exe"
-                handles .= (handles ? "," : "") hwnd
-        }
-        if handles {
-            count := ScanWindows(handles)
-            if !Mod(count, 256) && count >= 256 && count <= 25600
-                ShowTip("已点击 " (count // 256) " 个确认按钮")
-        }
-    } finally {
-        busy := false
     }
+    WinGetClientPos(&left, &top, &width, &height, "ahk_id " hwnd)
+    points[key] := {hwnd: hwnd, x: x-left, y: y-top, w: width, h: height}
+    Tip("已记录“" label "”的位置")
 }
 
-ScanWindows(handles, diagnostic := false) {
-script := "$handles = @(" handles ")`n"
-script .= "$diagnostic = " (diagnostic ? "$true" : "$false") "`n"
-script .= "
-(
-$ErrorActionPreference = 'Stop'
-try { Add-Type -AssemblyName UIAutomationClient } catch {
-    if ($diagnostic) { Add-Content -LiteralPath $env:AHK_ALLOW_REPORT -Encoding UTF8 -Value $_.Exception.Message }
-    exit 121
-}
-$class = [Windows.Automation.AutomationElement]::ClassNameProperty
-$type = [Windows.Automation.AutomationElement]::ControlTypeProperty
-$card = [Windows.Automation.PropertyCondition]::new($class,'chat-confirmation-widget-container')
-$button = [Windows.Automation.PropertyCondition]::new($type,[Windows.Automation.ControlType]::Button)
-$menuItem = [Windows.Automation.PropertyCondition]::new($type,[Windows.Automation.ControlType]::MenuItem)
-$actions = [Windows.Automation.OrCondition]::new($button,$menuItem)
-$allowOnce = '^(?:Allow\s+once|允许一次|仅允许一次)(?:\s*[(（][^()（）]*[)）])?$'
-$allowAll = '^(?:Allow\s+all|全部允许|允许所有|允许全部)(?:\s*[(（][^()（）]*[)）])?$'
-$turnOn = '^(?:Turn\s+on|开启|启用|打开)(?:\s*[(（][^()（）]*[)）])?$'
-$count = 0
-foreach ($hwnd in $handles) {
-    try {
-        $window = [Windows.Automation.AutomationElement]::FromHandle([IntPtr]$hwnd)
-        if ($diagnostic) {
-            $all = $window.FindAll(4,[Windows.Automation.Condition]::TrueCondition)
-            $rows = @("UIA elements=" + $all.Count)
-            foreach ($element in $all) {
-                $state = $element.Current
-                if ($state.Name -match '^\s*(allow once|allow all|turn on|允许一次|仅允许一次|全部允许|允许所有|允许全部|启用|开启)(?:\s|$|[(（])' -and $state.Name.Length -lt 100) {
-                    $rows += "$($state.Name) | $($state.ControlType.ProgrammaticName) | enabled=$($state.IsEnabled) offscreen=$($state.IsOffscreen) | patterns=$(($element.GetSupportedPatterns().ProgrammaticName) -join ',')"
-                }
-            }
-            Add-Content -LiteralPath $env:AHK_ALLOW_REPORT -Encoding UTF8 -Value $rows
-            continue
-        }
-        $panels = $window.FindAll(4,$card)
-        $groups = @($panels | ForEach-Object { $_ })
-        $groups += $window
-        $handledCard = $false
-        foreach ($group in $groups) {
-            $wholeWindow = $group -eq $window
-            if ($wholeWindow -and $handledCard) { continue }
-            $patterns = if ($wholeWindow) { $allowOnce,$allowAll } else { $allowOnce,$turnOn,$allowAll }
-            $buttons = $group.FindAll(4,$actions)
-            foreach ($pattern in $patterns) {
-                $invoked = $false
-                foreach ($item in $buttons) {
-                    try {
-                        $state = $item.Current
-                        if (!$state.IsEnabled -or $state.IsOffscreen -or $state.Name.Trim() -notmatch $pattern) { continue }
-                        $item.GetCurrentPattern([Windows.Automation.InvokePattern]::Pattern).Invoke()
-                        $count++
-                        $invoked = $true
-                        if (!$wholeWindow) { $handledCard = $true }
-                        break
-                    } catch { continue }
-                }
-                if ($invoked) { break }
-            }
-        }
-    } catch { if ($diagnostic) { Add-Content -LiteralPath $env:AHK_ALLOW_REPORT -Encoding UTF8 -Value $_.Exception.Message }; continue }
-}
-exit (256 * [Math]::Min($count,100))
-)"
-
-byteCount := StrLen(script) * 2
-flags := 0x40000001  ; Base64 without line breaks
-charCount := 0
-encode := "Crypt32\CryptBinaryToStringW"
-if !DllCall(encode, "Ptr", StrPtr(script), "UInt", byteCount, "UInt", flags,
-    "Ptr", 0, "UInt*", &charCount)
-    throw OSError()
-encoded := Buffer(charCount * 2)
-if !DllCall(encode, "Ptr", StrPtr(script), "UInt", byteCount, "UInt", flags,
-    "Ptr", encoded.Ptr, "UInt*", &charCount)
-    throw OSError()
-return RunWait(A_WinDir "\System32\WindowsPowerShell\v1.0\powershell.exe -NoProfile -NonInteractive -WindowStyle Hidden -EncodedCommand "
-    StrGet(encoded, "UTF-16"), , "Hide")
+PressAt(key) {
+    global points
+    if !points.Has(key) {
+        Tip("先把鼠标放到按钮上，按 Ctrl+Alt+Shift 加对应字母")
+        return
+    }
+    point := points[key]
+    if !WinActive("ahk_id " point.hwnd) {
+        Tip("请回到记录位置时的 VS Code 窗口")
+        return
+    }
+    WinGetClientPos(&left, &top, &width, &height, "ahk_id " point.hwnd)
+    if width != point.w || height != point.h {
+        Tip("窗口尺寸已变化，请重新记录按钮位置")
+        return
+    }
+    ; 等待用户松开快捷键，避免产生 Ctrl/Alt 修饰点击。
+    KeyWait("Ctrl")
+    KeyWait("Alt")
+    if !WinActive("ahk_id " point.hwnd)
+        return
+    MouseGetPos(&oldX, &oldY)
+    MouseMove(left+point.x, top+point.y, 0)
+    MouseGetPos(,, &under)
+    if under != point.hwnd {
+        MouseMove(oldX, oldY, 0)
+        Tip("目标位置被其他窗口遮挡")
+        return
+    }
+    try Click()
+    finally MouseMove(oldX, oldY, 0)
 }
 
-
+Tip(text) {
+    ToolTip(text)
+    SetTimer(() => ToolTip(), -1800)
+}
