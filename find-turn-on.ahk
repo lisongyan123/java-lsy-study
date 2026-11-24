@@ -26,7 +26,7 @@ InspectPopups(once) {
     condition := 0
     ComCall(21, uia, "ptr*", &condition)
     try {
-        LogLine("Auto-click active: Allow once, Allow all, Turn on.")
+        LogLine("Auto-click active: Allow once, Allow in this session, Allow all, Turn on.")
         LogLine("Best-effort UIA candidates, not guaranteed coverage. Ctrl+C or tray Exit to stop.")
         loop {
             scanStart := A_TickCount
@@ -107,7 +107,7 @@ InspectWindow(uia, condition, hwnd) {
             for candidate in candidates
                 LogLine(candidate)
             summary := ""
-            for label in ["Allow once", "Allow all", "Turn on"] {
+            for label in ["Allow once", "Allow in this session", "Allow all", "Turn on"] {
                 if buttonLabels.Has(label)
                     summary .= (summary = "" ? "" : " | ") label
             }
@@ -147,6 +147,7 @@ MatchPromptLabel(name) {
     name := Trim(RegExReplace(StrReplace(name, "&", ""), "\s+", " "))
     for label, pattern in Map(
         "Allow once", "i)^(Allow\s+once|允许一次|仅允许一次)",
+        "Allow in this session", "i)^Allow\s+in\s+this\s+session",
         "Allow all", "i)^(Allow\s+all|全部允许|允许所有|允许全部)",
         "Turn on", "i)^(Turn\s+on|启用|开启)"
     ) {
