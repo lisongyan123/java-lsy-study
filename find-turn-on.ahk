@@ -95,7 +95,7 @@ InspectWindow(uia, condition, hwnd) {
                             . " enabled=" ReadProperty(element, 30010))
                     }
                     if RegExMatch(ReadProperty(element, 30012), "i)(chat-confirmation-widget-container|chat-question|chat-elicitation|chat-carousel)") {
-                        if HandleBooleanForm(element, condition)
+                        if HandleBooleanForm(uia, element, condition)
                             return candidates.Length
                     }
                     if kind != ""
@@ -231,7 +231,7 @@ ClickVisibleButton(element, label) {
     LogLine("Clicked: " label)
     return true
 }
-HandleBooleanForm(form, condition) {
+HandleBooleanForm(uia, form, condition) {
     controls := BooleanControls(form, condition)
     if !controls.Has("true") || !controls.Has("false") 
         return false
@@ -257,6 +257,10 @@ HandleBooleanForm(form, condition) {
         Sleep(100)
         controls := BooleanControls(form, condition)
         if controls.Has("true") && controls.Has("false") {
+            sameChoice := 0
+            ComCall(3, uia, "ptr", choice, "ptr", controls["true"], "int*", &sameChoice)
+            if !sameChoice
+                return true
             for action in ["next", "submit"] {
                 if controls.Has(action) && ReadProperty(controls[action], 30010)
                     return InvokeOnce(0, controls[action], action, [])
@@ -281,7 +285,7 @@ BooleanControls(form, condition) {
                 continue
             type := ReadProperty(node, 30003)
             className := ReadProperty(node, 30012)
-            if !(className ~= "(^|\s)chat-question-(list-item|submit-button|next-button)(\s|$)" || type ~= "^(50000|50002|50005|50007|50011|50013|50019|50024)$")
+            if !(className ~= "(^|\s)chat-question-(list-item|submit-button|next-button|nav-next)(\s|$)" || type ~= "^(50000|50002|50005|50007|50011|50013|50019|50024)$")
                 continue
             name := StrLower(Trim(ReadProperty(node, 30005)))
             name := RegExReplace(name, "i)^\s*(?:option\s*|选项\s*|選項\s*)?[12][.、):：\s]+", "")
@@ -291,10 +295,14 @@ BooleanControls(form, condition) {
                 name := "false"
             if name ~= "^(submit|提交)(答案|回答| answers?)?(\s*[(（].*?[)）])?$"
                 name := "submit"
-            else if name ~= "^(next|下一步|下一题|下一題)(\s*[(（].*?[)）])?$"
+            else if className ~= "(^|\s)chat-question-nav-next(\s|$)" || name ~= "^(next(?: question| step)?|下一步|下一题|下一題)(\s*[(（].*?[)）])?$"
                 name := "next"
             if !(name ~= "^(true|false|submit|next)$")
                 continue
+            if name = "next" || name = "submit" {
+                if !ReadProperty(node, 30010) || result.Has(name)
+                    continue
+            }
             if result.Has(name)
                 return Map()
             result[name] := node
