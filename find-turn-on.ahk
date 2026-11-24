@@ -256,14 +256,14 @@ HandleBooleanForm(form, condition) {
     loop 8 {
         Sleep(100)
         controls := BooleanControls(form, condition)
-        if controls.Has("true") && controls.Has("false") && controls.Has("submit")
-            && ReadProperty(controls["submit"], 30010)
-            break
-        if A_Index = 8
-            return false
+        if controls.Has("true") && controls.Has("false") {
+            for action in ["next", "submit"] {
+                if controls.Has(action) && ReadProperty(controls[action], 30010)
+                    return InvokeOnce(0, controls[action], action, [])
+            }
+        }
     }
-    submit := controls["submit"]
-    return ReadProperty(submit, 30010) && InvokeOnce(0, submit, "Submit", [])
+    return false
 }
 
 BooleanControls(form, condition) {
@@ -281,7 +281,7 @@ BooleanControls(form, condition) {
                 continue
             type := ReadProperty(node, 30003)
             className := ReadProperty(node, 30012)
-            if !(className ~= "(^|\s)chat-question-(list-item|submit-button)(\s|$)" || type ~= "^(50000|50002|50005|50007|50011|50013|50019|50024)$")
+            if !(className ~= "(^|\s)chat-question-(list-item|submit-button|next-button)(\s|$)" || type ~= "^(50000|50002|50005|50007|50011|50013|50019|50024)$")
                 continue
             name := StrLower(Trim(ReadProperty(node, 30005)))
             name := RegExReplace(name, "i)^\s*(?:option\s*|选项\s*|選項\s*)?[12][.、):：\s]+", "")
@@ -291,7 +291,9 @@ BooleanControls(form, condition) {
                 name := "false"
             if name ~= "^(submit|提交)(答案|回答| answers?)?(\s*[(（].*?[)）])?$"
                 name := "submit"
-            if !(name ~= "^(true|false|submit)$")
+            else if name ~= "^(next|下一步|下一题|下一題)(\s*[(（].*?[)）])?$"
+                name := "next"
+            if !(name ~= "^(true|false|submit|next)$")
                 continue
             if result.Has(name)
                 return Map()
